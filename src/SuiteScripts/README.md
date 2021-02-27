@@ -1,14 +1,15 @@
 # SuiteScripts
-> SuiteScript is the NetSuite platform built on JavaScript that enables complete customization and automation of business processes. Using the SuiteScript APIs, core business records and user information can be accessed and manipulated via scripts that are executed at pre-defined events.
 
+> SuiteScript is the NetSuite platform built on JavaScript that enables complete customization and automation of business processes. Using the SuiteScript APIs, core business records and user information can be accessed and manipulated via scripts that are executed at pre-defined events.
 
 ## CLIENT SCRIPTS
 
 #### SALES ORDER CLIENT
+
 > sales_order_client.js
 
-Calculates handling cost based on region, adds it to the shipping cost and 
-displays the total shipping cost. Adds a button to the sales order that calculates 
+Calculates handling cost based on region, adds it to the shipping cost and
+displays the total shipping cost. Adds a button to the sales order that calculates
 sales order total weight in lbs and total item count.
 
 Regions
@@ -41,6 +42,7 @@ Regions
 </table>
 
 #### ITEM FULFILLMENT CLIENT
+
 > item_fulfillment_client.js
 
 Generates buttons for flat rate shipping. These buttons will select the appropriate shipping method and packaging (box type, dimensions etc...).
@@ -77,19 +79,21 @@ Generates buttons for flat rate shipping. These buttons will select the appropri
 </table>
 
 #### CASH REFUND CLIENT
+
 > cash_refund_client.js
 
 Makes tax rate match attached Cash Sale.
 
 #### USER TASK CLIENT
+
 > user_task_client.js
 
 Generates a button on the Task Form that will set the status to complete and update the 'Follow Up Scheduled' field on the Customer Record.
 
-
 ## USER EVENT SCRIPTS
 
 #### SALES ORDER USER EVENT
+
 > sales_order_ue.js
 
 Sets the Sales Channel and Sales Rep fields, based on the FarApp Marketplace field value. If order was created in NetSuite the FarApp Marketplace field will be empty and NetSuite will select the Sales Rep attached to the customer record.
