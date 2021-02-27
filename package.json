@@ -1,0 +1,19 @@
+{
+  "name": "home_api",
+  "version": "1.0.0",
+  "description": "Philips Hue",
+  "author": "Jose A. Rivera <jose.alfredo.rivera@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@hitc/netsuite-types": "^2021.1.1",
+    "@typescript-eslint/eslint-plugin": "^4.14.2",
+    "@typescript-eslint/parser": "^4.14.2",
+    "eslint": "^7.19.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "typescript": "^4.2.2"
+  }
+}

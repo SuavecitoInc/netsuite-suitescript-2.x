@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "amd",
+    "target": "es6",
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "newLine": "LF",
+    "experimentalDecorators": true,
+    "noImplicitUseStrict": true,
+    "baseUrl": ".",
+    "rootDir": "./src",
+    "outDir": "dist",
+    "resolveJsonModule": true,
+    "lib": ["es2016", "dom"],
+    "paths": {
+      "N": ["node_modules/@hitc/netsuite-types/N"],
+      "N/*": ["node_modules/@hitc/netsuite-types/N/*"]
+    }
+  },
+  "exclude": ["node_modules"]
+}
