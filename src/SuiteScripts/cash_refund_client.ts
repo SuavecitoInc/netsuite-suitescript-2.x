@@ -130,6 +130,11 @@ export const updateRefund = () => {
             value: faShipTaxRate,
           });
           cashRefund.setValue({
+            fieldId: 'taxamountoverride',
+            value: faTaxTotal + faShipTax,
+            ignoreFieldChange: true,
+          });
+          cashRefund.setValue({
             fieldId: 'taxtotal',
             value: faTaxTotal + faShipTax,
             ignoreFieldChange: true,
