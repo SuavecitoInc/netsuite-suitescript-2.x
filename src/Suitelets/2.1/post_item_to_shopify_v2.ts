@@ -12,6 +12,7 @@ import * as serverWidget from 'N/ui/serverWidget';
 import * as message from 'N/ui/message';
 import * as https from 'N/https';
 import * as log from 'N/log';
+// @ts-ignore
 import * as forge from './libs/forge.min.js';
 
 interface Item {
