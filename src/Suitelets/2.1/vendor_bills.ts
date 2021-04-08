@@ -82,6 +82,14 @@ const onPost = (request: ServerRequest, response: ServerResponse) => {
         entity: transaction.vendorId,
       },
     });
+    paymentRecord.setValue({
+      fieldId: 'account',
+      value: 217,
+    });
+    paymentRecord.setValue({
+      fieldId: 'tobeprinted',
+      value: true,
+    });
     // find line
     const lineNum = paymentRecord.findSublistLineWithValue({
       sublistId: 'apply',
@@ -346,7 +354,8 @@ const createResultsPage = (
       })
       .updateBreakType({
         breakType: serverWidget.FieldBreakType.STARTROW,
-      }).defaultValue = 'The following Vendor Bill Payment(s) were created.';
+      }).defaultValue =
+      'The following Vendor Bill Payment(s) were created. Click <a href="/app/accounting/print/printchecks.nl?printtype=transaction&trantype=check&method=print&title=Checks&whence=" target="_blank">here</a> to print checks.';
 
     // form
     //   .addField({

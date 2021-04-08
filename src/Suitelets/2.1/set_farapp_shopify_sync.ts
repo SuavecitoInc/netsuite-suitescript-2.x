@@ -186,6 +186,7 @@ const getItems = (partialSku: string) => {
       'custitem_fa_shopify_flag02',
       'custitem_fa_shopify_flag03',
       'custitem_fa_shopify_flag04',
+      'custitem_fa_ebay_flag',
       'custitem_fa_shpfy_prod_description',
       'custitem_fa_shpfy_prod_description_ws',
       'custitem_fa_shpfy_prod_description_wh',
