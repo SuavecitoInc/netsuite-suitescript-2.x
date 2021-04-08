@@ -1,7 +1,5 @@
 # NETSUITE
 
-I originally created this to provide examples of what you could do in NetSuite via SuiteScript, because I found it pretty hard to get started.
-
 > SuiteScript 2.x
 
 ### Contents:
