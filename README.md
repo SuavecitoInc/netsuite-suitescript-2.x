@@ -6,13 +6,13 @@
 
 #### SuiteScripts
 
-- [Client Scripts](/ClientScripts)
-- [User Event Scripts](/UserEventScripts)
-- [RESTlets](/RESTlets)
-- [Action Scripts](/ActionScripts)
-- [Suitelets](/Suitelets)
-- [Custom Modules](/CustomModules)
-- [Sample Responses](/SampleResponses)
+- [Client Scripts](/src/ClientScripts)
+- [User Event Scripts](/src/UserEventScripts)
+- [RESTlets](/src/RESTlets)
+- [Action Scripts](/src/ActionScripts)
+- [Suitelets](/src/Suitelets)
+- [Custom Modules](/src/CustomModules)
+- [Sample Responses](/src/SampleResponses)
 
 ### Documentation:
 
