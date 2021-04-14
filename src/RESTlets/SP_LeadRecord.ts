@@ -41,7 +41,7 @@ export let post: EntryPoints.RESTlet.post = (context: any) => {
     for (let fldName in context) {
       if (context.hasOwnProperty(fldName)) {
         if (fldName !== 'recordtype') {
-          rec.setValue(fldName, context[fldName]);
+          rec.setValue(fldName, context[fldName].trim());
         }
       }
     }

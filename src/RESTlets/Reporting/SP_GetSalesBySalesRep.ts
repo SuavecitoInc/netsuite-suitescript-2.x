@@ -236,6 +236,6 @@ const round = (value: number, decimals: number) => {
   return Number(Math.round(Number(value + 'e' + decimals)) + 'e-' + decimals);
 };
 
-const formatNumber = num => {
+const formatNumber = (num: number) => {
   return '$' + num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
 };

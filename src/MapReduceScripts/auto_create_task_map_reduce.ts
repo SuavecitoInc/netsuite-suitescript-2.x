@@ -9,10 +9,9 @@ import * as runtime from 'N/runtime';
 import * as record from 'N/record';
 import * as search from 'N/search';
 import * as email from 'N/email';
-import * as error from 'N/error';
 import * as log from 'N/log';
 
-export const getInputData = () => {
+export const getInputData: EntryPoints.MapReduce.getInputData = () => {
   return search.load({
     id: runtime
       .getCurrentScript()
@@ -20,7 +19,9 @@ export const getInputData = () => {
   });
 };
 
-export const map = (context: any) => {
+export const map: EntryPoints.MapReduce.map = (
+  context: EntryPoints.MapReduce.mapContext
+) => {
   log.debug('CONTEXT', context.value);
 
   const result = JSON.parse(context.value);
@@ -57,7 +58,9 @@ export const map = (context: any) => {
   context.write(taskId, JSON.stringify({ name: name, salesRep: salesRep }));
 };
 
-export const summarize = (summary: any) => {
+export const summarize: EntryPoints.MapReduce.summarize = (
+  summary: EntryPoints.MapReduce.summarizeContext
+) => {
   log.debug('Summary Time', 'Total Seconds: ' + summary.seconds);
   log.debug('Summary Usage', 'Total Usage: ' + summary.usage);
   log.debug('Summary Yields', 'Total Yields: ' + summary.yields);
@@ -168,7 +171,7 @@ const createTask = (salesRepId: string, customerId: string) => {
     ignoreMandatoryFields: false,
   });
 
-  return taskId;
+  return String(taskId);
 };
 
 const getDefaultRep = (salesRep: string, salesRepId: string) => {
@@ -240,7 +243,7 @@ const dueDate = () => {
   return dateDue;
 };
 
-const sendEmail = (tasksCount, content) => {
+const sendEmail = (tasksCount: number, content: string) => {
   let html = content;
 
   log.debug({

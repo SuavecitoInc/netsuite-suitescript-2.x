@@ -4,7 +4,10 @@
 
 ### Contents:
 
-- [Suite Scripts](/SuiteScripts)
+#### SuiteScripts
+
+- [Client Scripts](/ClientScripts)
+- [User Event Scripts](/UserEventScripts)
 - [RESTlets](/RESTlets)
 - [Action Scripts](/ActionScripts)
 - [Suitelets](/Suitelets)
@@ -13,9 +16,9 @@
 
 ### Documentation:
 
-- [RESTlets](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_N2970114.html)
 - [SuiteScript](https://system.netsuite.com/app/help/helpcenter.nl?fid=set_1502135122.html)
 - [SuiteScript 2.0](https://system.netsuite.com/app/help/helpcenter.nl?topic=DOC_SS2_API)
+- [RESTlets](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_N2970114.html)
 - [Supported Records](https://system.netsuite.com/app/help/helpcenter.nl?fid=preface_3710625923.html)
 - [Records Browser](https://system.netsuite.com/help/helpcenter/en_US/srbrowser/Browser2019_1/script/record/lead.html)
 

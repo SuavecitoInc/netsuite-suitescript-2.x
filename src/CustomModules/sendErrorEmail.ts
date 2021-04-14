@@ -7,7 +7,7 @@
 import * as email from 'N/email';
 import * as log from 'N/log';
 
-const send = (subject: string, errorMsg: string, data: JSON) => {
+export const send = (subject: string, errorMsg: string, data: JSON) => {
   const html =
     '<p><b>ERROR:</b> ' +
     errorMsg +
