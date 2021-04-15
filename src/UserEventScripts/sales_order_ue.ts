@@ -13,7 +13,7 @@ export let beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
   // marketplace
   var marketplace = currentRecord.getValue({ fieldId: 'custbody_fa_channel' });
   if (marketplace !== '') {
-    var salesRep;
+    var salesRep: number;
     if (marketplace === 'Shopify') {
       // salesRep = 'Online Store';
       salesRep = 73559;

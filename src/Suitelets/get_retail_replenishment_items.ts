@@ -338,37 +338,37 @@ const createPage = (items: Item[]) => {
     label: 'Retail Replenishment',
   });
 
-  const fieldID = sublist.addField({
+  sublist.addField({
     id: 'custpage_field_id',
     type: serverWidget.FieldType.TEXT,
     label: 'ID',
   });
-  const fieldSku = sublist.addField({
+  sublist.addField({
     id: 'custpage_field_sku',
     type: serverWidget.FieldType.TEXT,
     label: 'SKU',
   });
-  const fieldName = sublist.addField({
+  sublist.addField({
     id: 'custpage_field_name',
     type: serverWidget.FieldType.TEXT,
     label: 'Name',
   });
-  const fieldStoreQtyAvailable = sublist.addField({
+  sublist.addField({
     id: 'custpage_field_store_qty_available',
     type: serverWidget.FieldType.TEXT,
     label: 'Store Qty Available',
   });
-  const fieldStoreQtyMax = sublist.addField({
+  sublist.addField({
     id: 'custpage_field_store_qty_max',
     type: serverWidget.FieldType.TEXT,
     label: 'Store Qty Max',
   });
-  const fieldWarehouseQtyAvailbable = sublist.addField({
+  sublist.addField({
     id: 'custpage_field_warehouse_qty_available',
     type: serverWidget.FieldType.TEXT,
     label: 'Warehouse Qty Available',
   });
-  const fieldQtyNeeded = sublist.addField({
+  sublist.addField({
     id: 'custpage_field_qty_needed',
     type: serverWidget.FieldType.TEXT,
     label: 'Qty Needed',

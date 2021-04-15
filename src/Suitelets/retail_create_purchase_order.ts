@@ -27,7 +27,7 @@ export let onRequest: EntryPoints.Suitelet.onRequest = (
   const request = context.request;
   const response = context.response;
 
-  if (request.method == 'GET') {
+  if (request.method === 'GET') {
     onGet(response, String(vt));
   } else {
     onPost(response, String(vt));

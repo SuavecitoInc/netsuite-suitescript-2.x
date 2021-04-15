@@ -7,7 +7,6 @@ import { EntryPoints } from 'N/types';
 import * as currentRecord from 'N/currentRecord';
 import * as dialog from 'N/ui/dialog';
 import * as log from 'N/log';
-import { Encoding } from '@hitc/netsuite-types/N/file';
 
 // Shipping Methods - Production
 const fedEx2Day = '30611';

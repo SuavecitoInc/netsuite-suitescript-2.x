@@ -15,7 +15,6 @@ import { ServerRequest, ServerResponse } from 'N/https';
 
 /**
  * Handles Suitelet request
- * @param {Object} context
  */
 export let onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
@@ -23,7 +22,7 @@ export let onRequest: EntryPoints.Suitelet.onRequest = (
   const request = context.request;
   const response = context.response;
 
-  if (request.method == 'GET') {
+  if (request.method === 'GET') {
     onGet(response);
   } else {
     onPost(request, response);
@@ -32,7 +31,6 @@ export let onRequest: EntryPoints.Suitelet.onRequest = (
 
 /**
  * Handles the Get Request
- * @param {Object} response
  */
 const onGet = (response: ServerResponse) => {
   // create search form
@@ -81,8 +79,6 @@ const onGet = (response: ServerResponse) => {
 
 /**
  * Handles the Post Request
- * @param {Object} request
- * @param {Object} response
  */
 const onPost = (request: ServerRequest, response: ServerResponse) => {
   const scriptURL = runtime.getCurrentScript().getParameter({
@@ -165,8 +161,6 @@ const onPost = (request: ServerRequest, response: ServerResponse) => {
 
 /**
  * Creates a search for all Sku(s) containing the partial sku provided.
- * @param {string} partialSku
- * @returns {Array}
  */
 const getItems = (partialSku: string) => {
   const itemSearch = search.create({
@@ -311,8 +305,6 @@ const getItems = (partialSku: string) => {
 
 /**
  * Creates a list widget for the results page
- * @param {Object} items
- * @returns {Object} The Page to render
  */
 const createPage = (partialSku: string, items: any[]) => {
   log.debug({
@@ -438,10 +430,6 @@ const createPage = (partialSku: string, items: any[]) => {
 
 /**
  * Creates a sublist on the provided form.
- * @param {Object} form - The Form
- * @param {string} partialSku - Partial Sku
- * @param {Array} items - Item Search Results
- * @returns {Object} - The Form
  */
 const createSublist = (
   form: serverWidget.Form,
@@ -664,14 +652,6 @@ const createSublist = (
 
 /**
  * Updates the FarApp Shopify Flag on the Item Record.
- * @param {Array} items - The Search Results
- * @param {Object} flags
- * @param {string} flags.retail
- * @param {string} flags.wholesale
- * @param {string} flags.warehouse
- * @param {string} flags.professional
- * @param {string} flags.ebay
- * @returns {Array} - The IDs of the Updated Items.
  */
 const updateItems = (items: any[], flags: any) => {
   const types = {

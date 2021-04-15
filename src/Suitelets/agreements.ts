@@ -10,6 +10,7 @@ import * as file from 'N/file';
 import * as record from 'N/record';
 import * as serverWidget from 'N/ui/serverWidget';
 import * as message from 'N/ui/message';
+import { ServerRequest, ServerResponse } from 'N/https';
 
 export let onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
@@ -27,7 +28,7 @@ export let onRequest: EntryPoints.Suitelet.onRequest = (
 /**
  * Handles Get Request and loads the saved search
  */
-const onGet = response => {
+const onGet = (response: ServerResponse) => {
   const results = getFiles();
   const page = createPage(results);
   response.writePage(page);
@@ -36,7 +37,7 @@ const onGet = response => {
 /**
  * Handles the Post Request
  */
-const onPost = (request, response) => {
+const onPost = (request: ServerRequest, response: ServerResponse) => {
   const folderID = 753;
   const files = request.parameters.custpage_files;
   const customerID = request.parameters.custpage_customer;
@@ -48,7 +49,7 @@ const onPost = (request, response) => {
     ' and attaching to customer: ' +
     customerID +
     '</p>';
-  fileIDs.forEach(fileID => {
+  fileIDs.forEach((fileID: string) => {
     // load and change dir
     const fileObj = file.load({ id: Number(fileID) });
     body += '<p>Moving file: ' + fileID + '</p>';
@@ -158,7 +159,16 @@ const getFiles = () => {
   }
 };
 
-const createPage = results => {
+const createPage = (
+  results:
+    | {
+        id: string;
+        fileid: string;
+        filename: string;
+        url: string;
+      }[]
+    | false
+) => {
   const form = serverWidget.createForm({ title: 'MAP Agreements' });
   form.addPageLink({
     type: serverWidget.FormPageLinkType.CROSSLINK,

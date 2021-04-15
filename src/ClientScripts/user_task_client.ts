@@ -13,11 +13,11 @@ export let pageInit: EntryPoints.Client.pageInit = () => {
 };
 
 export const completeUpdateCustomer = () => {
-  var task = currentRecord.get();
-  var customer = task.getValue('company');
+  const task = currentRecord.get();
+  const customer = task.getValue('company');
   // load & update customer
   if (customer != '') {
-    var customerId = updateCustomer(customer);
+    const customerId = updateCustomer(customer);
     if (customerId) {
       task.setValue({
         fieldId: 'status',
@@ -49,13 +49,13 @@ export const completeUpdateCustomer = () => {
 };
 
 export const updateCustomer = (id: record.FieldValue) => {
-  var customerRecord = record.load({
+  const customerRecord = record.load({
     type: 'customer',
     id: id,
     isDynamic: true,
   });
 
-  var followUpScheduled = customerRecord.getValue(
+  const followUpScheduled = customerRecord.getValue(
     'custentity_sp_follow_up_scheduled'
   );
 
@@ -70,7 +70,7 @@ export const updateCustomer = (id: record.FieldValue) => {
     });
   }
 
-  var customerId = customerRecord.save({
+  const customerId = customerRecord.save({
     enableSourcing: false,
     ignoreMandatoryFields: false,
   });

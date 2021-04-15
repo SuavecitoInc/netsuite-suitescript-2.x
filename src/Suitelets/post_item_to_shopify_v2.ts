@@ -152,7 +152,7 @@ const onPost = (
   let store: string;
   let SKU: string;
   let results: any[];
-  let itemObj;
+  let itemObj: any;
   // original post - set store & sku
   if (
     request.parameters.custpage_shopify_store &&

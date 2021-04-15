@@ -24,7 +24,7 @@ export let fieldChanged: EntryPoints.Client.fieldChanged = (
   });
   const fieldName = context.fieldId;
   if (fieldName === 'custitem_sp_licensed_from') {
-    var licensee = currentRecord.getValue('custitem_sp_licensed_from');
+    const licensee = currentRecord.getValue('custitem_sp_licensed_from');
     if (licensee === '1') {
       nbcUnversalAssetList.isDisplay = true;
     } else {

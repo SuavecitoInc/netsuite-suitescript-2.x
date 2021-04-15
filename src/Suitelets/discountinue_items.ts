@@ -14,7 +14,6 @@ import { ServerRequest, ServerResponse } from 'N/https';
 
 /**
  * Handles Suitelet request
- * @param {Object} context
  */
 export let onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
@@ -31,7 +30,6 @@ export let onRequest: EntryPoints.Suitelet.onRequest = (
 
 /**
  * Handles the Get Request
- * @param {Object} response
  */
 const onGet = (response: ServerResponse) => {
   // create search form
@@ -81,8 +79,6 @@ const onGet = (response: ServerResponse) => {
 
 /**
  * Handles the Post Request
- * @param {Object} request
- * @param {Object} response
  */
 const onPost = (request: ServerRequest, response: ServerResponse) => {
   if (request.parameters.custpage_partial_sku) {
@@ -121,8 +117,6 @@ const onPost = (request: ServerRequest, response: ServerResponse) => {
 
 /**
  * Creates a search for all Sku(s) containing the partial sku provided.
- * @param {string} partialSku
- * @returns {Array}
  */
 const getItems = (partialSku: string) => {
   const itemSearch = search.create({
@@ -203,8 +197,6 @@ const getItems = (partialSku: string) => {
 
 /**
  * Sets the inactive property on an item record.
- * @param {Array} items
- * @param {boolean} value
  */
 const isInactive = (items: any[], value: boolean) => {
   const nsTypes = {
@@ -239,9 +231,6 @@ const isInactive = (items: any[], value: boolean) => {
 
 /**
  * Creates an Inventory Adjustment.
- * @param {string} partialSku
- * @param {Array} items
- * @returns {string} The Inventory Adjustment ID
  */
 const inventoryAdjustment = (partialSku: string, items: any[]) => {
   const adjustmentRecord = record.create({
@@ -346,47 +335,47 @@ const createPage = (partialSku: string, items: any[]) => {
     label: 'Results for ' + partialSku + '...',
   });
 
-  const fieldID = sublist.addField({
+  sublist.addField({
     id: 'custpage_field_id',
     type: serverWidget.FieldType.TEXT,
     label: 'ID',
   });
-  const fieldSku = sublist.addField({
+  sublist.addField({
     id: 'custpage_field_sku',
     type: serverWidget.FieldType.TEXT,
     label: 'SKU',
   });
-  const fieldName = sublist.addField({
+  sublist.addField({
     id: 'custpage_field_name',
     type: serverWidget.FieldType.TEXT,
     label: 'Name',
   });
-  const fieldLocation = sublist.addField({
+  sublist.addField({
     id: 'custpage_field_location',
     type: serverWidget.FieldType.TEXT,
     label: 'Location',
   });
-  const fieldLocationId = sublist.addField({
+  sublist.addField({
     id: 'custpage_field_location_id',
     type: serverWidget.FieldType.TEXT,
     label: 'Location (ID)',
   });
-  const fieldBinNumber = sublist.addField({
+  sublist.addField({
     id: 'custpage_field_bin_number',
     type: serverWidget.FieldType.TEXT,
     label: 'Bin Number',
   });
-  const fieldBinNumberId = sublist.addField({
+  sublist.addField({
     id: 'custpage_field_bin_number_id',
     type: serverWidget.FieldType.TEXT,
     label: 'Bin Number (ID)',
   });
-  const fieldBinOnHandAvailable = sublist.addField({
+  sublist.addField({
     id: 'custpage_field_bin_on_hand_available',
     type: serverWidget.FieldType.TEXT,
     label: 'Bin On Hand Available',
   });
-  const fieldType = sublist.addField({
+  sublist.addField({
     id: 'custpage_field_type',
     type: serverWidget.FieldType.TEXT,
     label: 'Type',

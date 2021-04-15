@@ -43,6 +43,11 @@ export let saveRecord: EntryPoints.Client.saveRecord = () => {
       fieldId: 'custpage_result_id',
       line: i,
     });
+    const transactionNumber = cr.getSublistValue({
+      sublistId: 'custpage_transactions_sublist',
+      fieldId: 'custpage_result_number',
+      line: i,
+    });
     const vendorId = cr.getSublistValue({
       sublistId: 'custpage_transactions_sublist',
       fieldId: 'custpage_result_vendor_id',
@@ -56,6 +61,7 @@ export let saveRecord: EntryPoints.Client.saveRecord = () => {
     if (cb) {
       transactions.push({
         transactionId: transactionId,
+        transactionNumber: transactionNumber,
         vendorId: vendorId,
         amount: amount,
       });

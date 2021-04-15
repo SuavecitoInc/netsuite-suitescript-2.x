@@ -10,6 +10,7 @@ import * as serverWidget from 'N/ui/serverWidget';
 import * as search from 'N/search';
 import * as redirect from 'N/redirect';
 import * as log from 'N/log';
+import { ServerRequest, ServerResponse } from 'N/https';
 
 export let onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
@@ -27,7 +28,7 @@ export let onRequest: EntryPoints.Suitelet.onRequest = (
 /**
  * Handles the Get Request and displays the Search Form.
  */
-const onGet = response => {
+const onGet = (response: ServerResponse) => {
   const form = serverWidget.createForm({
     title: "Clear Bin's Available Inventory",
   });
@@ -66,7 +67,7 @@ const onGet = response => {
  * Creates the search, displays the results and creates
  * the Inventory Adjustment.
  */
-const onPost = (request, response) => {
+const onPost = (request: ServerRequest, response: ServerResponse) => {
   if (request.parameters.custpage_bin_number) {
     const binNumber = request.parameters.custpage_bin_number;
     log.debug({
@@ -91,7 +92,7 @@ const onPost = (request, response) => {
 /**
  * Creates the Search
  */
-const getBinItems = binNumber => {
+const getBinItems = (binNumber: string) => {
   // create search
   const savedSearch = search.create({
     type: search.Type.INVENTORY_BALANCE,
@@ -174,7 +175,20 @@ const getBinItems = binNumber => {
 /**
  * Creates a list widget for the results page
  */
-const createPage = (binNumber, items) => {
+const createPage = (
+  binNumber: string,
+  items: {
+    id: string;
+    sku: string;
+    name: string;
+    binNumber: string;
+    binId: string;
+    location: string;
+    status: string;
+    onHand: string;
+    available: string;
+  }[]
+) => {
   const form = serverWidget.createForm({
     title: "Clear Bin's Available Inventory",
   });
@@ -340,8 +354,16 @@ const createPage = (binNumber, items) => {
   return form;
 };
 
-const inventoryAdjustment = items => {
-  var adjustmentRecord = record.create({
+const inventoryAdjustment = (
+  items: {
+    id: string;
+    available: string;
+    locationId: string;
+    binId: string;
+    statusId: string;
+  }[]
+) => {
+  const adjustmentRecord = record.create({
     type: record.Type.INVENTORY_ADJUSTMENT,
     isDynamic: true,
   });
@@ -374,7 +396,7 @@ const inventoryAdjustment = items => {
       fieldId: 'location',
       value: parseInt(item.locationId),
     });
-    var subRecord = adjustmentRecord.getCurrentSublistSubrecord({
+    const subRecord = adjustmentRecord.getCurrentSublistSubrecord({
       sublistId: 'inventory',
       fieldId: 'inventorydetail',
     });
@@ -406,7 +428,7 @@ const inventoryAdjustment = items => {
     });
   });
 
-  var recordId = adjustmentRecord.save({
+  const recordId = adjustmentRecord.save({
     enableSourcing: false,
     ignoreMandatoryFields: false,
   });

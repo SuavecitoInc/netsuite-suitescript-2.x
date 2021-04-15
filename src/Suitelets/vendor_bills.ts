@@ -90,6 +90,10 @@ const onPost = (request: ServerRequest, response: ServerResponse) => {
       fieldId: 'tobeprinted',
       value: true,
     });
+    paymentRecord.setValue({
+      fieldId: 'memo',
+      value: transaction.transactionNumber,
+    });
     // find line
     const lineNum = paymentRecord.findSublistLineWithValue({
       sublistId: 'apply',
