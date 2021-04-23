@@ -223,6 +223,16 @@ const createPage = (
         displayType: serverWidget.FieldDisplayType.HIDDEN,
       });
 
+    form
+      .addField({
+        id: 'custpage_customer_found',
+        label: 'Customer Found',
+        type: serverWidget.FieldType.CHECKBOX,
+      })
+      .updateDisplayType({
+        displayType: serverWidget.FieldDisplayType.HIDDEN,
+      });
+
     const sublist = form.addSublist({
       id: 'custpage_agreements_sublist',
       type: serverWidget.SublistType.LIST,

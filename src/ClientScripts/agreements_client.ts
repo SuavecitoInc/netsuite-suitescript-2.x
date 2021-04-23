@@ -6,7 +6,6 @@
 import { EntryPoints } from 'N/types';
 import * as currentRecord from 'N/currentRecord';
 import * as record from 'N/record';
-// import * as log from 'N/log';
 
 export let pageInit: EntryPoints.Client.pageInit = () => {
   console.log('Agreements Client Script Loaded...');
@@ -18,11 +17,11 @@ export let fieldChanged: EntryPoints.Client.fieldChanged = (
   const currentRecord = context.currentRecord;
   const fieldName = context.fieldId;
   const value = currentRecord.getValue(fieldName);
-  console.log('changed field: ' + fieldName);
+  console.log(`changed field:  ${fieldName}`);
   if (fieldName === 'custpage_customer' && value !== '') {
     // check if is a valid internal id (number)
     if (isNaN(Number(value))) {
-      alert(value + ' is not a valid internal id.');
+      alert(`${value} is not a valid internal id.`);
       currentRecord.setValue(fieldName, '');
     } else {
       // load record
@@ -32,8 +31,9 @@ export let fieldChanged: EntryPoints.Client.fieldChanged = (
           id: value,
         });
         alert(
-          'You have entered the internal id for customer: ' +
-            customer.getValue('entityid')
+          `You have entered the internal id for customer: ${customer.getValue(
+            'entityid'
+          )}`
         );
       } catch (e) {
         alert(e.message);
@@ -47,7 +47,7 @@ export let sublistChanged: EntryPoints.Client.sublistChanged = (
 ) => {
   // var currentRecord = context.currentRecord;
   const sublistName = context.sublistId;
-  console.log('changed sublist: ' + sublistName);
+  console.log(`changed sublist: ${sublistName}`);
 };
 
 export let saveRecord: EntryPoints.Client.saveRecord = () => {
@@ -71,7 +71,7 @@ export let saveRecord: EntryPoints.Client.saveRecord = () => {
   }
   const customer = cr.getValue('custpage_customer');
   if (customer !== '' && files.length > 0) {
-    console.log('Setting custpage_files: ' + files.toString());
+    console.log(`Setting custpage_files: ${files.toString()}`);
     cr.setValue('custpage_files', files.toString());
     return true;
   } else {
