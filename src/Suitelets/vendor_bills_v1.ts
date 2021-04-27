@@ -6,12 +6,10 @@
 
 import { EntryPoints } from 'N/types';
 import * as search from 'N/search';
-import * as runtime from 'N/runtime';
+import * as record from 'N/record';
 import * as serverWidget from 'N/ui/serverWidget';
 import * as message from 'N/ui/message';
-import * as task from 'N/task';
 import { ServerRequest, ServerResponse } from 'N/https';
-import * as log from 'N/log';
 
 export let onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
@@ -73,51 +71,68 @@ const onGet = (response: ServerResponse) => {
  * Handles the Post Request
  */
 const onPost = (request: ServerRequest, response: ServerResponse) => {
-  const userId = runtime.getCurrentUser().id;
   const trans = request.parameters.custpage_transactions;
-  log.debug('transactions', trans);
-  // Update the following statement so it uses the script ID
-  // of the map/reduce script record you want to submit
-  const mapReduceScriptId = 'customscript_sp_vendor_bills_map_reduce';
-
-  // Create a map/reduce task
-  //
-  // Update the deploymentId parameter to use the script ID of
-  // the deployment record for your map/reduce script
-  let mrTask = task.create({
-    taskType: task.TaskType.MAP_REDUCE,
-    scriptId: mapReduceScriptId,
-    deploymentId: 'customdeploy_sp_vendor_bills_map_reduce',
-    params: {
-      custscript_vendor_bills_mr_transactions: trans,
-      custscript_vendor_bills_mr_user_id: userId,
-    },
+  const transactions = JSON.parse(trans);
+  const results = [];
+  transactions.forEach((transaction: any) => {
+    const paymentRecord = record.create({
+      type: record.Type.VENDOR_PAYMENT,
+      isDynamic: true,
+      defaultValues: {
+        entity: transaction.vendorId,
+      },
+    });
+    paymentRecord.setValue({
+      fieldId: 'account',
+      value: 217,
+    });
+    paymentRecord.setValue({
+      fieldId: 'tobeprinted',
+      value: true,
+    });
+    paymentRecord.setValue({
+      fieldId: 'memo',
+      value: transaction.transactionNumber,
+    });
+    // find line
+    const lineNum = paymentRecord.findSublistLineWithValue({
+      sublistId: 'apply',
+      fieldId: 'internalid',
+      value: transaction.transactionId,
+    });
+    // select line
+    paymentRecord.selectLine({
+      sublistId: 'apply',
+      line: lineNum,
+    });
+    paymentRecord.setCurrentSublistValue({
+      sublistId: 'apply',
+      fieldId: 'apply',
+      value: true,
+    });
+    paymentRecord.setCurrentSublistValue({
+      sublistId: 'apply',
+      fieldId: 'amount',
+      value: parseFloat(transaction.amount),
+    });
+    // commit line
+    paymentRecord.commitLine({
+      sublistId: 'apply',
+    });
+    const paymentRecordId = paymentRecord.save({
+      enableSourcing: false,
+      ignoreMandatoryFields: false,
+    });
+    results.push({
+      transactionId: transaction.transactionId,
+      vendorId: transaction.vendorId,
+      amount: transaction.amount,
+      paymentId: paymentRecordId,
+    });
   });
+  // updated
 
-  // Submit the map/reduce task
-  let mrTaskId = mrTask.submit();
-  const form = serverWidget.createForm({ title: 'Vendor Bill Payments' });
-
-  form.addPageInitMessage({
-    type: message.Type.CONFIRMATION,
-    title: 'SUCCESS!',
-    message: `Running Map / Reduce`,
-  });
-
-  form
-    .addField({
-      id: 'custpage_message',
-      type: serverWidget.FieldType.INLINEHTML,
-      label: ' ',
-    })
-    .updateLayoutType({
-      layoutType: serverWidget.FieldLayoutType.OUTSIDEABOVE,
-    })
-    .updateBreakType({
-      breakType: serverWidget.FieldBreakType.STARTROW,
-    }).defaultValue =
-    'You will receive an email once all payments have been created. Click <a href="/app/accounting/print/printchecks.nl?printtype=transaction&trantype=check&method=print&title=Checks&whence=" target="_blank">here</a> to print checks.';
-
+  const form = createResultsPage(results);
   response.writePage(form);
 };
 

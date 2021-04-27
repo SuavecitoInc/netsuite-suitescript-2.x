@@ -21,14 +21,6 @@ export let sublistChanged: EntryPoints.Client.sublistChanged = (
 };
 
 export let saveRecord: EntryPoints.Client.saveRecord = () => {
-  // show loader
-  const node = document.createElement('div');
-  const loader = document.createElement('p');
-  loader.innerHTML = 'Loading ...';
-  node.appendChild(loader);
-
-  document.getElementById('pageContainer').appendChild(node);
-
   const cr = currentRecord.get();
   const lines = cr.getLineCount({ sublistId: 'custpage_transactions_sublist' });
   let transactions = [];

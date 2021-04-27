@@ -52,8 +52,8 @@ export let execute: EntryPoints.Scheduled.execute = () => {
 
   const items: Item[] = [];
   location1Items.forEach(function (item) {
-    var sku = item.custitem_sp_item_sku;
-    var displayName = item.displayname;
+    const sku = item.custitem_sp_item_sku;
+    const displayName = item.displayname;
     if (itemsObj[sku] && itemsObj[sku].quantityAvailable > 0) {
       items.push({
         sku: sku,

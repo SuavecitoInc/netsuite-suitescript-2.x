@@ -19,7 +19,6 @@ interface Item {
   sku: string;
   name: string;
   storeQuantityAvailable: string;
-  storeQuantityMin: string;
   storeQuantityMax: string;
   warehouseItemID: string;
   warehouseQuantityAvailable: string;
@@ -152,10 +151,6 @@ const getReplenishment = () => {
   const items = [];
   for (let j in retailStoreResultsJSON) {
     const item = retailStoreResultsJSON[j];
-    log.debug({
-      title: 'RESULT',
-      details: item,
-    });
     const itemName = item.values.displayname;
     const sku = item.values.custitem_sp_item_sku;
     // get warehouse available from item search object
@@ -163,7 +158,6 @@ const getReplenishment = () => {
       itemSearchValues[item.id].warehouseAvailable;
     // calculate
     const storeQuantityAvailable = parseInt(item.values.formulanumeric);
-    const storeQuantityMin = item.values.formulanumeric_4;
     const storeQuantityMax = parseInt(item.values.formulanumeric_1);
     let quantityNeeded = storeQuantityMax - storeQuantityAvailable;
 
@@ -176,7 +170,6 @@ const getReplenishment = () => {
         sku: sku,
         name: itemName.replace(',', ''),
         storeQuantityAvailable: storeQuantityAvailable,
-        storeQuantityMin: storeQuantityMin,
         storeQuantityMax: storeQuantityMax,
         warehouseItemID: itemSearchValues[j],
         warehouseQuantityAvailable: warehouseQuantityAvailable,
@@ -366,11 +359,6 @@ const createPage = (items: Item[]) => {
     label: 'Store Qty Available',
   });
   sublist.addField({
-    id: 'custpage_field_store_qty_min',
-    type: serverWidget.FieldType.TEXT,
-    label: 'Store Qty Min',
-  });
-  sublist.addField({
     id: 'custpage_field_store_qty_max',
     type: serverWidget.FieldType.TEXT,
     label: 'Store Qty Max',
@@ -411,11 +399,6 @@ const createPage = (items: Item[]) => {
       id: 'custpage_field_store_qty_available',
       line: i,
       value: String(item.storeQuantityAvailable),
-    });
-    sublist.setSublistValue({
-      id: 'custpage_field_store_qty_min',
-      line: i,
-      value: String(item.storeQuantityMin),
     });
     sublist.setSublistValue({
       id: 'custpage_field_store_qty_max',

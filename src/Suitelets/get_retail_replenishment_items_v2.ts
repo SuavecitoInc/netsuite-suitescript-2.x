@@ -12,7 +12,7 @@ import * as file from 'N/file';
 import * as log from 'N/log';
 import * as message from 'N/ui/message';
 import * as spTransferOrder from './createTransferOrder';
-import { ServerResponse } from 'N/https';
+import { ServerRequest, ServerResponse } from 'N/https';
 
 interface Item {
   id: string;
@@ -35,7 +35,7 @@ export let onRequest: EntryPoints.Suitelet.onRequest = (
   if (request.method == 'GET') {
     onGet(response);
   } else {
-    onPost(response);
+    onPost(request, response);
   }
 };
 
@@ -51,14 +51,20 @@ const onGet = (response: ServerResponse) => {
 /**
  * Handles the Post Request
  */
-const onPost = (response: ServerResponse) => {
-  const items = getReplenishment();
+const onPost = (request: ServerRequest, response: ServerResponse) => {
+  const items = request.parameters.custpage_items;
+  log.debug({
+    title: 'SELECTED ITEMS',
+    details: items,
+  });
+  const selectedItems = JSON.parse(items);
+  // const items = getReplenishment();
   // create CSV and save to file cabinet
-  const csvFileId = createCSV(items);
+  const csvFileId = createCSV(selectedItems);
 
   // create transfer order
   const memo = 'Retail Store - ' + todaysDate();
-  const transferOrderId = spTransferOrder.create(3, 1, items, memo);
+  const transferOrderId = spTransferOrder.create(3, 1, selectedItems, memo);
 
   // create form
   const form = serverWidget.createForm({
@@ -92,7 +98,7 @@ const getReplenishment = () => {
   // Load saved search
   const retailReplenishmentSavedSearch = runtime
     .getCurrentScript()
-    .getParameter({ name: 'custscript_retail_replenishment_search' });
+    .getParameter({ name: 'custscript_retail_replenishment_v2_searc' });
   const retailStoreSearch = search.load({
     id: String(retailReplenishmentSavedSearch),
   });
@@ -249,7 +255,7 @@ const createCSV = (items: Item[]) => {
   const dir = Number(
     runtime
       .getCurrentScript()
-      .getParameter({ name: 'custscript_retail_replenishment_dir' })
+      .getParameter({ name: 'custscript_retail_replenishment_v2_dir' })
   );
   const today = todaysDate();
   const rnd = generateRandomString();
@@ -257,7 +263,7 @@ const createCSV = (items: Item[]) => {
   const csvFile = file.create({
     name: 'retail-store-replenishment-' + today + '_' + rnd + '.csv',
     contents:
-      'transferName,id,sku,name,storeQuantityAvailable,storeQuantityMax,' +
+      'transferName,id,sku,name,storeQuantityAvailable,storeQuantityMin,storeQuantityMax,' +
       'warehouseQuantityAvailable,quantityNeeded,date\n',
     folder: dir,
     fileType: file.Type.CSV,
@@ -278,6 +284,8 @@ const createCSV = (items: Item[]) => {
         item.name +
         ',' +
         item.storeQuantityAvailable +
+        ',' +
+        item.storeQuantityMin +
         ',' +
         item.storeQuantityMax +
         ',' +
@@ -335,16 +343,48 @@ const createPage = (items: Item[]) => {
       'Retail Replenishment - ' + todaysDate() + ' | Total: ' + items.length,
   });
 
+  form.clientScriptModulePath = 'SuiteScripts/retail_replenishment_client.js';
+
+  form
+    .addField({
+      id: 'custpage_message',
+      type: serverWidget.FieldType.INLINEHTML,
+      label: ' ',
+    })
+    .updateLayoutType({
+      layoutType: serverWidget.FieldLayoutType.OUTSIDEABOVE,
+    })
+    .updateBreakType({
+      breakType: serverWidget.FieldBreakType.STARTROW,
+    }).defaultValue = 'Please select the item(s) to add to the Transfer Order.';
+
+  form
+    .addField({
+      id: 'custpage_items',
+      label: 'Selected Items',
+      type: serverWidget.FieldType.TEXT,
+    })
+    .updateDisplayType({
+      displayType: serverWidget.FieldDisplayType.HIDDEN,
+    });
+
   form.addSubmitButton({
     label: 'Create Transfer Order',
   });
 
   const sublist = form.addSublist({
-    id: 'custpage_retial_replenishment_sublist',
+    id: 'custpage_retail_replenishment_sublist',
     type: serverWidget.SublistType.LIST,
     label: 'Retail Replenishment',
   });
 
+  sublist.addMarkAllButtons();
+
+  sublist.addField({
+    id: 'custpage_result_checkbox',
+    type: 'checkbox',
+    label: 'Select',
+  });
   sublist.addField({
     id: 'custpage_field_id',
     type: serverWidget.FieldType.TEXT,
