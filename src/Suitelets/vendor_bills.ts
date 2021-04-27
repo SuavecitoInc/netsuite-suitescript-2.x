@@ -52,6 +52,7 @@ const getVendorBills = () => {
         vendorId: result.getValue({ name: 'internalid', join: 'vendor' }),
         name: result.getText({ name: 'entity' }),
         daysOpen: result.getValue({ name: 'daysopen' }),
+        dueDate: result.getValue({ name: 'duedate' }),
         amount: result.getValue({ name: 'amount' }),
       });
     });
@@ -132,6 +133,7 @@ const createPage = (
     vendorId: string;
     name: string;
     daysOpen: string;
+    dueDate: string;
     amount: string;
   }[]
 ) => {
@@ -169,8 +171,10 @@ const createPage = (
     const sublist = form.addSublist({
       id: 'custpage_transactions_sublist',
       type: serverWidget.SublistType.LIST,
-      label: 'Vendor Bills',
+      label: `Vendor Bills (${results.length})`,
     });
+
+    sublist.addMarkAllButtons();
 
     sublist.addField({
       id: 'custpage_result_checkbox',
@@ -208,6 +212,11 @@ const createPage = (
       label: 'Days Open',
     });
     sublist.addField({
+      id: 'custpage_result_due_date',
+      type: 'text',
+      label: 'Due Date',
+    });
+    sublist.addField({
       id: 'custpage_result_number',
       type: 'text',
       label: 'Document Number',
@@ -239,6 +248,7 @@ const createPage = (
         vendorId: string;
         name: string;
         daysOpen: string;
+        dueDate: string;
         amount: string;
       },
       index: number
@@ -276,6 +286,11 @@ const createPage = (
         id: 'custpage_result_days_open',
         line: index,
         value: result.daysOpen,
+      });
+      sublist.setSublistValue({
+        id: 'custpage_result_due_date',
+        line: index,
+        value: result.dueDate,
       });
       sublist.setSublistValue({
         id: 'custpage_result_number',
