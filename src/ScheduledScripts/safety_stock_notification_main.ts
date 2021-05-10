@@ -56,7 +56,7 @@ function loadSearch(searchID: string) {
       });
       const id = result.getValue({ name: 'internalid' }) as string;
       let type = result.getValue({ name: 'type' }) as string;
-      type = type.toUpperCase();
+      // type = type.toUpperCase();
       log.debug({
         title: 'ID  | TYPE',
         details: `${id} | ${type}_ITEM`,
@@ -82,8 +82,13 @@ function loadSearch(searchID: string) {
         type: type,
       });
       // set notification field
+      // set type
+      const itemTypes = {
+        Assembly: record.Type.ASSEMBLY_ITEM,
+        InvtPart: record.Type.INVENTORY_ITEM,
+      };
       const savedId = record.submitFields({
-        type: record.Type[`${type}_ITEM`],
+        type: itemTypes[type],
         id: id,
         values: {
           custitem_sp_safety_stock_level_mw_date: new Date(),
@@ -128,7 +133,10 @@ const createCSV = (items: Item[]) => {
   for (let i in items) {
     var item = items[i];
     csvFile.appendLine({
-      value: `${item.inventoryLocation},${item.sku},${item.displayName},${item.locationQuantityAvailable},${item.locationSafetyStockLevel}`,
+      value: `${item.inventoryLocation},${item.sku},${item.displayName.replace(
+        ',',
+        ' - '
+      )},${item.locationQuantityAvailable},${item.locationSafetyStockLevel}`,
     });
   }
 
