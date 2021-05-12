@@ -179,7 +179,7 @@ const sendEmail = (items: Item[], fileId: number) => {
       </tr>
     `;
   });
-  html += `</table><p>You can find the results <a href="https://system.netsuite.com/app/common/search/searchresults.nl?searchid=1412&whence=" target="_blank">here.</a></p>`;
+  html += `</table><p>You can find the results <a href="https://system.netsuite.com/app/common/search/searchresults.nl?searchid=1415&whence=" target="_blank">here.</a></p>`;
 
   log.debug({
     title: 'SENDING EMAIL HTML',
