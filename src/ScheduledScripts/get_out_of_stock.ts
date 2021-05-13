@@ -53,6 +53,7 @@ export let execute: EntryPoints.Scheduled.execute = () => {
       // add new out of stock items to sent object
       sentItemsObj[sku] = {
         displayname: itemResultsObj[sku].displayName,
+        dateadded: new Date().toLocaleString(),
       };
     }
   });
@@ -95,9 +96,7 @@ const createSearch = () => {
       name: 'formulanumeric',
       operator: search.Operator.EQUALTO,
       values: [1],
-      formula:
-        "CASE WHEN {inventorylocation} = 'Main Warehouse' " +
-        'AND NVL({ locationquantityavailable },0) = 0 THEN 1 ELSE 0 END',
+      formula: `CASE WHEN {inventorylocation} = 'Main Warehouse' AND NVL({locationquantityavailable},0) = 0 THEN 1 ELSE 0 END`,
     }),
     search.createFilter({
       name: 'matrix',
