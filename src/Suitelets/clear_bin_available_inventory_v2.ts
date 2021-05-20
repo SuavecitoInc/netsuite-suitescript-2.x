@@ -407,7 +407,7 @@ const inventoryAdjustment = (
   });
 
   items.forEach(function (item) {
-    if (parseInt(item.available) > 0 && item.isinactive) {
+    if (parseInt(item.available) > 0 && !item.isinactive) {
       try {
         adjustmentRecord.selectNewLine({
           sublistId: 'inventory',
