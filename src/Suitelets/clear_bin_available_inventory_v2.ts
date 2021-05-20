@@ -124,6 +124,10 @@ const getBinItems = (binNumber: string) => {
       search.createColumn({
         name: 'available',
       }),
+      search.createColumn({
+        name: 'isinactive',
+        join: 'item',
+      }),
     ],
   });
 
@@ -165,8 +169,17 @@ const getBinItems = (binNumber: string) => {
         statusId: result.getValue({ name: 'status' }),
         onHand: result.getValue({ name: 'onhand' }),
         available: result.getValue({ name: 'available' }),
+        inactive:
+          result.getValue({ name: 'isinactive', join: 'item' }) === false
+            ? 'false'
+            : 'true',
       });
     });
+  });
+
+  log.debug({
+    title: 'ITEM RESULTS',
+    details: itemResults,
   });
 
   return itemResults;
@@ -187,6 +200,7 @@ const createPage = (
     status: string;
     onHand: string;
     available: string;
+    inactive: string;
   }[]
 ) => {
   const form = serverWidget.createForm({
@@ -278,6 +292,11 @@ const createPage = (
       type: serverWidget.FieldType.TEXT,
       label: 'Available',
     });
+    sublist.addField({
+      id: 'custpage_field_inactive',
+      type: serverWidget.FieldType.TEXT,
+      label: 'Inactive',
+    });
 
     for (let i = 0; i < items.length; i++) {
       let item = items[i];
@@ -330,6 +349,11 @@ const createPage = (
         line: i,
         value: item.available,
       });
+      sublist.setSublistValue({
+        id: 'custpage_field_inactive',
+        line: i,
+        value: item.inactive,
+      });
     }
   } else {
     form
@@ -378,54 +402,67 @@ const inventoryAdjustment = (
   });
 
   items.forEach(function (item) {
-    adjustmentRecord.selectNewLine({
-      sublistId: 'inventory',
-    });
-    adjustmentRecord.setCurrentSublistValue({
-      sublistId: 'inventory',
-      fieldId: 'item',
-      value: parseInt(item.id),
-    });
-    adjustmentRecord.setCurrentSublistValue({
-      sublistId: 'inventory',
-      fieldId: 'adjustqtyby',
-      value: parseInt(item.available) * -1,
-    });
-    adjustmentRecord.setCurrentSublistValue({
-      sublistId: 'inventory',
-      fieldId: 'location',
-      value: parseInt(item.locationId),
-    });
-    const subRecord = adjustmentRecord.getCurrentSublistSubrecord({
-      sublistId: 'inventory',
-      fieldId: 'inventorydetail',
-    });
-    subRecord.selectNewLine({
-      sublistId: 'inventoryassignment',
-    });
-    subRecord.setCurrentSublistValue({
-      sublistId: 'inventoryassignment',
-      fieldId: 'binnumber',
-      value: parseInt(item.binId),
-    });
-    subRecord.setCurrentSublistValue({
-      sublistId: 'inventoryassignment',
-      fieldId: 'status',
-      value: parseInt(item.statusId),
-    });
-    // set quantity
-    subRecord.setCurrentSublistValue({
-      sublistId: 'inventoryassignment',
-      fieldId: 'quantity',
-      value: parseInt(item.available) * -1,
-    });
-    // commit line
-    subRecord.commitLine({
-      sublistId: 'inventoryassignment',
-    });
-    adjustmentRecord.commitLine({
-      sublistId: 'inventory',
-    });
+    if (parseInt(item.available) > 0) {
+      try {
+        adjustmentRecord.selectNewLine({
+          sublistId: 'inventory',
+        });
+        adjustmentRecord.setCurrentSublistValue({
+          sublistId: 'inventory',
+          fieldId: 'item',
+          value: parseInt(item.id),
+        });
+        adjustmentRecord.setCurrentSublistValue({
+          sublistId: 'inventory',
+          fieldId: 'adjustqtyby',
+          value: parseInt(item.available) * -1,
+        });
+        adjustmentRecord.setCurrentSublistValue({
+          sublistId: 'inventory',
+          fieldId: 'location',
+          value: parseInt(item.locationId),
+        });
+        const subRecord = adjustmentRecord.getCurrentSublistSubrecord({
+          sublistId: 'inventory',
+          fieldId: 'inventorydetail',
+        });
+        subRecord.selectNewLine({
+          sublistId: 'inventoryassignment',
+        });
+        subRecord.setCurrentSublistValue({
+          sublistId: 'inventoryassignment',
+          fieldId: 'binnumber',
+          value: parseInt(item.binId),
+        });
+        subRecord.setCurrentSublistValue({
+          sublistId: 'inventoryassignment',
+          fieldId: 'status',
+          value: parseInt(item.statusId),
+        });
+        // set quantity
+        subRecord.setCurrentSublistValue({
+          sublistId: 'inventoryassignment',
+          fieldId: 'quantity',
+          value: parseInt(item.available) * -1,
+        });
+        // commit line
+        subRecord.commitLine({
+          sublistId: 'inventoryassignment',
+        });
+        adjustmentRecord.commitLine({
+          sublistId: 'inventory',
+        });
+      } catch (e) {
+        log.debug({
+          title: 'ERROR ITEM',
+          details: JSON.stringify(item),
+        });
+        log.debug({
+          title: 'ERROR DETAILS',
+          details: e.message,
+        });
+      }
+    }
   });
 
   const recordId = adjustmentRecord.save({
