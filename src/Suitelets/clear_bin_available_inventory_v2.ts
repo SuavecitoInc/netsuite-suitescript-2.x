@@ -157,6 +157,11 @@ const getBinItems = (binNumber: string) => {
         details: result,
       });
 
+      const activeStatus = result.getValue({
+        name: 'isinactive',
+        join: 'item',
+      });
+
       itemResults.push({
         id: result.getValue({ name: 'internalid', join: 'item' }),
         name: result.getValue({ name: 'displayname', join: 'item' }),
@@ -169,10 +174,8 @@ const getBinItems = (binNumber: string) => {
         statusId: result.getValue({ name: 'status' }),
         onHand: result.getValue({ name: 'onhand' }),
         available: result.getValue({ name: 'available' }),
-        inactive:
-          result.getValue({ name: 'isinactive', join: 'item' }) === false
-            ? 'false'
-            : 'true',
+        isinactive: activeStatus === false ? false : true,
+        inactive: activeStatus === false ? 'false' : 'true',
       });
     });
   });
@@ -385,6 +388,8 @@ const inventoryAdjustment = (
     locationId: string;
     binId: string;
     statusId: string;
+    isinactive: boolean;
+    inactive: string;
   }[]
 ) => {
   const adjustmentRecord = record.create({
@@ -402,7 +407,7 @@ const inventoryAdjustment = (
   });
 
   items.forEach(function (item) {
-    if (parseInt(item.available) > 0) {
+    if (parseInt(item.available) > 0 && item.isinactive) {
       try {
         adjustmentRecord.selectNewLine({
           sublistId: 'inventory',
