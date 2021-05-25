@@ -126,9 +126,9 @@ const sendEmail = (results: Result[]) => {
       .getCurrentScript()
       .getParameter({ name: 'custscript_late_amz_order_email_list' })
   ).split(',');
-  let soLink =
+  const soLink =
     'https://system.netsuite.com/app/accounting/transactions/salesord.nl?id=';
-  let csLink =
+  const csLink =
     'https://system.netsuite.com/app/accounting/transactions/cashsale.nl?wid=';
   let html = `
     <p>The following Marketplace Orders are late: </p>
