@@ -27,6 +27,7 @@ const createSearch = () => {
   const transactionSearch = search.create({
     type: 'transaction',
     columns: [
+      'internalid',
       'trandate',
       'type',
       'number',
@@ -88,6 +89,7 @@ const createSearch = () => {
         details: JSON.stringify(result),
       });
       transactionResults.push({
+        id: result.getValue({ name: 'internalid' }),
         date: result.getValue({ name: 'trandate' }),
         type: result.getText({ name: 'type' }),
         documentNumber: result.getValue({ name: 'number' }),
@@ -104,6 +106,7 @@ const createSearch = () => {
 };
 
 interface Result {
+  id: string;
   date: string;
   type: string;
   documentNumber: string;
@@ -123,6 +126,10 @@ const sendEmail = (results: Result[]) => {
       .getCurrentScript()
       .getParameter({ name: 'custscript_late_amz_order_email_list' })
   ).split(',');
+  let soLink =
+    'https://system.netsuite.com/app/accounting/transactions/salesord.nl?id=';
+  let csLink =
+    'https://system.netsuite.com/app/accounting/transactions/cashsale.nl?wid=';
   let html = `
     <p>The following Marketplace Orders are late: </p>
       <table>
@@ -136,13 +143,22 @@ const sendEmail = (results: Result[]) => {
           <th style="padding: 5px;"><b>Status</b></th>
           <th style="padding: 5px;"><b>Picked Date</b></th>
         </tr>`;
-
   results.forEach(result => {
+    let transactionLink: string;
+    if (result.type === 'Sales Order') {
+      transactionLink = soLink + result.id;
+    } else {
+      transactionLink = csLink + result.id;
+    }
     html += `
       <tr>
         <td style="padding: 5px;">${result.date}</td>
         <td style="padding: 5px;">${result.type}</td>
-        <td style="padding: 5px;">${result.documentNumber}</td>
+        <td style="padding: 5px;">
+          <a href="${transactionLink}" target="_blank">
+          ${result.documentNumber}
+          </a>
+        </td>
         <td style="padding: 5px;">${result.marketplace}</td>
         <td style="padding: 5px;">${result.orderNumber}</td>
         <td style="padding: 5px;">${result.name}</td>
