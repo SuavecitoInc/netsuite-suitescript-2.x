@@ -29,6 +29,7 @@ const createSearch = () => {
     columns: [
       'internalid',
       'trandate',
+      'datecreated',
       'type',
       'number',
       'custbody_fa_channel',
@@ -62,7 +63,8 @@ const createSearch = () => {
       name: 'formulanumeric',
       operator: search.Operator.EQUALTO,
       values: [1],
-      formula: `CASE WHEN TRUNC({today}) - TRUNC({trandate}) >= 2 THEN 1 ELSE 0 END`,
+      // formula: `CASE WHEN TRUNC({today}) - TRUNC({trandate}) >= 1 THEN 1 ELSE 0 END`,
+      formula: `CASE WHEN {now} - {datecreated} >= 1 THEN 1 ELSE 0 END`,
     }),
     /**
      * Sales Order: Partially Fulfilled --> SalesOrd:D
@@ -91,6 +93,7 @@ const createSearch = () => {
       transactionResults.push({
         id: result.getValue({ name: 'internalid' }),
         date: result.getValue({ name: 'trandate' }),
+        dateCreated: result.getValue({ name: 'datecreated' }),
         type: result.getText({ name: 'type' }),
         documentNumber: result.getValue({ name: 'number' }),
         marketplace: result.getValue({ name: 'custbody_fa_channel' }),
@@ -108,6 +111,7 @@ const createSearch = () => {
 interface Result {
   id: string;
   date: string;
+  dateCreated: string;
   type: string;
   documentNumber: string;
   marketplace: string;
@@ -131,7 +135,7 @@ const sendEmail = (results: Result[]) => {
   const csLink =
     'https://system.netsuite.com/app/accounting/transactions/cashsale.nl?wid=';
   let html = `
-    <p>The following Marketplace Orders are late: </p>
+    <p>The following Marketplace Orders are over 24 hrs old and must be shipped today: </p>
       <table>
         <tr>
           <th style="padding: 5px;"><b>Date</b></th>
@@ -152,7 +156,7 @@ const sendEmail = (results: Result[]) => {
     }
     html += `
       <tr>
-        <td style="padding: 5px;">${result.date}</td>
+        <td style="padding: 5px;">${result.dateCreated}</td>
         <td style="padding: 5px;">${result.type}</td>
         <td style="padding: 5px;">
           <a href="${transactionLink}" target="_blank">
@@ -166,7 +170,10 @@ const sendEmail = (results: Result[]) => {
         <td style="padding: 5px;">${result.pickedDate}</td>
       </tr>`;
   });
-  html += `</table>`;
+  html += `
+    </table>
+    <p>This is an automated message. This message will run every 4 hours, listing any Marketplace orders older than 24 hours.</p>
+    `;
 
   log.debug({
     title: 'SENDING EMAIL',
@@ -178,7 +185,7 @@ const sendEmail = (results: Result[]) => {
     recipients: emailRecipient,
     cc: emailList,
     replyTo: 'jriv@suavecito.com',
-    subject: `The following Marketplace Orders are Late (${results.length})`,
+    subject: `The following Marketplace Orders are over 24 hrs old -  (${results.length})`,
     body: html,
   });
 };

@@ -174,7 +174,7 @@ const getBinItems = (binNumber: string) => {
         statusId: result.getValue({ name: 'status' }),
         onHand: result.getValue({ name: 'onhand' }),
         available: result.getValue({ name: 'available' }),
-        isinactive: activeStatus === false ? false : true,
+        isInactive: activeStatus === false ? false : true,
         inactive: activeStatus === false ? 'false' : 'true',
       });
     });
@@ -386,9 +386,10 @@ const inventoryAdjustment = (
     id: string;
     available: string;
     locationId: string;
+    binNumber: string;
     binId: string;
     statusId: string;
-    isinactive: boolean;
+    isInactive: boolean;
     inactive: string;
   }[]
 ) => {
@@ -403,11 +404,11 @@ const inventoryAdjustment = (
 
   adjustmentRecord.setValue({
     fieldId: 'memo',
-    value: 'Clear Bin Availability',
+    value: `Clear Bin Availability - ${items[0].binNumber}`,
   });
 
   items.forEach(function (item) {
-    if (parseInt(item.available) > 0 && !item.isinactive) {
+    if (parseInt(item.available) > 0 && !item.isInactive) {
       try {
         adjustmentRecord.selectNewLine({
           sublistId: 'inventory',
