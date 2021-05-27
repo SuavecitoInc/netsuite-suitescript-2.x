@@ -1,7 +1,7 @@
 {
-  "name": "home_api",
+  "name": "netsuite_scripts",
   "version": "1.0.0",
-  "description": "Philips Hue",
+  "description": "NetSuite",
   "author": "Jose A. Rivera <jose.alfredo.rivera@gmail.com>",
   "license": "MIT",
   "scripts": {
