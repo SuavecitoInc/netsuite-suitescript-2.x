@@ -30,10 +30,10 @@ export let beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
       // salesRep = 'eBay Store';
       salesRep = 73561;
     }
-    if (marketplace === 'Professional') {
+    if (marketplace === 'Shopify-Professional') {
       salesRep = 2064179;
     }
-    if (marketplace === 'Warehouse') {
+    if (marketplace === 'Shopify-Warehouse') {
       salesRep = 2064180;
     }
     // set sales rep

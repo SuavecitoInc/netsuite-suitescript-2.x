@@ -55,7 +55,7 @@ const sendEmail = (data: CustomerData) => {
       .getCurrentScript()
       .getParameter({ name: 'custscript_cc_order_rem_email_list' })
   ).split(',');
-  let html = `
+  const html = `
     This is an automated reminder, ${data.customerName} has not placed an order since ${data.lastOrderDate}.
   `;
 
