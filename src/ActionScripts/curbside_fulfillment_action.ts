@@ -48,17 +48,17 @@ export let onAction: EntryPoints.WorkflowAction.onAction = (
 
         // check for email
         const customerEmail = customerRecord.getValue('email') as string;
-        if (customerEmail == '') {
-          method = 'Please Notify Customer | Will Call ';
+        if (customerEmail === '') {
+          method = 'Please Notify Customer | Will Call';
           bccList = [207];
           recipient = 73560;
         } else {
-          method = 'Will Call ';
+          method = 'Will Call';
           bccList = [207, 73560];
           recipient = customer;
         }
       } else {
-        method = 'Curbside Pickup ';
+        method = 'Curbside Pickup';
         replyToEmail = 'store@suavecito.com';
         bccList = [207];
         recipient = customer;
@@ -73,8 +73,9 @@ export let onAction: EntryPoints.WorkflowAction.onAction = (
           customRecord: null,
         });
 
-        const emailSubject =
-          method + 'Order: ' + itemFulfill.getValue('custbody_sp_order_number');
+        const emailSubject = `
+          ${method} Order ${itemFulfill.getValue('custbody_sp_order_number')}
+        `;
         const emailBody = mergeResult.body;
 
         email.send({
