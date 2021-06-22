@@ -30,3 +30,23 @@ export const printProForma = () => {
     });
   }
 };
+
+export const printCommercialInvoice = () => {
+  // get record
+  const salesRecord = currentRecord.get();
+  if (salesRecord.id) {
+    const location = window.location.hostname;
+    window.open(
+      'https://' +
+        location +
+        '/app/accounting/print/hotprint.nl?regular=T&sethotprinter=T&formnumber=208&trantype=salesord&&id=' +
+        salesRecord.id +
+        '&label=Sales+Order&printtype=transaction'
+    );
+  } else {
+    dialog.alert({
+      title: 'Error',
+      message: 'Please save record and try again.',
+    });
+  }
+};

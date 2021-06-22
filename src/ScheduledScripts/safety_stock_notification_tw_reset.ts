@@ -89,12 +89,24 @@ function loadSearch(searchID: string) {
         type: type,
       });
       // remove value from notification field
+
+      enum ItemType {
+        'InvtPart' = 'INVENTORY',
+        'Assembly' = 'ASSEMBLY',
+        'Kit' = 'KIT',
+      }
+
+      log.debug({
+        title: `REMOVING ITEM ${id}`,
+        details: `TYPE: ${type} | ${ItemType[type]}_ITEM`,
+      });
+
       try {
         const savedId = record.submitFields({
-          type: record.Type[`${type}_ITEM`],
+          type: record.Type[`${ItemType[type]}_ITEM`],
           id: id,
           values: {
-            custitem_sp_safety_stock_level_tw_date: null,
+            custitem_sp_safety_stock_level_tw_date: '',
           },
           options: {
             enableSourcing: false,

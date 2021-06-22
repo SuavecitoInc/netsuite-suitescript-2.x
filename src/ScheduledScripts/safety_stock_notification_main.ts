@@ -160,7 +160,7 @@ const sendEmail = (items: Item[], fileId: number) => {
   ).split(',');
 
   let html = `
-    <p>The following item's availability is below the safety stock level for Main Warehouse.</p>
+    <p>The following items are below the safety stock level for Main Warehouse.</p>
     <table>
       <tr>
         <th style="padding: 5px;">SKU</th>

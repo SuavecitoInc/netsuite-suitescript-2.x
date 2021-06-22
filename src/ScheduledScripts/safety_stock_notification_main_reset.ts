@@ -55,7 +55,7 @@ function loadSearch(searchID: string) {
       });
       const id = result.getValue({ name: 'internalid' }) as string;
       let type = result.getValue({ name: 'type' }) as string;
-      type = type.toUpperCase();
+      let Uptype = type.toUpperCase();
       const displayName = result.getValue({ name: 'displayname' }) as string;
       const locationQuantityAvailable = result.getValue({
         name: 'locationquantityavailable',
@@ -86,12 +86,24 @@ function loadSearch(searchID: string) {
         locationSafetyStockLevel: result.getValue({
           name: 'locationsafetystocklevel',
         }) as string,
-        type: type,
+        type: Uptype,
       });
       // remove value from notification field
+
+      enum ItemType {
+        'InvtPart' = 'INVENTORY',
+        'Assembly' = 'ASSEMBLY',
+        'Kit' = 'KIT',
+      }
+
+      log.debug({
+        title: `REMOVING ITEM ${id}`,
+        details: `TYPE: ${type} | ${ItemType[type]}_ITEM`,
+      });
+
       try {
         const savedId = record.submitFields({
-          type: record.Type[`${type}_ITEM`],
+          type: record.Type[`${ItemType[type]}_ITEM`],
           id: id,
           values: {
             custitem_sp_safety_stock_level_mw_date: null,
