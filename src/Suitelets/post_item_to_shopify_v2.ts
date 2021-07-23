@@ -462,9 +462,13 @@ const createVariants = (
       'description',
       'custitem_sp_size',
       'custitem_sp_color',
+      'custitem_fa_shpfy_compare_at_price',
+      'custitem_fa_shpfy_compare_at_price_ws',
       'custitem_fa_shpfy_warehouse_price',
+      'custitem_fa_shpfy_compare_at_price_wh',
       'custitem_fa_shpfy_prod_description_wh',
       'custitem_fa_shpfy_professional_price',
+      'custitem_fa_shpfy_prod_description_pro',
       'custitem_fa_shpfy_prod_description_pro',
     ],
   });
@@ -520,6 +524,58 @@ const createVariants = (
 
     variants.push(variantObj);
   });
+
+  // order variants if sizing is used ex: apparel
+  const sizing = variants.find(
+    ({ options }) => options[0] === 'S' || options[0] === 'YS'
+  );
+  const sizing1 = {
+    xs: 1,
+    s: 2,
+    m: 3,
+    l: 4,
+    xl: 5,
+    '2xl': 6,
+    '3xl': 7,
+    '4xl': 8,
+    '5xl': 9,
+    yxs: 1,
+    ys: 2,
+    ym: 3,
+    yl: 4,
+    yxl: 5,
+    y2xl: 6,
+    y3xl: 7,
+    y4xl: 8,
+    y5xl: 9,
+  };
+  const sizing2 = {
+    s: 1,
+    m: 2,
+    l: 3,
+    xl: 4,
+    '2xl': 5,
+    '3xl': 6,
+    '4xl': 7,
+    '5xl': 8,
+  };
+  if (sizing) {
+    let sizeOrder = {};
+    // check for x-small
+    const xs = variants.find(
+      ({ options }) => options[0] === 'XS' || options[0] === 'YXS'
+    );
+    if (xs) {
+      sizeOrder = sizing1;
+    } else {
+      sizeOrder = sizing2;
+    }
+    // add position to variant object
+    variants.forEach(variant => {
+      variant['position'] = sizeOrder[variant.options[0].toLowerCase()];
+    });
+    variants.sort((a, b) => (a.position > b.position ? 1 : -1));
+  }
 
   itemObj.hasVariants = true;
   // stringify variant array of object
