@@ -27,7 +27,7 @@ export let onRequest: EntryPoints.Suitelet.onRequest = (
   }
 };
 
-const getItemFulfillments = (picker: string, start: string, end: string) => {
+const getItemFulfillments = (rfSmartUserFound: boolean, picker: string, start: string, end: string) => {
   log.debug({
     title: 'GETTING ITEM FULFILLMENTS',
     details: `PICKER ===> ${picker}`,
@@ -77,6 +77,11 @@ const getItemFulfillments = (picker: string, start: string, end: string) => {
         join: 'custrecord_transaction',
         summary: search.Summary.MAX
       }),
+      search.createColumn({
+        name: 'custrecord_rfs_transaction_user',
+        join: 'custrecord_transaction',
+        summary: search.Summary.MAX
+      })
     ],
     filters: [
       search.createFilter({
@@ -99,12 +104,12 @@ const getItemFulfillments = (picker: string, start: string, end: string) => {
         operator: search.Operator.IS,
         values: 'F',
       }),
-      search.createFilter({
-        name: 'custrecord_rfs_external_user',
-        join: 'custrecord_transaction',
-        operator: search.Operator.IS,
-        values: picker,
-      }),
+      // search.createFilter({
+      //   name: 'custrecord_rfs_external_user',
+      //   join: 'custrecord_transaction',
+      //   operator: search.Operator.IS,
+      //   values: picker,
+      // }),
       search.createFilter({
         name: 'formulanumeric',
         operator: search.Operator.EQUALTO,
@@ -115,6 +120,26 @@ const getItemFulfillments = (picker: string, start: string, end: string) => {
       }),
     ],
   });
+  
+  if (rfSmartUserFound) {
+    transactionSearch.filters.push(      
+      search.createFilter({
+        name: 'custrecord_rfs_external_user',
+        join: 'custrecord_transaction',
+        operator: search.Operator.IS,
+        values: picker,
+      })
+    )
+  } else {
+    transactionSearch.filters.push(      
+      search.createFilter({
+        name: 'custrecord_rfs_transaction_user',
+        join: 'custrecord_transaction',
+        operator: search.Operator.IS,
+        values: picker,
+      })
+    )
+  }
   // run
   const pagedData = transactionSearch.runPaged({ pageSize: 1000 });
 
@@ -144,6 +169,11 @@ const getItemFulfillments = (picker: string, start: string, end: string) => {
         items: result.getValue({ name: 'formulatext', summary: search.Summary.MIN }),
         rfSmartUser: result.getValue({
           name: 'custrecord_rfs_external_user',
+          join: 'custrecord_transaction',
+          summary: search.Summary.MAX
+        }),
+        netsuiteUser: result.getValue({
+          name: 'custrecord_rfs_transaction_user',
           join: 'custrecord_transaction',
           summary: search.Summary.MAX
         }),
@@ -234,9 +264,16 @@ const onPost = (request: ServerRequest, response: ServerResponse) => {
     title: 'CUSTOM LIST',
     details: rfSmartUsers,
   });
-  const selectedUser = rfSmartUsers[`RF_SMART_${picker}`];
+  let selectedUser = rfSmartUsers[`RF_SMART_${picker}`];
+  let rfSmartUserFound = false;
+  if (selectedUser) {
+    rfSmartUserFound = true;
+  } else {
+    rfSmartUserFound = false;
+    selectedUser = picker;
+  }
 
-  const results = getItemFulfillments(selectedUser, start, end);
+  const results = getItemFulfillments(rfSmartUserFound, selectedUser, start, end);
 
   const page = createPage(results);
 
@@ -255,6 +292,7 @@ const createPage = (
     itemsQuantity: string;
     items: string;
     rfSmartUser: string;
+    netsuiteUser: string;
   }[]
 ) => {
   const form = serverWidget.createForm({
@@ -315,6 +353,11 @@ const createPage = (
       label: 'Items',
     });
     sublist.addField({
+      id: 'custpage_result_netsuite_user',
+      type: 'text',
+      label: 'NETSUITE USER',
+    });
+    sublist.addField({
       id: 'custpage_result_rf_smart_user',
       type: 'text',
       label: 'RF-SMART USER',
@@ -332,6 +375,7 @@ const createPage = (
         itemsQuantity: string;
         items: string;
         rfSmartUser: string;
+        netsuiteUser: string;
       },
       index: number
     ) {
@@ -383,6 +427,11 @@ const createPage = (
         id: 'custpage_result_items',
         line: index,
         value: result.items,
+      });
+      sublist.setSublistValue({
+        id: 'custpage_result_netsuite_user',
+        line: index,
+        value: result.netsuiteUser,
       });
       sublist.setSublistValue({
         id: 'custpage_result_rf_smart_user',
