@@ -8,11 +8,8 @@ import { EntryPoints } from 'N/types';
 import * as search from 'N/search';
 import * as record from 'N/record';
 import * as serverWidget from 'N/ui/serverWidget';
-import * as message from 'N/ui/message';
-import * as task from 'N/task';
 import { ServerRequest, ServerResponse } from 'N/https';
 import * as log from 'N/log';
-import { toRecord } from '@hitc/netsuite-types/N/redirect';
 
 export let onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
