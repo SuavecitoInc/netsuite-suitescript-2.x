@@ -33,49 +33,47 @@ const getItemFulfillments = (picker: string, start: string, end: string) => {
     details: `PICKER ===> ${picker}`,
   });
   // search
-  // const transactionSearch = search.load({
-  //   id: 'customsearch_sp_item_fulfill_order_pick',
-  // });
   const transactionSearch = search.create({
     type: search.Type.ITEM_FULFILLMENT,
     columns: [
       search.createColumn({
         name: 'internalid',
-        summary: search.Summary.GROUP
+        summary: search.Summary.GROUP,
       }),
       search.createColumn({
         name: 'trandate',
-        summary: search.Summary.GROUP
+        summary: search.Summary.GROUP,
       }),
       search.createColumn({
         name: 'type',
-        summary: search.Summary.GROUP
+        summary: search.Summary.GROUP,
       }),
       search.createColumn({
         name: 'status',
-        summary: search.Summary.GROUP
+        summary: search.Summary.GROUP,
       }),
       search.createColumn({
         name: 'number',
-        summary: search.Summary.GROUP
+        summary: search.Summary.GROUP,
       }),
       search.createColumn({
         name: 'item',
-        summary: search.Summary.COUNT
+        summary: search.Summary.COUNT,
       }),
       search.createColumn({
         name: 'quantity',
-        summary: search.Summary.SUM
+        summary: search.Summary.SUM,
       }),
       search.createColumn({
         name: 'formulatext',
-        formula: "REPLACE(NS_CONCAT(DISTINCT CONCAT(CONCAT(CONCAT(CONCAT({item.custitem_sp_item_sku}, ' - <b>'), {item.displayname}), '</b> x '), ABS({quantity}))), ',' , '<br>')",
-        summary: search.Summary.MIN
+        formula:
+          "REPLACE(NS_CONCAT(DISTINCT CONCAT(CONCAT(CONCAT(CONCAT({item.custitem_sp_item_sku}, ' - <b>'), {item.displayname}), '</b> x '), ABS({quantity}))), ',' , '<br>')",
+        summary: search.Summary.MIN,
       }),
       search.createColumn({
         name: 'custrecord_rfs_external_user',
         join: 'custrecord_transaction',
-        summary: search.Summary.MAX
+        summary: search.Summary.MAX,
       }),
     ],
     filters: [
@@ -129,23 +127,41 @@ const getItemFulfillments = (picker: string, start: string, end: string) => {
       transactionResults.push({
         id: result.getValue({
           name: 'internalid',
-          summary: search.Summary.GROUP
+          summary: search.Summary.GROUP,
         }),
-        date: result.getValue({ name: 'trandate', summary: search.Summary.GROUP }),
+        date: result.getValue({
+          name: 'trandate',
+          summary: search.Summary.GROUP,
+        }),
         type: result.getText({ name: 'type', summary: search.Summary.GROUP }),
-        typeValue: result.getValue({ name: 'type', summary: search.Summary.GROUP }),
-        status: result.getText({ name: 'status', summary: search.Summary.GROUP }),
+        typeValue: result.getValue({
+          name: 'type',
+          summary: search.Summary.GROUP,
+        }),
+        status: result.getText({
+          name: 'status',
+          summary: search.Summary.GROUP,
+        }),
         number: result.getValue({
           name: 'number',
-          summary: search.Summary.GROUP
+          summary: search.Summary.GROUP,
         }),
-        itemsCount: result.getValue({ name: 'item', summary: search.Summary.COUNT }),
-        itemsQuantity: result.getValue({ name: 'quantity', summary: search.Summary.SUM }),
-        items: result.getValue({ name: 'formulatext', summary: search.Summary.MIN }),
+        itemsCount: result.getValue({
+          name: 'item',
+          summary: search.Summary.COUNT,
+        }),
+        itemsQuantity: result.getValue({
+          name: 'quantity',
+          summary: search.Summary.SUM,
+        }),
+        items: result.getValue({
+          name: 'formulatext',
+          summary: search.Summary.MIN,
+        }),
         rfSmartUser: result.getValue({
           name: 'custrecord_rfs_external_user',
           join: 'custrecord_transaction',
-          summary: search.Summary.MAX
+          summary: search.Summary.MAX,
         }),
       });
     });
