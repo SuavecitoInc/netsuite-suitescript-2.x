@@ -63,8 +63,16 @@ const getItemFulfillments = (picker: string, start: string, end: string) => {
       }),
       search.createColumn({
         name: 'formulatext',
+        label: 'items',
         formula:
           "REPLACE(NS_CONCAT(DISTINCT CONCAT(CONCAT(CONCAT(CONCAT({item.custitem_sp_item_sku}, ' - <b>'), {item.displayname}), '</b> x '), ABS({quantity}))), ',' , '<br>')",
+        summary: search.Summary.MIN,
+      }),
+      search.createColumn({
+        name: 'formulatext',
+        label: 'itemtotals',
+        formula:
+          "NS_CONCAT( DISTINCT CONCAT( CONCAT(CASE WHEN {item.type} = 'Kit/Package' THEN CONCAT({item.memberitem}, {quantity}) ELSE CONCAT({item.custitem_sp_item_sku}, {quantity}) END, '=>'), ABS(CASE WHEN {item.type} = 'Kit/Package' THEN {item.memberquantity} * {quantity} ELSE {quantity} END)))",
         summary: search.Summary.MIN,
       }),
       search.createColumn({
@@ -151,15 +159,17 @@ const getItemFulfillments = (picker: string, start: string, end: string) => {
           name: 'quantity',
           summary: search.Summary.SUM,
         }),
-        items: result.getValue({
-          name: 'formulatext',
-          summary: search.Summary.MIN,
-        }),
+        items: result.getValue(transactionSearch.columns[7]),
+        // items: result.getValue({
+        //   name: 'formulatext',
+        //   summary: search.Summary.MIN,
+        // }),
         rfSmartUser: result.getValue({
           name: 'custrecord_rfs_external_user',
           join: 'custrecord_transaction',
           summary: search.Summary.MAX,
         }),
+        itemsWithMembers: result.getValue(transactionSearch.columns[8]),
       });
     });
   });
@@ -268,6 +278,7 @@ const createPage = (
     itemsQuantity: string;
     items: string;
     rfSmartUser: string;
+    itemsWithMembers: string;
   }[]
 ) => {
   const form = serverWidget.createForm({
@@ -277,10 +288,22 @@ const createPage = (
   });
 
   if (results) {
+    // calulate total w/ member items
+    let totalItemsWithMembers = 0;
+    results.forEach(result => {
+      let items = result.itemsWithMembers.split(',');
+      let itemTotal = 0;
+      items.forEach(item => {
+        itemTotal += parseInt(item.split('=>')[1]);
+      });
+
+      totalItemsWithMembers += itemTotal;
+    });
     const sublist = form.addSublist({
       id: 'custpage_transactions_sublist',
       type: serverWidget.SublistType.LIST,
-      label: `Item Fulfillments (${results.length})`,
+      label: `Items (${totalItemsWithMembers})`,
+      // label: `Item Fulfillments (${results.length})`,
     });
     sublist.addField({
       id: 'custpage_result_view_edit',
@@ -345,9 +368,16 @@ const createPage = (
         itemsQuantity: string;
         items: string;
         rfSmartUser: string;
+        itemsWithMembers: string;
       },
       index: number
     ) {
+      let items = result.itemsWithMembers.split(',');
+      let itemTotal = 0;
+      items.forEach(item => {
+        itemTotal += parseInt(item.split('=>')[1]);
+      });
+
       sublist.setSublistValue({
         id: 'custpage_result_id',
         line: index,
@@ -390,7 +420,7 @@ const createPage = (
       sublist.setSublistValue({
         id: 'custpage_result_items_quantity',
         line: index,
-        value: result.itemsQuantity,
+        value: itemTotal.toString(),
       });
       sublist.setSublistValue({
         id: 'custpage_result_items',
