@@ -57,10 +57,7 @@ const getItemFulfillments = (picker: string, start: string, end: string) => {
         name: 'item',
         summary: search.Summary.COUNT,
       }),
-      search.createColumn({
-        name: 'quantity',
-        summary: search.Summary.SUM,
-      }),
+      // creates a clean list of line items (ex: SKU - NAME x Quantity) all in one table cell.
       search.createColumn({
         name: 'formulatext',
         label: 'items',
@@ -68,6 +65,7 @@ const getItemFulfillments = (picker: string, start: string, end: string) => {
           "REPLACE(NS_CONCAT(DISTINCT CONCAT(CONCAT(CONCAT(CONCAT({item.custitem_sp_item_sku}, ' - <b>'), {item.displayname}), '</b> x '), ABS({quantity}))), ',' , '<br>')",
         summary: search.Summary.MIN,
       }),
+      // creates a string (ex: P001NN12=>12,P002NN12=>12,P003NN4=>4) that is converted to array later. Key contains SKU & Quantity since we have to use distinct this creates a unique key.
       search.createColumn({
         name: 'formulatext',
         label: 'itemtotals',
@@ -155,11 +153,7 @@ const getItemFulfillments = (picker: string, start: string, end: string) => {
           name: 'item',
           summary: search.Summary.COUNT,
         }),
-        itemsQuantity: result.getValue({
-          name: 'quantity',
-          summary: search.Summary.SUM,
-        }),
-        items: result.getValue(transactionSearch.columns[7]),
+        items: result.getValue(transactionSearch.columns[6]),
         // items: result.getValue({
         //   name: 'formulatext',
         //   summary: search.Summary.MIN,
@@ -169,7 +163,7 @@ const getItemFulfillments = (picker: string, start: string, end: string) => {
           join: 'custrecord_transaction',
           summary: search.Summary.MAX,
         }),
-        itemsWithMembers: result.getValue(transactionSearch.columns[8]),
+        itemsWithMembers: result.getValue(transactionSearch.columns[7]),
       });
     });
   });
@@ -275,7 +269,6 @@ const createPage = (
     status: string;
     number: string;
     itemsCount: string;
-    itemsQuantity: string;
     items: string;
     rfSmartUser: string;
     itemsWithMembers: string;
@@ -365,7 +358,6 @@ const createPage = (
         status: string;
         number: string;
         itemsCount: string;
-        itemsQuantity: string;
         items: string;
         rfSmartUser: string;
         itemsWithMembers: string;
