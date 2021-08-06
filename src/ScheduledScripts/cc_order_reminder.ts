@@ -18,18 +18,47 @@ interface CustomerData {
 }
 
 export let execute: EntryPoints.Scheduled.execute = () => {
-  // load search
-  const searchID = runtime
-    .getCurrentScript()
-    .getParameter({ name: 'custscript_cc_order_rem_saved_search' }) as string;
-
-  const customerSearch = search.load({
-    id: searchID,
+  const customerSearch = search.create({
+    type: search.Type.CUSTOMER,
+    columns: [
+      search.createColumn({
+        name: 'internalid',
+      }),
+      search.createColumn({
+        name: 'altname',
+      }),
+      search.createColumn({
+        name: 'lastorderdate',
+      }),
+    ],
+    filters: [
+      search.createFilter({
+        name: 'internalid',
+        operator: search.Operator.IS,
+        values: 1337783,
+      }),
+      search.createFilter({
+        name: 'formulanumeric',
+        formula: 'CASE WHEN {lastorderdate} <= ({today}-7) THEN 1 ELSE 0 END',
+        operator: search.Operator.EQUALTO,
+        values: [1],
+      }),
+    ],
   });
 
   const searchResult = customerSearch.run().getRange({
     start: 0,
     end: 1,
+  });
+
+  log.debug({
+    title: 'RESULTS',
+    details: searchResult,
+  });
+
+  log.debug({
+    title: 'RESULT 0',
+    details: searchResult[0],
   });
 
   if (searchResult.length > 0) {
