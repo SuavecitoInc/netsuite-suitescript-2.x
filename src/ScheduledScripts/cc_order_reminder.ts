@@ -56,12 +56,11 @@ export let execute: EntryPoints.Scheduled.execute = () => {
     details: searchResult,
   });
 
-  log.debug({
-    title: 'RESULT 0',
-    details: searchResult[0],
-  });
-
   if (searchResult.length > 0) {
+    log.debug({
+      title: 'RESULT 0',
+      details: searchResult[0],
+    });
     const data = {
       customerId: searchResult[0].getValue({ name: 'internalid' }),
       customerName: searchResult[0].getValue({ name: 'altname' }),
@@ -72,6 +71,11 @@ export let execute: EntryPoints.Scheduled.execute = () => {
     sendEmail(data);
     // send text using simple texting
     sendText(data);
+  } else {
+    log.debug({
+      title: 'NO RESULTS FOUND',
+      details: searchResult.length,
+    });
   }
 };
 
