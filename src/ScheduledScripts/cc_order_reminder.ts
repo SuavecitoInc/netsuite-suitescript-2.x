@@ -46,7 +46,8 @@ export let execute: EntryPoints.Scheduled.execute = () => {
     ],
   });
 
-  const searchResult = customerSearch.run().getRange({
+  const searchResultSet = customerSearch.run();
+  const searchResult = searchResultSet.getRange({
     start: 0,
     end: 1,
   });
