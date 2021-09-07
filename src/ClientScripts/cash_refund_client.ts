@@ -71,7 +71,7 @@ export const updateRefund = () => {
       const faItemTotal = parseFloat(faData.itemTotal);
       const faOrderTotal = parseFloat(faData.orderTotal);
       const faShipCost = parseFloat(faData.shippingCost);
-      const faDiscountCost = parseFloat(faData.discountCost);
+      const faDiscountCost = parseFloat(faData.discountTotal);
       const faShipTax = parseFloat(faData.shippingTax);
       const faTaxTotal = parseFloat(faData.taxTotal);
       const faShipTaxRate = Number(
@@ -139,12 +139,13 @@ export const updateRefund = () => {
             value: faTaxTotal + faShipTax,
             ignoreFieldChange: true,
           });
-          const updatedTotal = subTotal + faShipTax + faTaxTotal - discount;
+          const updatedTotal =
+            subTotal + faShipTax + faTaxTotal - Math.abs(discount);
           cashRefund.setValue({ fieldId: 'total', value: updatedTotal });
         } else {
           console.log('Updating Tax Total: ' + totalTax);
           cashRefund.setValue({ fieldId: 'taxtotal', value: faTaxTotal });
-          var updatedTotal = subTotal - discount + faTaxTotal;
+          var updatedTotal = subTotal - Math.abs(discount) + faTaxTotal;
           cashRefund.setValue({ fieldId: 'total', value: updatedTotal });
         }
         // log & display dialog
