@@ -186,18 +186,34 @@ export let post: EntryPoints.RESTlet.post = (context: any) => {
     // Attach file if it exists
     if (context.filedata) {
       // file name
-      const fileName = `${context.companyname} : MAP Agreement : ${recordID}`;
-      const folderID = 753;
-      const recordType = 'lead';
       const fileID = file.attach(
-        folderID,
-        recordType,
+        753,
+        'lead',
         recordID,
-        fileName,
+        `${context.companyname} : MAP Agreement : ${recordID}`,
         context.filedata
       );
       log.debug({
-        title: `FILE: ${fileID}`,
+        title: `MAP AGREEMENT FILE: ${fileID}`,
+        details: `File created and attached to: ${recordID}`,
+      });
+    }
+    // Attach License
+    if (context.licenseFile) {
+      log.debug({
+        title: 'LICENSE FILE',
+        details: context.licenseFile,
+      });
+      // file name
+      const licenseFileID = file.attach(
+        758,
+        'lead',
+        recordID,
+        `${context.companyname} : Barber / Cosmetology License : ${recordID}`,
+        context.licenseFile
+      );
+      log.debug({
+        title: `BARBER / COSMETOLOGY LICENSE FILE: ${licenseFileID}`,
         details: `File created and attached to: ${recordID}`,
       });
     }
