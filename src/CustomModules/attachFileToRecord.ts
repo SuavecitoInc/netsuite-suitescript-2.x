@@ -27,35 +27,43 @@ export const attach = (
     fileType = file.Type.PDF;
   }
 
-  const fileRecord = file.create({
-    name: fileName,
-    fileType: fileType,
-    contents: fileData.contents,
-    encoding: file.Encoding.UTF_8,
-    folder: folderID,
-    isOnline: false,
-  });
-
-  var fileID = fileRecord.save();
-
-  log.debug({
-    title: 'FILE SAVE',
-    details: fileID,
-  });
-
-  if (recordID !== null) {
-    // Attach record
-    record.attach({
-      record: {
-        type: 'file',
-        id: fileID,
-      },
-      to: {
-        type: recordType,
-        id: recordID,
-      },
+  try {
+    const fileRecord = file.create({
+      name: fileName,
+      fileType: fileType,
+      contents: fileData.contents,
+      encoding: file.Encoding.UTF_8,
+      folder: folderID,
+      isOnline: false,
     });
-  }
 
-  return fileID;
+    var fileID = fileRecord.save();
+
+    log.debug({
+      title: 'FILE SAVE',
+      details: fileID,
+    });
+
+    if (recordID !== null) {
+      // Attach record
+      record.attach({
+        record: {
+          type: 'file',
+          id: fileID,
+        },
+        to: {
+          type: recordType,
+          id: recordID,
+        },
+      });
+    }
+
+    return fileID;
+  } catch (err) {
+    log.error({
+      title: 'ERROR CREATING / ATTACHING FILE',
+      details: err.message,
+    });
+    return false;
+  }
 };

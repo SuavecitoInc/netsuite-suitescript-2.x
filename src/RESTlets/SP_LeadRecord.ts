@@ -193,10 +193,12 @@ export let post: EntryPoints.RESTlet.post = (context: any) => {
         `${context.companyname} : MAP Agreement : ${recordID}`,
         context.filedata
       );
-      log.debug({
-        title: `MAP AGREEMENT FILE: ${fileID}`,
-        details: `File created and attached to: ${recordID}`,
-      });
+      if (fileID) {
+        log.debug({
+          title: `MAP AGREEMENT FILE: ${fileID}`,
+          details: `File created and attached to: ${recordID}`,
+        });
+      }
     }
     // Attach License
     if (context.licenseFile) {
@@ -212,10 +214,12 @@ export let post: EntryPoints.RESTlet.post = (context: any) => {
         `${context.companyname} : Barber / Cosmetology License : ${recordID}`,
         context.licenseFile
       );
-      log.debug({
-        title: `BARBER / COSMETOLOGY LICENSE FILE: ${licenseFileID}`,
-        details: `File created and attached to: ${recordID}`,
-      });
+      if (licenseFileID) {
+        log.debug({
+          title: `BARBER / COSMETOLOGY LICENSE FILE: ${licenseFileID}`,
+          details: `File created and attached to: ${recordID}`,
+        });
+      }
     }
     // return String(recordID);
     return String(recordID);
