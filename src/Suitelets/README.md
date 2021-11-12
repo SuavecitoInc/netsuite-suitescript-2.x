@@ -1,10 +1,13 @@
 # SUITELETS
+
 > NetSuite Server Side Scripts
 
 ## POST ITEM TO SHOPIFY
+
 > post_item_to_shopify.js
 
 ### Setup
+
 This script will create an item / product in Shopify.
 
 #### Script Deployment
@@ -32,9 +35,11 @@ Script requires 2 paramaters.
 Depends on [Forge](https://github.com/digitalbazaar/forge) for HMAC creation.
 
 ## GET RETAIL STORE ITEM REPLENISHMENT
+
 > get_retail_replenishment_items.js
 
 ### Setup
+
 This script will create a Transfer Order based on min and max stock for the Retail Store Location.
 
 #### Script Deployment
@@ -251,9 +256,11 @@ Use the following mappings.
 A CSV file containing all transfer order import data will be generated and saved to the File Cabinet under the <i>Retail Store Replenishments</i> directory.
 
 ## CLEAR BIN AVAILABLE INVENTORY
+
 > clear_bin_available_inventory.js
 
 ### Setup
+
 This script will display all items currently in the given bin. It will then create an inventory adjustment and "zero" them out.
 
 #### Script Deployment
@@ -338,29 +345,33 @@ Create a saved (item) search and make sure you make it public. Use the following
 </table>
 
 ## DISCONTINUE ITEMS
+
 > discontinue_items.js
 
 ### Setup
-This script will search for items based on a partial SKU. It will then create an inventory adjustment and "zero" out all available inventory for the given SKUs. Lastly 
+
+This script will search for items based on a partial SKU. It will then create an inventory adjustment and "zero" out all available inventory for the given SKUs. Lastly
 it will mark the items inactive.
 
-The search depends on a custom item field <i>(custitem_sp_item_sku)</i>. This is because the item name / number field <i>(itemid)</i> 
-for a matrix item during a search will show up as <i>parent item name / number : child item name / number</i> for example: 
+The search depends on a custom item field <i>(custitem_sp_item_sku)</i>. This is because the item name / number field <i>(itemid)</i>
+for a matrix item during a search will show up as <i>parent item name / number : child item name / number</i> for example:
 <i>og-black-tee : S001BS</i>.
 
 Set this field to default to the following formula.
+
 ```
 CASE WHEN INSTR({itemid},' : ') != 0 THEN SUBSTR({itemid}, INSTR({itemid},' : ') + 3) ELSE {itemid} END
 ```
 
-
 Searches for all SKU(s) that match the provided partial SKU. It then creates a "zero" inventory adjustment and sets the item to inactive.
 
 ## SET FARAPP SHOPIFY SYNC
+
 > set_farapp_shopify_sync.js
 
 ### Setup
-The script will search for items based on a partial SKU. It will display all mandatory fields for posting to Shopify. It will also update the 
+
+The script will search for items based on a partial SKU. It will display all mandatory fields for posting to Shopify. It will also update the
 FarApp Shopify Flag fields.
 
 #### Script Deployment
@@ -379,3 +390,19 @@ Script requires 1 parameter.
     <td>The Deployment URL</td>
   </tr>
 </table>
+
+## VENDOR BILLS
+
+> vendor_bills.js
+
+### Setup
+
+This script will generate a list of all open vendor bills and let the user select which vendor bill(s) they want to pay and create checks for.
+
+## RE-PRINT INVOICES
+
+> reprint_invoices.js
+
+### Setup
+
+The script will search for all invoices for the given customer. It will then let the user select what invoices they want to merge and download as one pdf.
