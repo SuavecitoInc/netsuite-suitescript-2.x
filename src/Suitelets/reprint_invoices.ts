@@ -80,6 +80,7 @@ const getInvoices = (
     filters.push(
       search.createFilter({
         name: 'internalid',
+        join: 'customer',
         operator: search.Operator.ANYOF,
         values: [customerId],
       })
