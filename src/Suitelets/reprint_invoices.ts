@@ -129,7 +129,7 @@ const getInvoices = (
 const onGet = (response: ServerResponse) => {
   const form = serverWidget.createForm({ title: 'Print Invoices' });
   form.addSubmitButton({
-    label: 'Submit',
+    label: 'Search',
   });
 
   form
@@ -143,13 +143,18 @@ const onGet = (response: ServerResponse) => {
     })
     .updateBreakType({
       breakType: serverWidget.FieldBreakType.STARTROW,
-    }).defaultValue = 'Search for invoices by customer internal id.';
+    }).defaultValue = `Search for and merge invoices by customer internal id.<br/>You can get the customers internal 
+    id by looking at the customer record.<br/>The internal id will be in the customer record url.
+    It will look something<br/>like this <b>id=1234567</b>. You will only need the numbers. If the customer
+    has subcustomers<br/>and you want to merge the invoices of all subcustomers check <b>master customer</b>.`;
 
-  form.addField({
+  const customerInternalId = form.addField({
     id: 'custpage_customer_internal_id',
     label: 'Customers Internal ID',
     type: serverWidget.FieldType.TEXT,
   });
+
+  customerInternalId.isMandatory = true;
 
   form.addField({
     id: 'custpage_customer_is_parent',
@@ -222,7 +227,7 @@ const onPost = (request: ServerRequest, response: ServerResponse) => {
 
       response.writeFile({
         file: pdfFile,
-        isInline: true,
+        isInline: false,
       });
     }
   }
@@ -244,7 +249,7 @@ const createPage = (
   if (results) {
     form.clientScriptModulePath = 'SuiteScripts/reprint_invoices_client.js';
     form.addSubmitButton({
-      label: 'Submit',
+      label: 'Generate PDF',
     });
 
     form
