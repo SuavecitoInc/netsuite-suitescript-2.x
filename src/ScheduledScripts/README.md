@@ -1,13 +1,17 @@
 # ScheduledScripts
+
 > Scheduled Scripts
+
 - 10000 unit governance
 
 ## GET LOCATION AVAILABLE
+
 > get_location_available.js
 
 Creates a list of all items available at location 2, but not at location 1 and sends an email notification.
 
 ### Setup
+
 #### Script Deployment
 
 Script requires 2 paramaters.
@@ -31,12 +35,14 @@ Script requires 2 paramaters.
 </table>
 
 ## GET LOCATION AVAILABLE TO TRANSFER
+
 > get_location_available_for_transfer.js
 
-Creates a list of all items available at location 2, but not at location 1 and sends an email notification. This is an updated version of 
+Creates a list of all items available at location 2, but not at location 1 and sends an email notification. This is an updated version of
 <i>get_location_available.js</i>, but instead of creating the searches in the script it uses saved searches. Therefore this script can be reused by different script deployments. There was also issues in passing SQL Formulas via script paramaters.
 
 ### Setup
+
 #### Script Deployment
 
 Script requires 6 paramaters.
@@ -80,11 +86,14 @@ Script requires 6 paramaters.
 </table>
 
 ## GET OUT OF STOCK
+
 > get_out_of_stock.js
 
 Creates a list of all items with 0 availability at the specified location and emails report to employees. It will only report on new out of stock items since the last time the script executed.
+Writes out of stock items to a json file saved at specified directory.
 
 ### Setup
+
 #### Script Deployment
 
 Script requires 3 paramaters.
@@ -101,23 +110,61 @@ Script requires 3 paramaters.
     <td>The internal ID of the employee to receive the email.</td>
   </tr>
   <tr>
-    <td>custscript_out_of_stock_email_list	</td>
+    <td>custscript_out_of_stock_email_list</td>
     <td>Free-Form-Text</td>
     <td>A comma seperated list of employee internal IDs with no spaces.</td>
   </tr>
   <tr>
-    <td>custscript_out_of_stock_dir	</td>
+    <td>custscript_out_of_stock_dir</td>
+    <td>Free-Form-Text</td>
+    <td>The id of the directory used to load and save files.</td>
+  </tr>
+</table>
+
+## GET OUT OF STOCK v2
+
+> get_out_of_stock_v2.js
+
+Creates a list of all items with 0 availability at the specified location and emails report to employees. It will only report on new out of stock items since the last time the script executed.
+Writes out of stock items to a json file saved at specified directory.
+
+### Setup
+
+#### Script Deployment
+
+Script requires 3 paramaters.
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>custscript_out_of_stock_v2_email_id</td>
+    <td>Free-Form-Text</td>
+    <td>The internal ID of the employee to receive the email.</td>
+  </tr>
+  <tr>
+    <td>custscript_out_of_stock_v2_email_list</td>
+    <td>Free-Form-Text</td>
+    <td>A comma seperated list of employee internal IDs with no spaces.</td>
+  </tr>
+  <tr>
+    <td>custscript_out_of_stock_v2_dir</td>
     <td>Free-Form-Text</td>
     <td>The id of the directory used to load and save files.</td>
   </tr>
 </table>
 
 ## GET APPAREL RE-ORDER
+
 > get_apparel_re_order.js
 
 Creates a list of all apparel that has dropped under the re-order point <i>(custitem_sp_apparel_size_re_order)</i>. It will only report on new items that have dropped below the re-order point since the last time the script executed.
 
 ### Setup
+
 #### Script Deployment
 
 Script requires 4 paramaters.
@@ -151,16 +198,19 @@ Script requires 4 paramaters.
 </table>
 
 ## AUTO CREATE TASKS
+
 > auto_create_tasks.js
 
 Runs a search to get all Customers that have not ordered in the specified date range. It then creates a task / follow up for the Sales Rep attached to the Customer Record.
 
 ### Setup
+
 #### Saved Search
 
 Customer Search
 
 Criteria:
+
 <table>
   <tr>
     <th>Filter</th>
@@ -181,6 +231,7 @@ Criteria:
 </table>
 
 Results:
+
 <table>
   <tr>
     <th>Field</th>
