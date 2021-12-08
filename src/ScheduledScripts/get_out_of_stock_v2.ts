@@ -59,7 +59,7 @@ export let execute: EntryPoints.Scheduled.execute = () => {
       });
       // add new out of stock items to sent object
       sentItemsObj[sku] = {
-        inernalId: itemResultsObj[sku].internalId,
+        internalId: itemResultsObj[sku].internalId,
         sku: sku,
         displayName: itemResultsObj[sku].displayName,
         dateAdded: new Date().toLocaleString(),
