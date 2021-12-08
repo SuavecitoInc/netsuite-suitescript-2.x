@@ -29,3 +29,4 @@ Temporary Items
 node_modules
 dist
 /src/Suitelets/2.1/libs/*
+CHANGES.md
