@@ -45,6 +45,9 @@ export let execute: EntryPoints.Scheduled.execute = () => {
   itemResultSKUs.forEach(function (sku) {
     if (!sentItemsObj[sku]) {
       addingSku += 'Adding (' + sku + ') ';
+      // todays date
+      const today = new Date();
+      const date = today.toISOString().split('T')[0];
       // if sku not in sent list add it to email array
       currentNonAvailableItems.push({
         sku: sku,
@@ -52,13 +55,15 @@ export let execute: EntryPoints.Scheduled.execute = () => {
       });
       // add new out of stock items to sent object
       sentItemsObj[sku] = {
+        sku: sku,
         displayname: itemResultsObj[sku].displayName,
+        dateAdded: date,
       };
     }
   });
 
   log.debug({
-    title: 'ADDING SKUS T SENT & EMAIL',
+    title: 'ADDING SKUS TO SENT & EMAIL',
     details: addingSku,
   });
 
