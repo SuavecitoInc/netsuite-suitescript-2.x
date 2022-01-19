@@ -1,13 +1,15 @@
 /**
- * @NApiVersion 2.1
- * @NScriptType UserEventScript
- * @NModuleScope SameAccount
+ * @NApiVersion 2.x
+ * @NScriptType WorkflowActionScript
+ * @NModuleScope public
+ *
  */
 
 import { EntryPoints } from 'N/types';
+import * as log from 'N/log';
 
-export let beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
-  context: EntryPoints.UserEvent.beforeSubmitContext
+export let onAction: EntryPoints.WorkflowAction.onAction = (
+  context: EntryPoints.WorkflowAction.onActionContext
 ) => {
   enum Marketplace {
     Retail = 'Shopify',
@@ -27,11 +29,13 @@ export let beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
     Warehouse = 2064180, // Warehouse Store
   }
 
-  const currentRecord = context.newRecord;
-  // marketplace
-  const marketplace = currentRecord.getValue({
-    fieldId: 'custbody_fa_channel',
+  const salesRecord = context.newRecord;
+  const marketplace = salesRecord.getValue({ fieldId: 'custbody_fa_channel' });
+  log.debug({
+    title: 'MARKETPLACE',
+    details: marketplace,
   });
+  let salesRepUpdated = false;
   if (marketplace !== '') {
     let salesRep: number;
     if (marketplace === Marketplace.Retail) {
@@ -52,13 +56,14 @@ export let beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
     if (marketplace === Marketplace.Warehouse) {
       salesRep = SalesRep.Warehouse;
     }
-    // set sales rep
-    currentRecord.setValue({ fieldId: 'salesrep', value: salesRep });
-  } else {
-    // set channel as wholesale for all NetSuite created orders
-    currentRecord.setValue({
-      fieldId: 'custbody_sp_channel',
-      value: 'Wholesale',
+    log.debug({
+      title: 'SETTING SALES REP',
+      details: salesRep,
     });
+    // set sales rep
+    salesRecord.setValue({ fieldId: 'salesrep', value: salesRep });
+    salesRepUpdated = true;
   }
+
+  return salesRepUpdated;
 };
