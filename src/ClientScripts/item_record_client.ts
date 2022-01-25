@@ -12,7 +12,10 @@ export let pageInit: EntryPoints.Client.pageInit = (
   const nbcUnversalAssetList = currentRecord.getField({
     fieldId: 'custitem_sp_nbc_universal_assets',
   });
-  nbcUnversalAssetList.isDisplay = false;
+  const licensee = currentRecord.getValue('custitem_sp_licensed_from');
+  if (licensee !== '1') {
+    nbcUnversalAssetList.isDisplay = false;
+  }
 };
 
 export let fieldChanged: EntryPoints.Client.fieldChanged = (
@@ -27,8 +30,11 @@ export let fieldChanged: EntryPoints.Client.fieldChanged = (
     const licensee = currentRecord.getValue('custitem_sp_licensed_from');
     if (licensee === '1') {
       nbcUnversalAssetList.isDisplay = true;
+      nbcUnversalAssetList.isMandatory = true;
     } else {
       nbcUnversalAssetList.isDisplay = false;
+      nbcUnversalAssetList.isMandatory = false;
+      currentRecord.setValue('custitem_sp_nbc_universal_assets', '');
     }
   }
 };
