@@ -1,31 +1,3 @@
 # Workflow Action Scripts
-> More info coming soon....
 
-## Item Fulfillment Action
-> item_fulfillment_action.js
-
-### Setup
-#### Script Deployment
-
-Script requires a paramter.
-
-<table>
-  <tr>
-    <th>ID</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td>_usps_web_user</td>
-    <td>Free-Form-Text</td>
-    <td>The USPS Web Tools Username</td>
-  </tr>
-</table>
-
-## Item Fulfillment On Packed Action
-> item_fulfillment_on_packed_action.js
-
-Runs after Item Fulfillment Action.
-
-## Workflow Setup
-> ....
+> The NetSuite Workflow Action Script permits you to add more actions as compared to the point-and-click SuiteFlows. Using these scripts, you can easily execute specific with the help of SuiteScript APIs that are currently available in the market. For instance, creating records and manipulating sub-lists.

@@ -31,7 +31,7 @@ export let fieldChanged: EntryPoints.Client.fieldChanged = (
           id: value,
         });
         alert(
-          'You have entered the interal id for customer: ' +
+          'You have entered the internal id for customer: ' +
             customer.getValue('entityid')
         );
       } catch (e) {

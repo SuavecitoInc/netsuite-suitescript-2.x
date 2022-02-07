@@ -1,2 +1,3 @@
 # CUSTOM MODULES
-> Custom Modules
+
+> Re-usable snippets of code

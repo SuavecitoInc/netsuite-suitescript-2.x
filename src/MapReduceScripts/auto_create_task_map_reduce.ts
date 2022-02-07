@@ -37,7 +37,6 @@ export const map: EntryPoints.MapReduce.map = (
   const lastOrderDate = result.values.lastorderdate;
   salesRep = repData.salesRep;
   salesRepId = repData.salesRepId;
-  // const followUpScheduled = context.getValue({ name: 'custentity_sp_follow_up_scheduled' });
   const followUpScheduled = result.values.custentity_sp_follow_up_scheduled;
 
   // create task

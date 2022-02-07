@@ -15,6 +15,7 @@ interface AssemblyResult {
   id: string;
   sku: string;
   type: string;
+  name: string;
   locationQuantityAvailable: number;
   minQuantity: number;
   buildable: number;
@@ -112,6 +113,10 @@ export const getInputData: EntryPoints.MapReduce.getInputData = () => {
         summary: search.Summary.GROUP,
       }) as string;
       const type = result.getValue({
+        name: 'type',
+        summary: search.Summary.GROUP,
+      }) as string;
+      const name = result.getValue({
         name: 'displayname',
         summary: search.Summary.GROUP,
       }) as string;
@@ -137,6 +142,7 @@ export const getInputData: EntryPoints.MapReduce.getInputData = () => {
         id,
         sku,
         type,
+        name,
         locationQuantityAvailable,
         minQuantity,
         buildable,
@@ -163,8 +169,15 @@ export const map: EntryPoints.MapReduce.map = (
     details: assemblyResult,
   });
 
-  const { id, sku, type, locationQuantityAvailable, minQuantity, buildable } =
-    assemblyResult as unknown as AssemblyResult;
+  const {
+    id,
+    sku,
+    type,
+    name,
+    locationQuantityAvailable,
+    minQuantity,
+    buildable,
+  } = assemblyResult as unknown as AssemblyResult;
 
   if (locationQuantityAvailable > minQuantity) {
     // load item record and update date
@@ -189,6 +202,7 @@ export const map: EntryPoints.MapReduce.map = (
       id,
       sku,
       type,
+      name,
       locationQuantityAvailable,
       minQuantity,
       dateRemovedString,
@@ -215,8 +229,9 @@ export const summarize: EntryPoints.MapReduce.summarize = (
   });
 
   // email
-  let contents: string = '';
+  let content: string = '';
   let buildableAssemblies = 0;
+  const backgroundColor = 'background-color: #ccc;';
   summary.output.iterator().each(function (key: string, value: any) {
     value = JSON.parse(value);
 
@@ -230,9 +245,11 @@ export const summarize: EntryPoints.MapReduce.summarize = (
         ? value.locationQuantityAvailable
         : 0;
 
-    contents += `<tr style="text-align: left;">
+    content += `<tr style="text-align: left;${
+      buildableAssemblies % 2 ? backgroundColor : ''
+    }">
       <td style="padding: 0 15px;">${key}</td>
-      <td style="padding: 0 15px;">${value.type}</td>
+      <td style="padding: 0 15px;">${value.name}</td>
       <td style="padding: 0 15px;">${locationQuantityAvailable}</td>
       <td style="padding: 0 15px;">${value.minQuantity}</td>
       <td style="padding: 0 15px;">${value.buildable}</td>
@@ -243,7 +260,7 @@ export const summarize: EntryPoints.MapReduce.summarize = (
   });
 
   if (buildableAssemblies > 0) {
-    sendEmail(buildableAssemblies, contents);
+    sendEmail(buildableAssemblies, content);
   }
 };
 
@@ -258,8 +275,8 @@ const sendEmail = (buildableAssemblies: number, content: string) => {
   ).split(',');
   let html = `
     <h3>The following SKU(s) are now above the availability limit.</h3>
-    <table>
-      <tr style="text-align: left; padding: 0 15px;">
+    <table style="border-spacing: 0;">
+      <tr style="text-align: left; padding: 0 15px;background-color: #000; color: #fff;">
         <th style="padding: 0 15px;">SKU</th>
         <th style="padding: 0 15px;">Name</th>
         <th style="padding: 0 15px;">Qty Available</th>
