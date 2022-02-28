@@ -50,6 +50,29 @@ interface Variant {
   compareAtPrice?: record.FieldValue;
 }
 
+const shopifyStore = {
+  RETAIL: {
+    text: 'RETAIL',
+    value: 'retail',
+  },
+  WHOLESALE: {
+    text: 'WHOLESALE',
+    value: 'wholesale',
+  },
+  PROFESSIONAL: {
+    text: 'PROFESSIONAL',
+    value: 'professional',
+  },
+  WAREHOUSE: {
+    text: 'WAREHOUSE',
+    value: 'warehouse',
+  },
+  CERVEZACITO: {
+    text: 'CERVEZA CITO',
+    value: 'cervezacito',
+  },
+};
+
 export let onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
 ) => {
@@ -106,20 +129,24 @@ const onGet = (response: https.ServerResponse) => {
     text: '',
   });
   storeSelect.addSelectOption({
-    value: 'retail',
-    text: 'RETAIL',
+    value: shopifyStore.RETAIL.value,
+    text: shopifyStore.RETAIL.text,
   });
   storeSelect.addSelectOption({
-    value: 'wholesale',
-    text: 'WHOLESALE',
+    value: shopifyStore.WHOLESALE.value,
+    text: shopifyStore.WHOLESALE.text,
   });
   storeSelect.addSelectOption({
-    value: 'warehouse',
-    text: 'WAREHOUSE',
+    value: shopifyStore.WAREHOUSE.value,
+    text: shopifyStore.WAREHOUSE.text,
   });
   storeSelect.addSelectOption({
-    value: 'professional',
-    text: 'PROFESSIONAL',
+    value: shopifyStore.PROFESSIONAL.value,
+    text: shopifyStore.PROFESSIONAL.text,
+  });
+  storeSelect.addSelectOption({
+    value: shopifyStore.CERVEZACITO.value,
+    text: shopifyStore.CERVEZACITO.text,
   });
   storeSelect.setHelpText({
     help: 'The Shopify store to create the product in.',
@@ -305,6 +332,10 @@ const getItemData = (SKU: string) => {
       'custitem_fa_shpfy_prod_description_wh',
       'custitem_fa_shpfy_professional_price',
       'custitem_fa_shpfy_prod_description_pro',
+      'custitem_fa_shpfy_prod_description_cc',
+      'custitem_fa_shpfy_price_cc',
+      'custitem_fa_shpfy_compare_at_price_cc',
+      'custitem_fa_shpfy_tags_cc',
     ],
   });
 
@@ -337,28 +368,35 @@ const buildItemObject = (
   let priceLevel: string;
   let productDescription: string;
   let shopifyTags: string;
-  let compareAtPrice: number | string;
+  let compareAtPrice: string;
 
-  if (store == 'retail') {
+  if (store == shopifyStore.RETAIL.value) {
     priceLevel = 'baseprice';
     productDescription = 'custitem_fa_shpfy_prod_description';
     shopifyTags = 'custitem_fa_shpfy_tags';
     compareAtPrice = 'custitem_fa_shpfy_compare_at_price';
-  } else if (store === 'wholesale') {
+  } else if (store === shopifyStore.WHOLESALE.value) {
     priceLevel = 'price2';
     productDescription = 'custitem_fa_shpfy_prod_description_ws';
     shopifyTags = 'custitem_fa_shpfy_tags_ws';
     compareAtPrice = 'custitem_fa_shpfy_compare_at_price_ws';
-  } else if (store === 'warehouse') {
+  } else if (store === shopifyStore.WAREHOUSE.value) {
     priceLevel = 'custitem_fa_shpfy_warehouse_price';
     productDescription = 'custitem_fa_shpfy_prod_description_wh';
     shopifyTags = 'custitem_fa_shpfy_tags_wh';
     compareAtPrice = 'custitem_fa_shpfy_compare_at_price_wh';
-  } else {
+  } else if (store === shopifyStore.PROFESSIONAL.value) {
     priceLevel = 'custitem_fa_shpfy_professional_price';
     productDescription = 'custitem_fa_shpfy_prod_description_pro';
     shopifyTags = 'custitem_fa_shpfy_tags_pro';
     compareAtPrice = 'custitem_fa_shpfy_compare_at_price_pro';
+  } else if (store === shopifyStore.CERVEZACITO.value) {
+    priceLevel = 'baseprice'; // custitem_fa_shpfy_cc_price
+    productDescription = 'custitem_fa_shpfy_prod_description_cc';
+    shopifyTags = 'custitem_fa_shpfy_tags_cc';
+    compareAtPrice = 'custitem_fa_shpfy_compare_at_price'; // custitem_fa_shpfy_compare_at_price_cc
+  } else {
+    throw new Error('Invalid Store');
   }
 
   const isMatrix = item.getValue('matrix');
@@ -469,7 +507,9 @@ const createVariants = (
       'custitem_fa_shpfy_prod_description_wh',
       'custitem_fa_shpfy_professional_price',
       'custitem_fa_shpfy_prod_description_pro',
-      'custitem_fa_shpfy_prod_description_pro',
+      'custitem_fa_shpfy_prod_description_cc',
+      'custitem_fa_shpfy_price_cc',
+      'custitem_fa_shpfy_compare_at_price_cc',
     ],
   });
 
@@ -597,14 +637,18 @@ const postItemToShopify = (
     .getCurrentScript()
     .getParameter({ name: 'custscript_sp_ns_to_shpfy_server_v2' });
   let storeURL;
-  if (store === 'retail') {
+  if (store === shopifyStore.RETAIL.value) {
     storeURL = 'https://suavecito.myshopify.com/admin/products/';
-  } else if (store === 'wholesale') {
+  } else if (store === shopifyStore.WHOLESALE.value) {
     storeURL = 'https://suavecito-wholesale.myshopify.com/admin/products/';
-  } else if (store === 'warehouse') {
+  } else if (store === shopifyStore.WAREHOUSE.value) {
     storeURL = 'https://suavecito-warehouse.myshopify.com/admin/products/';
-  } else {
+  } else if (store === shopifyStore.PROFESSIONAL.value) {
     storeURL = 'https://suavecito-professionals.myshopify.com/admin/products/';
+  } else if (store === shopifyStore.CERVEZACITO.value) {
+    storeURL = 'https://cervezacito.myshopify.com/admin/products/';
+  } else {
+    throw new Error('Invalid Store');
   }
   // https - send data to server
   // const url = 'https://' + serverURL + '/api/shopify/' + store + '/create-item';
