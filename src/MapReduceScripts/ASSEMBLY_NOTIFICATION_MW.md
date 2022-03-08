@@ -53,7 +53,8 @@ The email notification will contain a list of the assembly items added or remove
     <th>Name</th>
     <th>Qty Available</th>
     <th>Min Qty</th>
-    <th>Buildable</th>
+    <th>Buildable MW</th>
+    <th>Buildable All</th>
     <th>Date Added</th>
   </tr>
   <tr>
@@ -62,6 +63,7 @@ The email notification will contain a list of the assembly items added or remove
     <td>93</td>
     <td>200</td>
     <td>383</td>
+    <td>1578</td>
     <td>2022-01-26</td>
   </tr>
   <tr>
@@ -69,6 +71,7 @@ The email notification will contain a list of the assembly items added or remove
     <td>Men's Hair Kit</td>
     <td>42</td>
     <td>200</td>
+    <td>0</td>
     <td>0</td>
     <td>2022-01-26</td>
   </tr>
