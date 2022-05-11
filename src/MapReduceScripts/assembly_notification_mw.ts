@@ -70,11 +70,11 @@ export const getInputData: EntryPoints.MapReduce.getInputData = () => {
         operator: search.Operator.IS,
         values: [1],
       },
-      {
-        name: 'custitem_sp_assembled_in_house',
-        operator: search.Operator.IS,
-        values: ['T'],
-      },
+      // {
+      //   name: 'custitem_sp_assembled_in_house',
+      //   operator: search.Operator.IS,
+      //   values: ['T'],
+      // },
       {
         name: 'custitem_sp_mw_assm_notif_min',
         operator: search.Operator.ISNOTEMPTY,
@@ -320,6 +320,11 @@ export const summarize: EntryPoints.MapReduce.summarize = (
 
   if (buildableAssemblies > 0) {
     sendEmail(buildableAssemblies, content);
+  } else {
+    log.debug({
+      title: 'NO BUILDABLE ASSEMBLIES',
+      details: 'NOT SENDING EMAIL',
+    });
   }
 };
 
