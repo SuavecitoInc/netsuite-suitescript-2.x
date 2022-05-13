@@ -1,5 +1,7 @@
 # NETSUITE
 
+> These scripts can be used as examples. NetSuite is highly extendable / customizable scripts may or may not work out of the box. They may depend on custom code / apps / plugins.
+
 > SuiteScript 2.x
 
 ### Contents:
