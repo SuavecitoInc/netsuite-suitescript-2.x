@@ -6,9 +6,11 @@
 
 import { EntryPoints } from 'N/types';
 import * as search from 'N/search';
-import * as record from 'N/record';
 import * as serverWidget from 'N/ui/serverWidget';
 import { ServerRequest, ServerResponse } from 'N/https';
+import * as file from 'N/file';
+import * as email from 'N/email';
+import * as runtime from 'N/runtime';
 import * as log from 'N/log';
 
 export let onRequest: EntryPoints.Suitelet.onRequest = (
@@ -24,98 +26,24 @@ export let onRequest: EntryPoints.Suitelet.onRequest = (
   }
 };
 
-const getItemFulfillments = (picker: string, start: string, end: string) => {
-  log.debug({
-    title: 'GETTING ITEM FULFILLMENTS',
-    details: `PICKER ===> ${picker}`,
-  });
+const getRFSmartPickStateLines = (searchDate: string) => {
   // search
-  const transactionSearch = search.create({
-    type: search.Type.ITEM_FULFILLMENT,
-    columns: [
-      search.createColumn({
-        name: 'internalid',
-        summary: search.Summary.GROUP,
-      }),
-      search.createColumn({
-        name: 'trandate',
-        summary: search.Summary.GROUP,
-      }),
-      search.createColumn({
-        name: 'type',
-        summary: search.Summary.GROUP,
-      }),
-      search.createColumn({
-        name: 'status',
-        summary: search.Summary.GROUP,
-      }),
-      search.createColumn({
-        name: 'number',
-        summary: search.Summary.GROUP,
-      }),
-      search.createColumn({
-        name: 'item',
-        summary: search.Summary.COUNT,
-      }),
-      // creates a clean list of line items (ex: SKU - NAME x Quantity) all in one table cell.
-      search.createColumn({
-        name: 'formulatext',
-        label: 'items',
-        formula:
-          "REPLACE(NS_CONCAT(DISTINCT CONCAT(CONCAT(CONCAT(CONCAT({item.custitem_sp_item_sku}, ' - <b>'), {item.displayname}), '</b> x '), ABS({quantity}))), ',' , '<br>')",
-        summary: search.Summary.MIN,
-      }),
-      // creates a string (ex: P001NN12=>12,P002NN12=>12,P003NN4=>4) that is converted to array later. Key contains SKU & Quantity since we have to use distinct this creates a unique key.
-      search.createColumn({
-        name: 'formulatext',
-        label: 'itemtotals',
-        formula:
-          "NS_CONCAT( DISTINCT CONCAT( CONCAT(CASE WHEN {item.type} = 'Kit/Package' THEN CONCAT({item.memberitem}, {quantity}) ELSE CONCAT({item.custitem_sp_item_sku}, {quantity}) END, '=>'), ABS(CASE WHEN {item.type} = 'Kit/Package' THEN {item.memberquantity} * {quantity} ELSE {quantity} END)))",
-        summary: search.Summary.MIN,
-      }),
-      search.createColumn({
-        name: 'custrecord_rfs_external_user',
-        join: 'custrecord_transaction',
-        summary: search.Summary.MAX,
-      }),
-    ],
-    filters: [
-      search.createFilter({
-        name: 'mainline',
-        operator: search.Operator.IS,
-        values: 'F',
-      }),
-      search.createFilter({
-        name: 'taxline',
-        operator: search.Operator.IS,
-        values: 'F',
-      }),
-      search.createFilter({
-        name: 'shipping',
-        operator: search.Operator.IS,
-        values: 'F',
-      }),
-      search.createFilter({
-        name: 'cogs',
-        operator: search.Operator.IS,
-        values: 'F',
-      }),
-      search.createFilter({
-        name: 'custrecord_rfs_external_user',
-        join: 'custrecord_transaction',
-        operator: search.Operator.IS,
-        values: picker,
-      }),
-      search.createFilter({
-        name: 'formulanumeric',
-        operator: search.Operator.EQUALTO,
-        formula: `
-         CASE WHEN {trandate} BETWEEN to_date('${start}', 'MM/DD/YYYY') AND to_date('${end}', 'MM/DD/YYYY') THEN 1 ELSE 0 END
-        `,
-        values: [1],
-      }),
-    ],
+  const transactionSearch = search.load({
+    id: 'customsearch_sp_rf_smart_pick_state_line',
   });
+
+  const defaultFilters = [];
+
+  defaultFilters.push(
+    search.createFilter({
+      name: 'created',
+      operator: search.Operator.WITHIN,
+      values: [searchDate, searchDate],
+    })
+  );
+
+  transactionSearch.filters = defaultFilters;
+
   // run
   const pagedData = transactionSearch.runPaged({ pageSize: 1000 });
 
@@ -123,47 +51,22 @@ const getItemFulfillments = (picker: string, start: string, end: string) => {
   pagedData.pageRanges.forEach(function (pageRange) {
     const page = pagedData.fetch({ index: pageRange.index });
     page.data.forEach(function (result) {
-      log.debug({
-        title: 'RESULT',
-        details: result,
-      });
       transactionResults.push({
-        id: result.getValue({
-          name: 'internalid',
-          summary: search.Summary.GROUP,
+        created: result.getValue({
+          name: 'created',
         }),
-        date: result.getValue({
-          name: 'trandate',
-          summary: search.Summary.GROUP,
+        user: result.getText({
+          name: 'custrecord_rfs_ps_line_user_2_2',
         }),
-        type: result.getText({ name: 'type', summary: search.Summary.GROUP }),
-        typeValue: result.getValue({
-          name: 'type',
-          summary: search.Summary.GROUP,
+        item: result.getValue({
+          name: 'custrecord_rfs_ps_line_item',
         }),
-        status: result.getText({
-          name: 'status',
-          summary: search.Summary.GROUP,
+        quantity: result.getValue({
+          name: 'custrecord_rfs_ps_line_quantity',
         }),
-        number: result.getValue({
-          name: 'number',
-          summary: search.Summary.GROUP,
+        hour: result.getValue({
+          name: 'formulatext',
         }),
-        itemsCount: result.getValue({
-          name: 'item',
-          summary: search.Summary.COUNT,
-        }),
-        items: result.getValue(transactionSearch.columns[6]),
-        // items: result.getValue({
-        //   name: 'formulatext',
-        //   summary: search.Summary.MIN,
-        // }),
-        rfSmartUser: result.getValue({
-          name: 'custrecord_rfs_external_user',
-          join: 'custrecord_transaction',
-          summary: search.Summary.MAX,
-        }),
-        itemsWithMembers: result.getValue(transactionSearch.columns[7]),
       });
     });
   });
@@ -175,9 +78,8 @@ const getItemFulfillments = (picker: string, start: string, end: string) => {
  * Handles Get Request and loads the saved search
  */
 const onGet = (response: ServerResponse) => {
-  const form = serverWidget.createForm({ title: 'Item Fulfillment by Picker' });
-  form.addSubmitButton({
-    label: 'Search',
+  const form = serverWidget.createForm({
+    title: 'RF-Smart Picker Unique Items Per Hour',
   });
   form
     .addField({
@@ -190,248 +92,276 @@ const onGet = (response: ServerResponse) => {
     })
     .updateBreakType({
       breakType: serverWidget.FieldBreakType.STARTROW,
-    }).defaultValue = 'Please select an RF SMART User Below.';
+    }).defaultValue =
+    'Please select a date to get results. Results will automatically be emailed to you.';
+  form.addSubmitButton({
+    label: 'Get Results',
+  });
   form.addField({
-    id: 'custpage_start_date',
+    id: 'custpage_results_date',
     type: serverWidget.FieldType.DATE,
-    label: 'Start Date',
+    label: 'Date',
   }).isMandatory = true;
-  form.addField({
-    id: 'custpage_end_date',
-    type: serverWidget.FieldType.DATE,
-    label: 'End Date',
-  }).isMandatory = true;
-  form
-    .addField({
-      id: 'custpage_rf_smart_user',
-      label: 'RF-SMART User',
-      type: serverWidget.FieldType.SELECT,
-      source: 'customlist_sp_rf_smart_user',
-    })
-    .setHelpText({
-      help: 'Select the RF-SMART USER to see associated transactions.',
-    }).isMandatory = true;
   response.writePage(form);
 };
 
 /**
- * Handles the Post Request
+ * Handles the POST Request
  */
 const onPost = (request: ServerRequest, response: ServerResponse) => {
-  const picker = request.parameters.custpage_rf_smart_user;
-  const start = request.parameters.custpage_start_date;
-  const end = request.parameters.custpage_end_date;
-  const list = record.load({
-    type: 'customlist',
-    id: 1442,
-  });
-  log.debug({
-    title: 'CUSTOM LIST',
-    details: list,
-  });
-  // get user list
-  const userCount = list.getLineCount({
-    sublistId: 'customvalue',
-  });
-  const rfSmartUsers = {};
-  for (let i = 0; i < userCount; i++) {
-    const id = list.getSublistValue('customvalue', 'valueid', i) as string;
-    log.debug({
-      title: 'ID = ' + id,
-      details: 'ID = ' + id,
+  const searchDate = request.parameters.custpage_results_date;
+
+  const results = getRFSmartPickStateLines(searchDate);
+
+  const data = generateResults(results);
+
+  // export csv
+  const csvFile = createCsvContent(data, searchDate);
+  // send email
+  const user = runtime.getCurrentUser();
+
+  const page = createPage(searchDate, data);
+
+  if (Object.keys(data).length > 0) {
+    email.send({
+      author: 207,
+      recipients: user.id,
+      subject: `RF-SMART Picker Unique Items by Hour - ${searchDate}`,
+      body: 'This is an automated message. You will find the exported CSV attached.',
+      attachments: [csvFile],
     });
-    rfSmartUsers[`RF_SMART_${id}`] = list.getSublistValue(
-      'customvalue',
-      'value',
-      i
-    );
   }
-
-  log.debug({
-    title: 'CUSTOM LIST',
-    details: rfSmartUsers,
-  });
-  const selectedUser = rfSmartUsers[`RF_SMART_${picker}`];
-
-  const results = getItemFulfillments(selectedUser, start, end);
-
-  const page = createPage(results);
 
   response.writePage(page);
 };
 
-const createPage = (
+const generateResults = (
   results: {
-    id: string;
-    date: string;
-    type: string;
-    typeValue: string;
-    status: string;
-    number: string;
-    itemsCount: string;
-    items: string;
-    rfSmartUser: string;
-    itemsWithMembers: string;
+    created: string;
+    user: string;
+    item: string;
+    quantity: string;
+    hour: string;
   }[]
 ) => {
-  const form = serverWidget.createForm({
-    title: `Item Fulfillments by ${
-      results.length > 0 ? results[0].rfSmartUser : 'RF-SMART User'
-    }`,
+  const data: any = {};
+
+  results.forEach(result => {
+    // if user doesnt exist create them
+    if (!data[result.user]) {
+      data[result.user] = {};
+      data[result.user].user = result.user;
+      data[result.user].hours = {};
+    }
+    // if hour doesnt exist add it to hours
+    if (!data[result.user].hours[result.hour]) {
+      data[result.user].hours[result.hour] = {};
+      data[result.user].hours[result.hour].items = [];
+      data[result.user].hours[result.hour].items.push(result.item);
+      data[result.user].hours[result.hour].quantity = Number(result.quantity);
+      data[result.user].hours[result.hour].hour = result.hour;
+    } else {
+      // if item is unique add it to the list
+      if (!data[result.user].hours[result.hour].items.includes(result.item)) {
+        data[result.user].hours[result.hour].items.push(result.item);
+      }
+      data[result.user].hours[result.hour].quantity += Number(result.quantity);
+    }
   });
 
-  if (results) {
-    // calulate total w/ member items
-    let totalItemsWithMembers = 0;
-    results.forEach(result => {
-      let items = result.itemsWithMembers.split(',');
-      let itemTotal = 0;
-      items.forEach(item => {
-        itemTotal += parseInt(item.split('=>')[1]);
-      });
+  return data;
+};
 
-      totalItemsWithMembers += itemTotal;
+const createPage = (
+  searchDate: string,
+  data: {
+    [key: string]: {
+      user: string;
+      hours: {
+        [key: string]: {
+          hour: string;
+          items: string[];
+          quantity: number;
+          user: string;
+        };
+      };
+    };
+  }
+) => {
+  const form = serverWidget.createForm({
+    title: `RF-Smart Picker Unique Items Per Hour ${searchDate}`,
+  });
+
+  if (data) {
+    form
+      .addField({
+        id: 'custpage_message',
+        type: serverWidget.FieldType.INLINEHTML,
+        label: ' ',
+      })
+      .updateLayoutType({
+        layoutType: serverWidget.FieldLayoutType.OUTSIDEABOVE,
+      })
+      .updateBreakType({
+        breakType: serverWidget.FieldBreakType.STARTROW,
+      }).defaultValue =
+      'The results below have automatically been emailed to you. Select a new date to generate a new report.';
+    form.addSubmitButton({
+      label: 'Get Results',
     });
+    form.addField({
+      id: 'custpage_results_date',
+      type: serverWidget.FieldType.DATE,
+      label: 'Date',
+    }).isMandatory = true;
+
     const sublist = form.addSublist({
       id: 'custpage_transactions_sublist',
       type: serverWidget.SublistType.LIST,
-      label: `Items (${totalItemsWithMembers})`,
-      // label: `Item Fulfillments (${results.length})`,
-    });
-    sublist.addField({
-      id: 'custpage_result_view_edit',
-      type: 'text',
-      label: 'View | Edit',
-    });
-    sublist.addField({
-      id: 'custpage_result_id',
-      type: 'text',
-      label: 'ID',
-    });
-    sublist.addField({
-      id: 'custpage_result_date',
-      type: 'text',
-      label: 'Date',
-    });
-    sublist.addField({
-      id: 'custpage_result_type',
-      type: 'text',
-      label: 'Type',
-    });
-    sublist.addField({
-      id: 'custpage_result_status',
-      type: 'text',
-      label: 'Status',
-    });
-    sublist.addField({
-      id: 'custpage_result_number',
-      type: 'text',
-      label: 'Document Number',
-    });
-    sublist.addField({
-      id: 'custpage_result_items_count',
-      type: 'text',
-      label: 'Unique Items',
-    });
-    sublist.addField({
-      id: 'custpage_result_items_quantity',
-      type: 'text',
-      label: 'Item Quantity',
-    });
-    sublist.addField({
-      id: 'custpage_result_items',
-      type: 'textarea',
-      label: 'Items',
-    });
-    sublist.addField({
-      id: 'custpage_result_rf_smart_user',
-      type: 'text',
-      label: 'RF-SMART USER',
+      label: `Results From RF-SMART Pick State Lines`,
     });
 
-    results.forEach(function (
-      result: {
-        id: string;
-        date: string;
-        type: string;
-        typeValue: string;
-        status: string;
-        number: string;
-        itemsCount: string;
-        items: string;
-        rfSmartUser: string;
-        itemsWithMembers: string;
-      },
-      index: number
-    ) {
-      let items = result.itemsWithMembers.split(',');
-      let itemTotal = 0;
-      items.forEach(item => {
-        itemTotal += parseInt(item.split('=>')[1]);
+    sublist.addField({
+      id: 'custpage_result_user',
+      type: 'text',
+      label: 'User',
+    });
+    sublist.addField({
+      id: 'custpage_result_hour',
+      type: 'text',
+      label: 'Hour',
+    });
+    sublist.addField({
+      id: 'custpage_result_unique_item_count',
+      type: 'text',
+      label: 'Unique Item Count',
+    });
+    sublist.addField({
+      id: 'custpage_result_total_item_count',
+      type: 'text',
+      label: 'Total Item Count',
+    });
+
+    const users = Object.keys(data);
+
+    const validUsers = users.filter(user => user !== '');
+
+    let lineNumber = 0;
+    validUsers.forEach(function (user: string) {
+      const hours = Object.keys(data[user].hours);
+      const sortedHours = hours.sort((a, b) => Number(a) - Number(b));
+
+      let totalUnique = 0;
+      let totalItems = 0;
+      let firstRow = true;
+      sortedHours.forEach(function (hour: string) {
+        sublist.setSublistValue({
+          id: 'custpage_result_user',
+          line: lineNumber,
+          value: firstRow ? data[user].user : ' ',
+        });
+        sublist.setSublistValue({
+          id: 'custpage_result_hour',
+          line: lineNumber,
+          value: getHours(data[user].hours[hour].hour),
+        });
+        sublist.setSublistValue({
+          id: 'custpage_result_unique_item_count',
+          line: lineNumber,
+          value: data[user].hours[hour].items.length.toString(),
+        });
+        sublist.setSublistValue({
+          id: 'custpage_result_total_item_count',
+          line: lineNumber,
+          value: data[user].hours[hour].quantity.toString(),
+        });
+        totalUnique += data[user].hours[hour].items.length;
+        totalItems += data[user].hours[hour].quantity;
+        lineNumber += 1;
+        firstRow = false;
+      });
+      // totals
+      sublist.setSublistValue({
+        id: 'custpage_result_user',
+        line: lineNumber,
+        value: ' ',
+      });
+      sublist.setSublistValue({
+        id: 'custpage_result_hour',
+        line: lineNumber,
+        value: '<b>TOTAL</b>',
       });
 
       sublist.setSublistValue({
-        id: 'custpage_result_id',
-        line: index,
-        value: result.id,
+        id: 'custpage_result_unique_item_count',
+        line: lineNumber,
+        value: `<b>${totalUnique.toString()}</b>`,
       });
       sublist.setSublistValue({
-        id: 'custpage_result_view_edit',
-        line: index,
-        value: `<a href="/app/accounting/transactions/${result.typeValue.toLowerCase()}.nl?id=${
-          result.id
-        }" target="_blank">View</a> | <a href="/app/accounting/transactions/${result.typeValue.toLowerCase()}.nl?id=${
-          result.id
-        }&e=T" target="_blank">Edit</a>`,
+        id: 'custpage_result_total_item_count',
+        line: lineNumber,
+        value: `<b>${totalItems.toString()}</b>`,
       });
-      sublist.setSublistValue({
-        id: 'custpage_result_date',
-        line: index,
-        value: result.date,
-      });
-      sublist.setSublistValue({
-        id: 'custpage_result_type',
-        line: index,
-        value: result.type,
-      });
-      sublist.setSublistValue({
-        id: 'custpage_result_status',
-        line: index,
-        value: result.status,
-      });
-      sublist.setSublistValue({
-        id: 'custpage_result_number',
-        line: index,
-        value: result.number,
-      });
-      sublist.setSublistValue({
-        id: 'custpage_result_items_count',
-        line: index,
-        value: result.itemsCount,
-      });
-      sublist.setSublistValue({
-        id: 'custpage_result_items_quantity',
-        line: index,
-        value: itemTotal.toString(),
-      });
-      sublist.setSublistValue({
-        id: 'custpage_result_items',
-        line: index,
-        value: result.items,
-      });
-      sublist.setSublistValue({
-        id: 'custpage_result_rf_smart_user',
-        line: index,
-        value: result.rfSmartUser,
-      });
+      lineNumber += 1;
     });
   } else {
     form.addField({
       id: 'custpage_message',
       type: serverWidget.FieldType.INLINEHTML,
       label: ' ',
-    }).defaultValue = `There are no fulfillments for the selected RF-Smart User (picker).`;
+    }).defaultValue = `There are no picking transactions for the selected RF-Smart User (picker).`;
   }
 
   return form;
+};
+
+const getHours = (hour: string) => {
+  let num = parseInt(hour);
+  if (num > 12) {
+    return `${num - 12} pm`;
+  } else return `${num} am`;
+};
+
+const createCsvContent = (data: any, searchDate: string) => {
+  const csvFile = file.create({
+    name: `rf-smart_picker-${searchDate.replace(/\//g, '_')}.csv`,
+    contents: `USER,HOUR,UNIQUE_ITEM_COUNT,TOTAL_ITEM_COUNT\n`,
+    fileType: file.Type.CSV,
+  });
+
+  const users = Object.keys(data);
+
+  const validUsers = users.filter(user => user !== '');
+
+  validUsers.forEach(function (user: string) {
+    const hours = Object.keys(data[user].hours);
+    const sortedHours = hours.sort((a, b) => Number(a) - Number(b));
+
+    let totalUnique = 0;
+    let totalItems = 0;
+    let firstRow = true;
+    sortedHours.forEach(function (hour: string) {
+      csvFile.appendLine({
+        value: `${firstRow ? data[user].user : ' '},${getHours(
+          data[user].hours[hour].hour
+        )},${data[user].hours[hour].items.length.toString()},${data[user].hours[
+          hour
+        ].quantity.toString()}`,
+      });
+      totalUnique += data[user].hours[hour].items.length;
+      totalItems += data[user].hours[hour].quantity;
+      firstRow = false;
+    });
+    // totals
+    csvFile.appendLine({
+      value: ` ,TOTAL,${totalUnique.toString()},${totalItems.toString()}`,
+    });
+  });
+
+  log.debug({
+    title: 'CSV FILE',
+    details: csvFile,
+  });
+
+  return csvFile;
 };

@@ -519,6 +519,11 @@ const createVariants = (
       operator: search.Operator.IS,
       values: parentID,
     }),
+    search.createFilter({
+      name: 'isinactive',
+      operator: search.Operator.IS,
+      values: ['F'],
+    }),
   ];
 
   const childResultSet = childItemSearch.run();
