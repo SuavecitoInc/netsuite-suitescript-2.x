@@ -254,11 +254,12 @@ const createPage = (
       let totalUnique = 0;
       let totalItems = 0;
       let firstRow = true;
+      let hoursCount = 0;
       sortedHours.forEach(function (hour: string) {
         sublist.setSublistValue({
           id: 'custpage_result_user',
           line: lineNumber,
-          value: firstRow ? data[user].user : ' ',
+          value: firstRow ? data[user].user : data[user].user,
         });
         sublist.setSublistValue({
           id: 'custpage_result_hour',
@@ -279,12 +280,13 @@ const createPage = (
         totalItems += data[user].hours[hour].quantity;
         lineNumber += 1;
         firstRow = false;
+        hoursCount += 1;
       });
       // totals
       sublist.setSublistValue({
         id: 'custpage_result_user',
         line: lineNumber,
-        value: ' ',
+        value: data[user].user,
       });
       sublist.setSublistValue({
         id: 'custpage_result_hour',
@@ -301,6 +303,29 @@ const createPage = (
         id: 'custpage_result_total_item_count',
         line: lineNumber,
         value: `<b>${totalItems.toString()}</b>`,
+      });
+      // average
+      // totals
+      sublist.setSublistValue({
+        id: 'custpage_result_user',
+        line: lineNumber,
+        value: data[user].user,
+      });
+      sublist.setSublistValue({
+        id: 'custpage_result_hour',
+        line: lineNumber,
+        value: '<b>AVERAGE</b>',
+      });
+
+      sublist.setSublistValue({
+        id: 'custpage_result_unique_item_count',
+        line: lineNumber,
+        value: `<b>${(totalUnique / hoursCount).toFixed(2).toString()}</b>`,
+      });
+      sublist.setSublistValue({
+        id: 'custpage_result_total_item_count',
+        line: lineNumber,
+        value: `<b>${(totalItems / hoursCount).toFixed(2).toString()}</b>`,
       });
       lineNumber += 1;
     });
@@ -340,9 +365,10 @@ const createCsvContent = (data: any, searchDate: string) => {
     let totalUnique = 0;
     let totalItems = 0;
     let firstRow = true;
+    let hoursCount = 0;
     sortedHours.forEach(function (hour: string) {
       csvFile.appendLine({
-        value: `${firstRow ? data[user].user : ' '},${getHours(
+        value: `${firstRow ? data[user].user : data[user].user},${getHours(
           data[user].hours[hour].hour
         )},${data[user].hours[hour].items.length.toString()},${data[user].hours[
           hour
@@ -351,10 +377,19 @@ const createCsvContent = (data: any, searchDate: string) => {
       totalUnique += data[user].hours[hour].items.length;
       totalItems += data[user].hours[hour].quantity;
       firstRow = false;
+      hoursCount += 1;
     });
     // totals
     csvFile.appendLine({
-      value: ` ,TOTAL,${totalUnique.toString()},${totalItems.toString()}`,
+      value: `${
+        data[user].user
+      },TOTAL,${totalUnique.toString()},${totalItems.toString()}`,
+    });
+    // average
+    csvFile.appendLine({
+      value: `${data[user].user},AVERAGE,${(totalUnique / hoursCount)
+        .toFixed(2)
+        .toString()},${(totalItems / hoursCount).toFixed(2).toString()}`,
     });
   });
 

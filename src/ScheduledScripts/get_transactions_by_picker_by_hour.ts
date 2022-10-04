@@ -154,9 +154,10 @@ const createCsvContent = (data: any, searchDate: string) => {
     let totalUnique = 0;
     let totalItems = 0;
     let firstRow = true;
+    let hoursCount = 0;
     sortedHours.forEach(function (hour: string) {
       csvFile.appendLine({
-        value: `${firstRow ? data[user].user : ' '},${getHours(
+        value: `${firstRow ? data[user].user : data[user].user},${getHours(
           data[user].hours[hour].hour
         )},${data[user].hours[hour].items.length.toString()},${data[user].hours[
           hour
@@ -165,10 +166,19 @@ const createCsvContent = (data: any, searchDate: string) => {
       totalUnique += data[user].hours[hour].items.length;
       totalItems += data[user].hours[hour].quantity;
       firstRow = false;
+      hoursCount += 1;
     });
     // totals
     csvFile.appendLine({
-      value: ` ,TOTAL,${totalUnique.toString()},${totalItems.toString()}`,
+      value: `${
+        data[user].user
+      },TOTAL,${totalUnique.toString()},${totalItems.toString()}`,
+    });
+    // average
+    csvFile.appendLine({
+      value: `${data[user].user},AVERAGE,${(totalUnique / hoursCount)
+        .toFixed(2)
+        .toString()},${(totalItems / hoursCount).toFixed(2).toString()}`,
     });
   });
 

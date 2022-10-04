@@ -345,6 +345,11 @@ const getItemData = (SKU: string) => {
       operator: search.Operator.IS,
       values: SKU,
     }),
+    search.createFilter({
+      name: 'isinactive',
+      operator: search.Operator.IS,
+      values: false,
+    }),
   ];
 
   const resultSet = itemSearch.run();
@@ -752,7 +757,7 @@ const postItemToShopify = (
 const checkRequiredFields = (itemObj: Item) => {
   const itemObjKeys = Object.keys(itemObj);
   const itemObjErrors = [];
-  const exclude = ['barcode', 'compareAtPrice', 'tags'];
+  const exclude = ['barcode', 'compareAtPrice', 'tags', 'descriptionHtml'];
   itemObjKeys.forEach(key => {
     if (!exclude.includes(key)) {
       if (itemObj[key] === '' || (key === 'weight' && itemObj[key] === 0)) {
