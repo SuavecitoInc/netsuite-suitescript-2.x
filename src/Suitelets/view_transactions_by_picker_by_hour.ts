@@ -51,12 +51,16 @@ const getRFSmartPickStateLines = (searchDate: string) => {
   pagedData.pageRanges.forEach(function (pageRange) {
     const page = pagedData.fetch({ index: pageRange.index });
     page.data.forEach(function (result) {
+      log.debug({
+        title: 'RESULT',
+        details: result,
+      });
       transactionResults.push({
         created: result.getValue({
           name: 'created',
         }),
         user: result.getText({
-          name: 'custrecord_rfs_ps_line_user_3',
+          name: 'custrecord_rfs_ps_line_user',
         }),
         item: result.getValue({
           name: 'custrecord_rfs_ps_line_item',

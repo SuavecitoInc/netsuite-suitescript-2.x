@@ -60,7 +60,7 @@ const getRFSmartPickStateLines = (searchDate: string) => {
           name: 'created',
         }),
         user: result.getText({
-          name: 'custrecord_rfs_ps_line_user_3',
+          name: 'custrecord_rfs_ps_line_user',
         }),
         item: result.getValue({
           name: 'custrecord_rfs_ps_line_item',
