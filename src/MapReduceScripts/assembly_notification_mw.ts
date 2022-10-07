@@ -19,6 +19,7 @@ interface AssemblyResult {
   locationQuantityAvailable: number;
   minQuantity: number;
   buildable: number;
+  buildableAll: number;
 }
 
 // must return array as context
@@ -69,11 +70,11 @@ export const getInputData: EntryPoints.MapReduce.getInputData = () => {
         operator: search.Operator.IS,
         values: [1],
       },
-      {
-        name: 'custitem_sp_assembled_in_house',
-        operator: search.Operator.IS,
-        values: ['T'],
-      },
+      // {
+      //   name: 'custitem_sp_assembled_in_house',
+      //   operator: search.Operator.IS,
+      //   values: ['T'],
+      // },
       {
         name: 'custitem_sp_mw_assm_notif_min',
         operator: search.Operator.ISNOTEMPTY,
@@ -147,6 +148,52 @@ export const getInputData: EntryPoints.MapReduce.getInputData = () => {
           summary: search.Summary.MIN,
         }) as string
       );
+
+      // create search
+      const itemSearch = search.create({
+        type: search.Type.ITEM,
+        columns: [
+          {
+            name: 'formulatext',
+            formula:
+              'ROUND(NVL({memberitem.quantityavailable},0)/NVL({memberquantity},0),0)',
+            summary: search.Summary.MIN,
+          },
+        ],
+        filters: [
+          // member items to calc buildable
+          {
+            name: 'internalid',
+            operator: search.Operator.ANYOF,
+            values: [id],
+          },
+          {
+            name: 'type',
+            join: 'memberitem',
+            operator: search.Operator.ANYOF,
+            values: ['Assembly', 'InvtPart'],
+          },
+        ],
+      });
+
+      const itemResultSet = itemSearch.run();
+      const itemResultRange = itemResultSet.getRange({
+        start: 0,
+        end: 1,
+      });
+
+      log.debug('ITEM RESULT', itemResultRange[0]);
+      let value = itemResultRange[0].getValue({
+        name: 'formulatext',
+        summary: search.Summary.MIN,
+      }) as string;
+      if (value === null) {
+        value = '0';
+      }
+
+      log.debug('VALUE', value);
+      const buildableAll = parseInt(value);
+
       assemblyResults.push({
         id,
         sku,
@@ -155,6 +202,7 @@ export const getInputData: EntryPoints.MapReduce.getInputData = () => {
         locationQuantityAvailable,
         minQuantity,
         buildable,
+        buildableAll,
       });
     });
   });
@@ -186,6 +234,7 @@ export const map: EntryPoints.MapReduce.map = (
     locationQuantityAvailable,
     minQuantity,
     buildable,
+    buildableAll,
   } = assemblyResult as unknown as AssemblyResult;
 
   if (locationQuantityAvailable < minQuantity) {
@@ -216,6 +265,7 @@ export const map: EntryPoints.MapReduce.map = (
       minQuantity,
       dateAddedString,
       buildable,
+      buildableAll,
     });
   }
 };
@@ -261,6 +311,7 @@ export const summarize: EntryPoints.MapReduce.summarize = (
       <td style="padding: 0 15px;">${locationQuantityAvailable}</td>
       <td style="padding: 0 15px;">${value.minQuantity}</td>
       <td style="padding: 0 15px;">${value.buildable}</td>
+      <td style="padding: 0 15px;">${value.buildableAll}</td>
       <td style="padding: 0 15px;">${value.dateAddedString}</td>
     </tr>`;
     buildableAssemblies++;
@@ -269,6 +320,11 @@ export const summarize: EntryPoints.MapReduce.summarize = (
 
   if (buildableAssemblies > 0) {
     sendEmail(buildableAssemblies, content);
+  } else {
+    log.debug({
+      title: 'NO BUILDABLE ASSEMBLIES',
+      details: 'NOT SENDING EMAIL',
+    });
   }
 };
 
@@ -290,7 +346,8 @@ const sendEmail = (buildableAssemblies: number, content: string) => {
         <th style="padding: 0 15px;">Name</th>
         <th style="padding: 0 15px;">Qty Available</th>
         <th style="padding: 0 15px;">Min Qty</th>
-        <th style="padding: 0 15px;">Buildable</th>
+        <th style="padding: 0 15px;">Buildable MW</th>
+        <th style="padding: 0 15px;">Buildable ALL</th>
         <th style="padding: 0 15px;">Date Added</th>
       </tr>
       ${content}

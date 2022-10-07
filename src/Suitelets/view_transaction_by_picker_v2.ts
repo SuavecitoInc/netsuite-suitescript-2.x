@@ -8,9 +8,6 @@ import { EntryPoints } from 'N/types';
 import * as search from 'N/search';
 import * as serverWidget from 'N/ui/serverWidget';
 import { ServerRequest, ServerResponse } from 'N/https';
-import * as file from 'N/file';
-import * as email from 'N/email';
-import * as runtime from 'N/runtime';
 import * as log from 'N/log';
 
 export let onRequest: EntryPoints.Suitelet.onRequest = (
@@ -81,19 +78,6 @@ const onGet = (response: ServerResponse) => {
   const form = serverWidget.createForm({
     title: 'RF-Smart Picker Unique Items Per Hour',
   });
-  form
-    .addField({
-      id: 'custpage_message',
-      type: serverWidget.FieldType.INLINEHTML,
-      label: ' ',
-    })
-    .updateLayoutType({
-      layoutType: serverWidget.FieldLayoutType.OUTSIDEABOVE,
-    })
-    .updateBreakType({
-      breakType: serverWidget.FieldBreakType.STARTROW,
-    }).defaultValue =
-    'Please select a date to get results. Results will automatically be emailed to you.';
   form.addSubmitButton({
     label: 'Get Results',
   });
@@ -115,22 +99,7 @@ const onPost = (request: ServerRequest, response: ServerResponse) => {
 
   const data = generateResults(results);
 
-  // export csv
-  const csvFile = createCsvContent(data, searchDate);
-  // send email
-  const user = runtime.getCurrentUser();
-
   const page = createPage(searchDate, data);
-
-  if (Object.keys(data).length > 0) {
-    email.send({
-      author: 207,
-      recipients: user.id,
-      subject: `RF-SMART Picker Unique Items by Hour - ${searchDate}`,
-      body: 'This is an automated message. You will find the exported CSV attached.',
-      attachments: [csvFile],
-    });
-  }
 
   response.writePage(page);
 };
@@ -175,15 +144,13 @@ const generateResults = (
 const createPage = (
   searchDate: string,
   data: {
-    [key: string]: {
-      user: string;
-      hours: {
-        [key: string]: {
-          hour: string;
-          items: string[];
-          quantity: number;
-          user: string;
-        };
+    user: string;
+    hours: {
+      [key: string]: {
+        hour: string;
+        items: string[];
+        quantity: number;
+        user: string;
       };
     };
   }
@@ -193,19 +160,6 @@ const createPage = (
   });
 
   if (data) {
-    form
-      .addField({
-        id: 'custpage_message',
-        type: serverWidget.FieldType.INLINEHTML,
-        label: ' ',
-      })
-      .updateLayoutType({
-        layoutType: serverWidget.FieldLayoutType.OUTSIDEABOVE,
-      })
-      .updateBreakType({
-        breakType: serverWidget.FieldBreakType.STARTROW,
-      }).defaultValue =
-      'The results below have automatically been emailed to you. Select a new date to generate a new report.';
     form.addSubmitButton({
       label: 'Get Results',
     });
@@ -320,48 +274,4 @@ const getHours = (hour: string) => {
   if (num > 12) {
     return `${num - 12} pm`;
   } else return `${num} am`;
-};
-
-const createCsvContent = (data: any, searchDate: string) => {
-  const csvFile = file.create({
-    name: `rf-smart_picker-${searchDate.replace(/\//g, '_')}.csv`,
-    contents: `USER,HOUR,UNIQUE_ITEM_COUNT,TOTAL_ITEM_COUNT\n`,
-    fileType: file.Type.CSV,
-  });
-
-  const users = Object.keys(data);
-
-  const validUsers = users.filter(user => user !== '');
-
-  validUsers.forEach(function (user: string) {
-    const hours = Object.keys(data[user].hours);
-    const sortedHours = hours.sort((a, b) => Number(a) - Number(b));
-
-    let totalUnique = 0;
-    let totalItems = 0;
-    let firstRow = true;
-    sortedHours.forEach(function (hour: string) {
-      csvFile.appendLine({
-        value: `${firstRow ? data[user].user : ' '},${getHours(
-          data[user].hours[hour].hour
-        )},${data[user].hours[hour].items.length.toString()},${data[user].hours[
-          hour
-        ].quantity.toString()}`,
-      });
-      totalUnique += data[user].hours[hour].items.length;
-      totalItems += data[user].hours[hour].quantity;
-      firstRow = false;
-    });
-    // totals
-    csvFile.appendLine({
-      value: ` ,TOTAL,${totalUnique.toString()},${totalItems.toString()}`,
-    });
-  });
-
-  log.debug({
-    title: 'CSV FILE',
-    details: csvFile,
-  });
-
-  return csvFile;
 };
