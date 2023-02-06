@@ -70,10 +70,10 @@ const onGet = (response: ServerResponse) => {
 const onPost = (request: ServerRequest, response: ServerResponse) => {
   if (request.parameters.custpage_bin_number) {
     const binNumber = request.parameters.custpage_bin_number;
-    log.debug({
-      title: 'BIN NUMBER',
-      details: binNumber,
-    });
+    // log.debug({
+    //   title: 'BIN NUMBER',
+    //   details: binNumber,
+    // });
     const items = getBinItems(binNumber);
 
     const page = createPage(binNumber, items);
@@ -152,10 +152,10 @@ const getBinItems = (binNumber: string) => {
     const page = pagedData.fetch({ index: pageRange.index });
 
     page.data.forEach(result => {
-      log.debug({
-        title: 'RESULT',
-        details: result,
-      });
+      // log.debug({
+      //   title: 'RESULT',
+      //   details: result,
+      // });
 
       const activeStatus = result.getValue({
         name: 'isinactive',
@@ -180,10 +180,10 @@ const getBinItems = (binNumber: string) => {
     });
   });
 
-  log.debug({
-    title: 'ITEM RESULTS',
-    details: itemResults,
-  });
+  // log.debug({
+  //   title: 'ITEM RESULTS',
+  //   details: itemResults,
+  // });
 
   return itemResults;
 };
@@ -303,10 +303,10 @@ const createPage = (
 
     for (let i = 0; i < items.length; i++) {
       let item = items[i];
-      log.debug({
-        title: 'Item: ' + i,
-        details: item.id,
-      });
+      // log.debug({
+      //   title: 'Item: ' + i,
+      //   details: item.id,
+      // });
       sublist.setSublistValue({
         id: 'custpage_field_id',
         line: i,
@@ -384,10 +384,12 @@ const createPage = (
 const inventoryAdjustment = (
   items: {
     id: string;
+    sku: string;
     available: string;
     locationId: string;
     binNumber: string;
     binId: string;
+    status: string;
     statusId: string;
     isInactive: boolean;
     inactive: string;
@@ -410,6 +412,13 @@ const inventoryAdjustment = (
   items.forEach(function (item) {
     if (parseInt(item.available) > 0 && !item.isInactive) {
       try {
+        log.debug({
+          title: `INVENTORY ADJUSTMENT FOR ${item.sku}`,
+          details: `QUANTITY: ${parseInt(item.available) * -1} | STATUS: ${
+            item.status
+          }`,
+        });
+
         adjustmentRecord.selectNewLine({
           sublistId: 'inventory',
         });
@@ -438,13 +447,15 @@ const inventoryAdjustment = (
         subRecord.setCurrentSublistValue({
           sublistId: 'inventoryassignment',
           fieldId: 'binnumber',
-          value: parseInt(item.binId),
+          value: item.binId,
         });
         subRecord.setCurrentSublistValue({
           sublistId: 'inventoryassignment',
           fieldId: 'status',
-          value: parseInt(item.statusId),
+          value: item.statusId,
+          forceSyncSourcing: true,
         });
+
         // set quantity
         subRecord.setCurrentSublistValue({
           sublistId: 'inventoryassignment',

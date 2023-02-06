@@ -5,43 +5,93 @@
  */
 
 import { EntryPoints } from 'N/types';
+import * as log from 'N/log';
 
 export let beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
   context: EntryPoints.UserEvent.beforeSubmitContext
 ) => {
-  addGiftCertCode(context);
-};
+  try {
+    enum Marketplace {
+      Retail = 'Shopify',
+      Wholesale = 'Shopify-WholesaleShopify',
+      Amazon = 'Amazon',
+      Ebay = 'eBay',
+      Professional = 'Shopify-Professionals',
+      Warehouse = 'Shopify-Warehouse',
+    }
 
-const addGiftCertCode = (
-  context: EntryPoints.UserEvent.beforeSubmitContext
-) => {
-  const giftCardId = 22021;
-  const currentRecord = context.newRecord;
-  const lines = currentRecord.getLineCount({ sublistId: 'item' });
+    enum SalesRep {
+      Retail = 73559, // Online Store
+      Wholesale = 73560, // Partner Store
+      Amazon = 73562, // Amazon Store
+      Ebay = 73561, // eBay Store
+      Professional = 2064179, // Professional Store
+      Warehouse = 2064180, // Warehouse Store
+    }
 
-  for (let i = 0; i < lines; i++) {
-    const itemInternalId = currentRecord.getSublistValue({
-      sublistId: 'item',
-      fieldId: 'item',
-      line: i,
+    const currentRecord = context.newRecord;
+    // marketplace
+    const marketplace = currentRecord.getValue({
+      fieldId: 'custbody_fa_channel',
     });
-    if (Number(itemInternalId) === giftCardId) {
-      let giftCardCode = currentRecord.getSublistValue({
-        sublistId: 'item',
-        fieldId: 'giftcertnumber',
-        line: i,
+    if (marketplace !== '') {
+      let salesRep: number;
+      if (marketplace === Marketplace.Retail) {
+        salesRep = SalesRep.Retail;
+      }
+      if (marketplace === Marketplace.Wholesale) {
+        salesRep = SalesRep.Wholesale;
+      }
+      if (marketplace === Marketplace.Amazon) {
+        salesRep = SalesRep.Amazon;
+      }
+      if (marketplace === Marketplace.Ebay) {
+        salesRep = SalesRep.Ebay;
+      }
+      if (marketplace === Marketplace.Professional) {
+        salesRep = SalesRep.Professional;
+      }
+      if (marketplace === Marketplace.Warehouse) {
+        salesRep = SalesRep.Warehouse;
+      }
+      // set sales rep
+      currentRecord.setValue({ fieldId: 'salesrep', value: salesRep });
+      // marketplace
+      const farappMarketplace = currentRecord.getValue({
+        fieldId: 'custbody_fa_channel',
       });
-
-      if (giftCardCode === '') {
-        // generated code will go here
-        giftCardCode = 'shopify1';
-        currentRecord.setSublistValue({
-          sublistId: 'item',
-          fieldId: 'giftcertnumber',
-          line: i,
-          value: giftCardCode,
+      log.debug({
+        title: 'SETTING custbody_sp_fa_channel',
+        details: farappMarketplace,
+      });
+      const farappOrderNumber = currentRecord.getValue({
+        fieldId: 'custbody_fa_channel_order',
+      });
+      log.debug({
+        title: 'SETTING custbody_sp_fa_channel_order',
+        details: farappOrderNumber,
+      });
+      if (marketplace !== '') {
+        currentRecord.setValue({
+          fieldId: 'custbody_sp_fa_channel',
+          value: farappMarketplace,
+        });
+        currentRecord.setValue({
+          fieldId: 'custbody_sp_fa_channel_order',
+          value: farappOrderNumber,
         });
       }
+    } else {
+      // set channel as wholesale for all NetSuite created orders
+      currentRecord.setValue({
+        fieldId: 'custbody_sp_channel',
+        value: 'Wholesale',
+      });
     }
+  } catch (error: any) {
+    log.error({
+      title: 'ERROR SETTING VALUES',
+      details: error,
+    });
   }
 };
