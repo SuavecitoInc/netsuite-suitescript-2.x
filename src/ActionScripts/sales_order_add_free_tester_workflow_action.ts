@@ -29,6 +29,8 @@ export let onAction: EntryPoints.WorkflowAction.onAction = (
   const salesRecord = context.newRecord;
   // wholesale
   if (
+    salesRecord.getValue('custbody_sp_fa_channel') ===
+      'Shopify-WholesaleShopify' ||
     salesRecord.getValue('custbody_fa_channel') === 'Shopify-WholesaleShopify'
   ) {
     const eligibleItemsList = String(

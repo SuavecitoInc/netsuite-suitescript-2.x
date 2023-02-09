@@ -57,30 +57,26 @@ export let beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
       // set sales rep
       currentRecord.setValue({ fieldId: 'salesrep', value: salesRep });
       // marketplace
-      const farappMarketplace = currentRecord.getValue({
-        fieldId: 'custbody_fa_channel',
-      });
       log.debug({
         title: 'SETTING custbody_sp_fa_channel',
-        details: farappMarketplace,
+        details: marketplace,
       });
-      const farappOrderNumber = currentRecord.getValue({
+      const orderNumber = currentRecord.getValue({
         fieldId: 'custbody_fa_channel_order',
       });
       log.debug({
         title: 'SETTING custbody_sp_fa_channel_order',
-        details: farappOrderNumber,
+        details: orderNumber,
       });
-      if (marketplace !== '') {
-        currentRecord.setValue({
-          fieldId: 'custbody_sp_fa_channel',
-          value: farappMarketplace,
-        });
-        currentRecord.setValue({
-          fieldId: 'custbody_sp_fa_channel_order',
-          value: farappOrderNumber,
-        });
-      }
+
+      currentRecord.setValue({
+        fieldId: 'custbody_sp_fa_channel',
+        value: marketplace,
+      });
+      currentRecord.setValue({
+        fieldId: 'custbody_sp_fa_channel_order',
+        value: orderNumber,
+      });
     } else {
       // set channel as wholesale for all NetSuite created orders
       currentRecord.setValue({
