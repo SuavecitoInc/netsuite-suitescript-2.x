@@ -80,7 +80,8 @@ export let onAction: EntryPoints.WorkflowAction.onAction = (
         });
 
         if (eligibleItemsList.includes(sku)) {
-          // load record and get component
+          // load record, get component and add component with eligible quantity to transaction
+
           log.debug({
             title: 'Item is of type Kit/Package and Eligible',
             details: 'Loading components to get SKU to add to Order',
