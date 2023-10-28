@@ -6,7 +6,7 @@
     "sourceMap": false,
     "newLine": "LF",
     "experimentalDecorators": true,
-    "noImplicitUseStrict": true,
+    // "noImplicitUseStrict": true,
     "baseUrl": ".",
     "rootDir": "./src",
     "outDir": "dist",
