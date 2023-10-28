@@ -10,58 +10,45 @@ import * as runtime from 'N/runtime';
 import * as record from 'N/record';
 import * as log from 'N/log';
 
+// TODO: move this to a script deployment param setting
+const use: string = 'config';
+
+// JUNE
+/**
+ * key: Kit Sku
+ * internalId: free item internal id
+ * minimum: minimum quantity to buy before getting free
+ * quantity: quantity to get free
+ * name: overwrite line item name / description
+ */
 const config: {
-  [key: string]: { internalId: string; quantity: number; name: string };
+  [key: string]: {
+    internalId: string;
+    minimum: number;
+    quantity: number;
+    name: string;
+  };
 } = {
-  'K-P214': {
-    internalId: '30402',
-    quantity: 2,
-    name: 'Original Hold Pomade 4 oz',
-  },
-  'K-P215': {
-    internalId: '30403',
-    quantity: 2,
-    name: 'Firme (Strong) Hold Pomade 4 oz',
-  },
-  'K-P357': {
-    internalId: '30427',
-    quantity: 2,
-    name: 'Matte Pomade 4 oz',
-  },
-  'K-P214-6': {
-    internalId: '30402',
+  // buy 6 clay pomades, get 1 free
+  'K-P254-6': {
+    internalId: '24965', // P254NN
+    minimum: 1,
     quantity: 1,
-    name: 'Original Hold Pomade 4 oz',
+    name: 'Firme Clay Pomade',
   },
-  'K-P215-6': {
-    internalId: '30403',
+  // buy 6 body powder, get 1 free
+  'K-P089': {
+    internalId: '24908', // P089NN
+    minimum: 1,
     quantity: 1,
-    name: 'Firme (Strong) Hold Pomade 4 oz',
+    name: 'Body Powder - 6 oz',
   },
-  'K-P357-6': {
-    internalId: '30427',
+  // buy 6 hybrid pomade get 1 free, use P036NN as free
+  'K-P484-6': {
+    internalId: '25279', // P036NN
+    minimum: 1,
     quantity: 1,
-    name: 'Matte Pomade 4 oz',
-  },
-  'K-P036': {
-    internalId: '25279',
-    quantity: 4,
     name: 'Premium Blends Hair Pomade 4 oz',
-  },
-  'K-P074': {
-    internalId: '24906',
-    quantity: 4,
-    name: 'Premium Blends Matte Pomade 4 oz',
-  },
-  'K-P036-6': {
-    internalId: '25279',
-    quantity: 2,
-    name: 'Premium Blends Hair Pomade 4 oz',
-  },
-  'K-P074-6': {
-    internalId: '24906',
-    quantity: 2,
-    name: 'Premium Blends Matte Pomade 4 oz',
   },
 };
 
@@ -83,16 +70,26 @@ export let onAction: EntryPoints.WorkflowAction.onAction = (
 ) => {
   const salesRecord = context.newRecord;
   const configEligibleItemsList = Object.keys(config);
+
   log.debug({
     title: 'CONFIG ELIGIBLE ITEMS LIST',
     details: configEligibleItemsList,
   });
+
   // wholesale
   if (
     salesRecord.getValue('custbody_sp_fa_channel') ===
       'Shopify-WholesaleShopify' ||
     salesRecord.getValue('custbody_fa_channel') === 'Shopify-WholesaleShopify'
   ) {
+    // check for eligible items
+    const lines = salesRecord.getLineCount({ sublistId: 'item' });
+
+    log.debug({
+      title: 'LINES',
+      details: lines,
+    });
+
     const eligibleItemsList = String(
       runtime.getCurrentScript().getParameter({
         name: 'custscript_sp_so_w_action_eligible_skus',
@@ -100,16 +97,12 @@ export let onAction: EntryPoints.WorkflowAction.onAction = (
     )
       .split(',')
       .map(el => el.trim());
+
     log.debug({
-      title: 'ELIGIBLE ITEMS',
+      title: 'ELIGIBLE ITEMS FROM PARAM',
       details: eligibleItemsList,
     });
-    // check for eligible items
-    const lines = salesRecord.getLineCount({ sublistId: 'item' });
-    log.debug({
-      title: 'LINES',
-      details: lines,
-    });
+
     for (let i = 0; i < lines; i++) {
       const id = salesRecord.getSublistValue({
         sublistId: 'item',
@@ -132,21 +125,38 @@ export let onAction: EntryPoints.WorkflowAction.onAction = (
         line: i,
       });
 
-      if (type === 'Kit/Package') {
-        const sku = getSkuFromName(item as string);
-        // log.debug({
-        //   title: `CHECKING SKU ${sku}`,
-        //   details: eligibleItemsList.includes(sku),
-        // });
+      const sku = getSkuFromName(item as string);
 
-        // if (eligibleItemsList.includes(sku)) {
-        //   // load record, get component and add component with eligible quantity to transaction
-        //   addEligibleMemberItems(salesRecord, id, qty);
-        // }
+      if (use === 'params') {
+        if (eligibleItemsList.length > 0) {
+          if (type === 'Kit/Package') {
+            log.debug({
+              title: `CHECKING SKU ${sku}`,
+              details: eligibleItemsList.includes(sku),
+            });
 
+            if (eligibleItemsList.includes(sku)) {
+              // load record, get component and add component with eligible quantity to transaction
+              addEligibleMemberItems(salesRecord, id, qty);
+            }
+          }
+        }
+      } else {
+        // use config
         if (configEligibleItemsList.includes(sku)) {
-          // add component based on config
-          addEligibleItems(sku, salesRecord, qty);
+          const minimumQty = config[sku].minimum;
+          log.debug({
+            title: 'CONFIG ELIGIBLE',
+            details: `CONFIG LIST INCLUDES ${sku}`,
+          });
+          if (Number(qty) >= minimumQty) {
+            log.debug({
+              title: 'MINIMUM SATISFIED?',
+              details: Number(qty) >= minimumQty,
+            });
+            // add component based on config
+            addEligibleItems(sku, salesRecord, qty);
+          }
         }
       }
     }
@@ -162,7 +172,10 @@ function addEligibleItems(
 ) {
   const freeItem = config[sku];
   const freeItemId = freeItem.internalId;
-  const quantity = freeItem.quantity * Number(qty);
+  const minimumQty = freeItem.minimum;
+  let quantity = (Number(qty) / minimumQty) * freeItem.quantity;
+  quantity = quantity - (quantity % 1);
+
   const name = freeItem.name;
   log.debug({
     title: 'Item is of type Kit/Package and Eligible',
