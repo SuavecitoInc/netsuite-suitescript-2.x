@@ -12,6 +12,12 @@ import * as redirect from 'N/redirect';
 import * as log from 'N/log';
 import { ServerRequest, ServerResponse } from 'N/https';
 
+const status = {
+  '1': 'Expired',
+  '2': 'Quarantine',
+  '3': 'Good',
+};
+
 export let onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
 ) => {
@@ -116,12 +122,6 @@ const getBinItems = (binNumber: string, binStatus: string) => {
     title: 'CREATING SEARCH',
     details: `BIN NUMBER: ${binNumber} | STATUS: ${binStatus}`,
   });
-
-  const status = {
-    '1': 'Expired',
-    '2': 'Quarantine',
-    '3': 'Good',
-  };
   // create search
   const savedSearch = search.create({
     type: search.Type.INVENTORY_BALANCE,
@@ -467,7 +467,7 @@ const inventoryAdjustment = (
 
   adjustmentRecord.setValue({
     fieldId: 'memo',
-    value: `Clear Bin Availability - ${binNumber}, Status: ${binStatus}`,
+    value: `Clear Bin Availability - Bin: ${items[0].binNumber}, Status: ${status[binStatus]}`,
   });
 
   items.forEach(function (item) {
