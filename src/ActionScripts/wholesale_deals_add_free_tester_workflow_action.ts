@@ -29,26 +29,26 @@ const config: {
     name: string;
   };
 } = {
-  // buy 6 clay pomades, get 1 free
-  'K-P254-6': {
-    internalId: '24965', // P254NN
-    minimum: 1,
+  // buy 2 get 1 free, get 1 free
+  P014NN: {
+    internalId: '24884', // P014NN
+    minimum: 2,
     quantity: 1,
-    name: 'Firme Clay Pomade',
+    name: 'Original Hold Pomade 32 oz Tub',
   },
-  // buy 6 body powder, get 1 free
-  'K-P089': {
-    internalId: '24908', // P089NN
-    minimum: 1,
+  // buy 2 get 1 free, get 1 free
+  P015NN: {
+    internalId: '24885', // P015NN
+    minimum: 2,
     quantity: 1,
-    name: 'Body Powder - 6 oz',
+    name: 'Firme (Strong) Hold Pomade 32 oz Tub',
   },
-  // buy 6 hybrid pomade get 1 free, use P036NN as free
-  'K-P484-6': {
-    internalId: '25279', // P036NN
-    minimum: 1,
+  // buy 2 get 1 free, get 1 free
+  P176NN: {
+    internalId: '24932', // P176NN
+    minimum: 2,
     quantity: 1,
-    name: 'Premium Blends Hair Pomade 4 oz',
+    name: 'Matte Pomade 32 oz Tub',
   },
 };
 
