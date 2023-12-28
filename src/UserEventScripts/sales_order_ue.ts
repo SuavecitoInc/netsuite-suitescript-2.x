@@ -228,7 +228,7 @@ export let beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
     // handle marketplace
     handleMarketplace(context);
     // handle rf shipping
-    handleRFShipping(context);
+    // handleRFShipping(context);
   } catch (error: any) {
     log.error({
       title: 'ERROR SETTING VALUES',
