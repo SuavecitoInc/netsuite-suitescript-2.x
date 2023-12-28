@@ -44,6 +44,10 @@ export let onRequest: EntryPoints.Suitelet.onRequest = (
  */
 const onGet = (response: ServerResponse) => {
   const items = getReplenishment();
+  log.debug({
+    title: 'ITEMS',
+    details: items,
+  });
   const page = createPage(items);
   response.writePage(page);
 };
@@ -455,12 +459,12 @@ const createPage = (items: Item[]) => {
     sublist.setSublistValue({
       id: 'custpage_field_store_qty_min',
       line: i,
-      value: String(item.storeQuantityMin),
+      value: String(item.storeQuantityMin ? item.storeQuantityMin : 0),
     });
     sublist.setSublistValue({
       id: 'custpage_field_store_qty_max',
       line: i,
-      value: String(item.storeQuantityMax),
+      value: String(item.storeQuantityMax ? item.storeQuantityMax : 5),
     });
     sublist.setSublistValue({
       id: 'custpage_field_warehouse_qty_available',
