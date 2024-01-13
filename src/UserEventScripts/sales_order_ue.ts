@@ -97,12 +97,14 @@ function handleMarketplace(context: EntryPoints.UserEvent.beforeSubmitContext) {
     fieldId: 'custbody_fa_channel',
   });
   if (marketplace !== '') {
-    let salesRep: number;
+    let salesRep: number | null = null;
     if (marketplace === Marketplace.Retail) {
       salesRep = SalesRep.Retail;
     }
     if (marketplace === Marketplace.Wholesale) {
-      salesRep = SalesRep.Wholesale;
+      // salesRep = SalesRep.Wholesale;
+      // use sales rep from customer
+      salesRep = null;
     }
     if (marketplace === Marketplace.Amazon) {
       salesRep = SalesRep.Amazon;
@@ -117,7 +119,9 @@ function handleMarketplace(context: EntryPoints.UserEvent.beforeSubmitContext) {
       salesRep = SalesRep.Warehouse;
     }
     // set sales rep
-    currentRecord.setValue({ fieldId: 'salesrep', value: salesRep });
+    if (salesRep) {
+      currentRecord.setValue({ fieldId: 'salesrep', value: salesRep });
+    }
     // marketplace
     log.debug({
       title: 'Setting custbody_sp_fa_channel',
