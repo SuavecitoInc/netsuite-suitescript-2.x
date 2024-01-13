@@ -29,26 +29,40 @@ const config: {
     name: string;
   };
 } = {
-  // buy 2 get 1 free, get 1 free
-  P014NN: {
-    internalId: '24884', // P014NN
-    minimum: 2,
+  // buy 3 get 1 free
+  'K-P001': {
+    internalId: '30154', // P014NN
+    minimum: 3,
     quantity: 1,
     name: 'Original Hold Pomade 32 oz Tub',
   },
-  // buy 2 get 1 free, get 1 free
-  P015NN: {
+  // buy 3 get 1 free
+  'K-P002': {
     internalId: '24885', // P015NN
-    minimum: 2,
+    minimum: 3,
     quantity: 1,
     name: 'Firme (Strong) Hold Pomade 32 oz Tub',
   },
-  // buy 2 get 1 free, get 1 free
-  P176NN: {
+  // buy 3 get 1 free
+  'K-P129': {
     internalId: '24932', // P176NN
-    minimum: 2,
+    minimum: 3,
     quantity: 1,
     name: 'Matte Pomade 32 oz Tub',
+  },
+  // buy 6 pack get 16 oz free
+  'K-P495-6': {
+    internalId: '34578', // P497NN
+    minimum: 1,
+    quantity: 1,
+    name: 'Daily Shampoo 16 oz',
+  },
+  // buy 6 pack get 16 oz free
+  'K-P496-6': {
+    internalId: '34579', // P497NN
+    minimum: 1,
+    quantity: 1,
+    name: 'Daily Conditioner 16 oz',
   },
 };
 
