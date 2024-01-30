@@ -40,7 +40,9 @@ export let beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
         salesRep = SalesRep.Retail;
       }
       if (marketplace === Marketplace.Wholesale) {
-        salesRep = SalesRep.Wholesale;
+        // salesRep = SalesRep.Wholesale;
+        // use sales rep from customer
+        salesRep = null;
       }
       if (marketplace === Marketplace.Amazon) {
         salesRep = SalesRep.Amazon;
@@ -55,7 +57,9 @@ export let beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
         salesRep = SalesRep.Warehouse;
       }
       // set sales rep
-      currentRecord.setValue({ fieldId: 'salesrep', value: salesRep });
+      if (salesRep) {
+        currentRecord.setValue({ fieldId: 'salesrep', value: salesRep });
+      }
       // marketplace
       log.debug({
         title: 'SETTING custbody_sp_fa_channel',

@@ -12,6 +12,12 @@ import * as redirect from 'N/redirect';
 import * as log from 'N/log';
 import { ServerRequest, ServerResponse } from 'N/https';
 
+const status = {
+  '1': 'Expired',
+  '2': 'Quarantine',
+  '3': 'Good',
+};
+
 export let onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
 ) => {
@@ -53,7 +59,15 @@ const onGet = (response: ServerResponse) => {
     source: 'bin',
   });
 
+  const status = form.addField({
+    id: 'custpage_bin_status',
+    label: 'Bin Status',
+    type: serverWidget.FieldType.SELECT,
+    source: 'customlist_sp_bin_status',
+  });
+
   binNumber.isMandatory = true;
+  status.isMandatory = true;
 
   form.addSubmitButton({
     label: 'Search',
@@ -70,18 +84,29 @@ const onGet = (response: ServerResponse) => {
 const onPost = (request: ServerRequest, response: ServerResponse) => {
   if (request.parameters.custpage_bin_number) {
     const binNumber = request.parameters.custpage_bin_number;
-    // log.debug({
-    //   title: 'BIN NUMBER',
-    //   details: binNumber,
-    // });
-    const items = getBinItems(binNumber);
+    const binStatus = request.parameters.custpage_bin_status;
 
-    const page = createPage(binNumber, items);
+    log.debug({
+      title: 'BIN NUMBER',
+      details: binNumber,
+    });
+
+    log.debug({
+      title: 'BIN STATUS',
+      details: binStatus,
+    });
+
+    const items = getBinItems(binNumber, binStatus);
+
+    const page = createPage(binNumber, binStatus, items);
 
     response.writePage(page);
   } else {
-    const items = getBinItems(request.parameters.custpage_set_bin_number);
-    const invAdjId = inventoryAdjustment(items);
+    const binNumber = request.parameters.custpage_set_bin_number;
+    const binStatus = request.parameters.custpage_set_bin_status;
+
+    const items = getBinItems(binNumber, binStatus);
+    const invAdjId = inventoryAdjustment(binNumber, binStatus, items);
     redirect.toRecord({
       type: String(record.Type.INVENTORY_ADJUSTMENT),
       id: invAdjId,
@@ -92,7 +117,11 @@ const onPost = (request: ServerRequest, response: ServerResponse) => {
 /**
  * Creates the Search
  */
-const getBinItems = (binNumber: string) => {
+const getBinItems = (binNumber: string, binStatus: string) => {
+  log.debug({
+    title: 'CREATING SEARCH',
+    details: `BIN NUMBER: ${binNumber} | STATUS: ${binStatus}`,
+  });
   // create search
   const savedSearch = search.create({
     type: search.Type.INVENTORY_BALANCE,
@@ -117,6 +146,7 @@ const getBinItems = (binNumber: string) => {
       }),
       search.createColumn({
         name: 'status',
+        sort: search.Sort.DESC,
       }),
       search.createColumn({
         name: 'onhand',
@@ -139,8 +169,20 @@ const getBinItems = (binNumber: string) => {
     join: null,
     summary: null,
   };
+  const statusSearchFilter = {
+    name: 'formulanumeric',
+    operator: search.Operator.EQUALTO,
+    values: [1],
+    formula:
+      "CASE WHEN {status} = '" +
+      status[binStatus.toString()] +
+      "' THEN 1 ELSE 0 END",
+    join: null,
+    summary: null,
+  };
   const savedSearchFilters = savedSearch.filters;
   savedSearchFilters.push(searchFilter);
+  savedSearchFilters.push(statusSearchFilter);
   savedSearch.filters = savedSearchFilters;
 
   const pagedData = savedSearch.runPaged({
@@ -193,6 +235,7 @@ const getBinItems = (binNumber: string) => {
  */
 const createPage = (
   binNumber: string,
+  binStatus: string,
   items: {
     id: string;
     sku: string;
@@ -230,6 +273,22 @@ const createPage = (
       .updateBreakType({
         breakType: serverWidget.FieldBreakType.STARTROW,
       }).defaultValue = binNumber;
+
+    form
+      .addField({
+        id: 'custpage_set_bin_status',
+        type: serverWidget.FieldType.TEXT,
+        label: ' ',
+      })
+      .updateDisplayType({
+        displayType: serverWidget.FieldDisplayType.DISABLED,
+      })
+      .updateLayoutType({
+        layoutType: serverWidget.FieldLayoutType.OUTSIDE,
+      })
+      .updateBreakType({
+        breakType: serverWidget.FieldBreakType.STARTROW,
+      }).defaultValue = binStatus;
 
     form
       .addField({
@@ -382,6 +441,8 @@ const createPage = (
 };
 
 const inventoryAdjustment = (
+  binNumber: string,
+  binStatus: string,
   items: {
     id: string;
     sku: string;
@@ -406,10 +467,14 @@ const inventoryAdjustment = (
 
   adjustmentRecord.setValue({
     fieldId: 'memo',
-    value: `Clear Bin Availability - ${items[0].binNumber}`,
+    value: `Clear Bin Availability - Bin: ${items[0].binNumber}, Status: ${status[binStatus]}`,
   });
 
   items.forEach(function (item) {
+    log.debug({
+      title: `ITEM SKU: ${item.sku}`,
+      details: item,
+    });
     if (parseInt(item.available) > 0 && !item.isInactive) {
       try {
         log.debug({
@@ -441,6 +506,7 @@ const inventoryAdjustment = (
           sublistId: 'inventory',
           fieldId: 'inventorydetail',
         });
+        // might not need this
         subRecord.selectNewLine({
           sublistId: 'inventoryassignment',
         });
