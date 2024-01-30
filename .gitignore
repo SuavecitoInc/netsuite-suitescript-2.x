@@ -30,3 +30,6 @@ node_modules
 dist
 /src/Suitelets/2.1/libs/*
 CHANGES.md
+
+# Do not upload the following files
+/src/ActionScripts/wholesale_deals_config.ts

@@ -9,62 +9,19 @@ import { EntryPoints } from 'N/types';
 import * as runtime from 'N/runtime';
 import * as record from 'N/record';
 import * as log from 'N/log';
-
-// TODO: move this to a script deployment param setting
-const use: string = 'config';
-
-// JUNE
+// wholesale deals config
 /**
  * key: Kit Sku
  * internalId: free item internal id
  * minimum: minimum quantity to buy before getting free
  * quantity: quantity to get free
  * name: overwrite line item name / description
+ * example -> { [key: string]: { internalId: string; minimum: number; quantity: number; name: string } }
  */
-const config: {
-  [key: string]: {
-    internalId: string;
-    minimum: number;
-    quantity: number;
-    name: string;
-  };
-} = {
-  // buy 3 get 1 free
-  'K-P001': {
-    internalId: '30154', // P014NN
-    minimum: 3,
-    quantity: 1,
-    name: 'Original Hold Pomade 32 oz Tub',
-  },
-  // buy 3 get 1 free
-  'K-P002': {
-    internalId: '24885', // P015NN
-    minimum: 3,
-    quantity: 1,
-    name: 'Firme (Strong) Hold Pomade 32 oz Tub',
-  },
-  // buy 3 get 1 free
-  'K-P129': {
-    internalId: '24932', // P176NN
-    minimum: 3,
-    quantity: 1,
-    name: 'Matte Pomade 32 oz Tub',
-  },
-  // buy 6 pack get 16 oz free
-  'K-P495-6': {
-    internalId: '34578', // P497NN
-    minimum: 1,
-    quantity: 1,
-    name: 'Daily Shampoo 16 oz',
-  },
-  // buy 6 pack get 16 oz free
-  'K-P496-6': {
-    internalId: '34579', // P497NN
-    minimum: 1,
-    quantity: 1,
-    name: 'Daily Conditioner 16 oz',
-  },
-};
+import * as config from './wholesale_deals_config.js';
+
+// TODO: move this to a script deployment param setting
+const use: string = 'config';
 
 const getSkuFromName = (name: string) => {
   const arr = name.split(' ');
