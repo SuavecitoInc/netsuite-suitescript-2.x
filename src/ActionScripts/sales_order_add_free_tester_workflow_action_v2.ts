@@ -9,19 +9,16 @@ import { EntryPoints } from 'N/types';
 import * as runtime from 'N/runtime';
 import * as record from 'N/record';
 import * as log from 'N/log';
-
-// TODO: move this to a script deployment param setting
-const use: string = 'config';
-
-// JUNE
+// wholesale deals config
 /**
  * key: Kit Sku
  * internalId: free item internal id
  * minimum: minimum quantity to buy before getting free
  * quantity: quantity to get free
  * name: overwrite line item name / description
+ * example -> { [key: string]: { internalId: string; minimum: number; quantity: number; name: string } }
  */
-const config: {
+export const config: {
   [key: string]: {
     internalId: string;
     minimum: number;
@@ -29,42 +26,52 @@ const config: {
     name: string;
   };
 } = {
-  // buy 3 get 1 free
-  'K-P001': {
-    internalId: '30154', // P014NN
-    minimum: 3,
-    quantity: 1,
-    name: 'Original Hold Pomade 32 oz Tub',
-  },
-  // buy 3 get 1 free
-  'K-P002': {
-    internalId: '24885', // P015NN
-    minimum: 3,
-    quantity: 1,
-    name: 'Firme (Strong) Hold Pomade 32 oz Tub',
-  },
-  // buy 3 get 1 free
-  'K-P129': {
-    internalId: '24932', // P176NN
-    minimum: 3,
-    quantity: 1,
-    name: 'Matte Pomade 32 oz Tub',
-  },
-  // buy 6 pack get 16 oz free
-  'K-P495-6': {
-    internalId: '34578', // P497NN
+  // buy 6 get 1 free
+  'K-P233': {
+    internalId: '25332', // P233NN
     minimum: 1,
     quantity: 1,
-    name: 'Daily Shampoo 16 oz',
+    name: 'Whiskey Bar Beard Oil',
   },
-  // buy 6 pack get 16 oz free
-  'K-P496-6': {
-    internalId: '34579', // P497NN
+  // buy 6 get 1 free
+  'K-P294': {
+    internalId: '25343', // P294NN
     minimum: 1,
     quantity: 1,
-    name: 'Daily Conditioner 16 oz',
+    name: 'Beard Balm - Whiskey Bar',
+  },
+  // buy 6 get 1 free
+  'K-P488-6': {
+    internalId: '34530', // P408NN
+    minimum: 1,
+    quantity: 1,
+    name: 'Whiskey Bar Aftershave - 3.3 oz.',
+  },
+  // buy 6 get 1 free
+  'K-P492-6': {
+    internalId: '34543', // P408NN
+    minimum: 1,
+    quantity: 1,
+    name: 'Whiskey Bar Aftershave - 8 oz.',
+  },
+  // buy 12 get 1 free
+  'K-P546': {
+    internalId: '35553', // P546NN
+    minimum: 1,
+    quantity: 1,
+    name: 'Whiskey Bar Firme (Strong) Hold Pomade',
+  },
+  // buy 6 get 1 free
+  'K-P494-6': {
+    internalId: '34554', // P494NN
+    minimum: 1,
+    quantity: 1,
+    name: 'Whiskey Bar Shave Soap',
   },
 };
+
+// TODO: move this to a script deployment param setting
+const use: string = 'config';
 
 const getSkuFromName = (name: string) => {
   const arr = name.split(' ');

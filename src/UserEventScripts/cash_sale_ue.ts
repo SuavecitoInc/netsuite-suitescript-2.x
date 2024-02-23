@@ -18,6 +18,7 @@ export let beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
       Ebay = 'eBay',
       Professional = 'Shopify-Professionals',
       Warehouse = 'Shopify-Warehouse',
+      Walmart = 'Walmart',
     }
 
     enum SalesRep {
@@ -27,6 +28,7 @@ export let beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
       Ebay = 73561, // eBay Store
       Professional = 2064179, // Professional Store
       Warehouse = 2064180, // Warehouse Store
+      Walmart = 7021663, // Walmart Store
     }
 
     const currentRecord = context.newRecord;
@@ -55,6 +57,9 @@ export let beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
       }
       if (marketplace === Marketplace.Warehouse) {
         salesRep = SalesRep.Warehouse;
+      }
+      if (marketplace === Marketplace.Walmart) {
+        salesRep = SalesRep.Walmart;
       }
       // set sales rep
       if (salesRep) {

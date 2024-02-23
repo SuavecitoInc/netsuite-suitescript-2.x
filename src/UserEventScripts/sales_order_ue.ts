@@ -80,6 +80,7 @@ function handleMarketplace(context: EntryPoints.UserEvent.beforeSubmitContext) {
     Ebay = 'eBay',
     Professional = 'Shopify-Professionals',
     Warehouse = 'Shopify-Warehouse',
+    Walmart = 'Walmart',
   }
 
   enum SalesRep {
@@ -89,6 +90,7 @@ function handleMarketplace(context: EntryPoints.UserEvent.beforeSubmitContext) {
     Ebay = 73561, // eBay Store
     Professional = 2064179, // Professional Store
     Warehouse = 2064180, // Warehouse Store
+    Walmart = 7021663, // Walmart Store
   }
 
   const currentRecord = context.newRecord;
@@ -117,6 +119,9 @@ function handleMarketplace(context: EntryPoints.UserEvent.beforeSubmitContext) {
     }
     if (marketplace === Marketplace.Warehouse) {
       salesRep = SalesRep.Warehouse;
+    }
+    if (marketplace === Marketplace.Walmart) {
+      salesRep = SalesRep.Walmart;
     }
     // set sales rep
     if (salesRep) {
