@@ -18,7 +18,57 @@ import * as log from 'N/log';
  * name: overwrite line item name / description
  * example -> { [key: string]: { internalId: string; minimum: number; quantity: number; name: string } }
  */
-import * as config from './wholesale_deals_config.js';
+export const config: {
+  [key: string]: {
+    internalId: string;
+    minimum: number;
+    quantity: number;
+    name: string;
+  };
+} = {
+  // buy 6 get 1 free
+  'K-P233': {
+    internalId: '25332', // P233NN
+    minimum: 1,
+    quantity: 1,
+    name: 'Whiskey Bar Beard Oil',
+  },
+  // buy 6 get 1 free
+  'K-P294': {
+    internalId: '25343', // P294NN
+    minimum: 1,
+    quantity: 1,
+    name: 'Beard Balm - Whiskey Bar',
+  },
+  // buy 6 get 1 free
+  'K-P488-6': {
+    internalId: '34530', // P408NN
+    minimum: 1,
+    quantity: 1,
+    name: 'Whiskey Bar Aftershave - 3.3 oz.',
+  },
+  // buy 6 get 1 free
+  'K-P492-6': {
+    internalId: '34543', // P408NN
+    minimum: 1,
+    quantity: 1,
+    name: 'Whiskey Bar Aftershave - 8 oz.',
+  },
+  // buy 12 get 1 free
+  'K-P546': {
+    internalId: '35553', // P546NN
+    minimum: 1,
+    quantity: 1,
+    name: 'Whiskey Bar Firme (Strong) Hold Pomade',
+  },
+  // buy 6 get 1 free
+  'K-P494-6': {
+    internalId: '34554', // P494NN
+    minimum: 1,
+    quantity: 1,
+    name: 'Whiskey Bar Shave Soap',
+  },
+};
 
 // TODO: move this to a script deployment param setting
 const use: string = 'config';
