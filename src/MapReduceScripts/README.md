@@ -368,3 +368,11 @@ Ordered by date of last order then by id
     <td>Sales Rep ID</td>
   </tr>
 </table>
+
+## OOS NOTIFICATION
+
+> The script will create a search of all items with no date set in <em>MW OOS Notification Date Added</em> field. It will then check <em>Inventory Location Qty Available</em> . If the location qty available is 0, it will then set the <em>MW OOS Notification Date Added</em> field with the current date / time and add the item to the email notification being sent.
+
+## OOS NOTIFICATION RESET
+
+> The script will create a search of all items with a date set in <em>MW Assembly Notification Date Added</em> field. It will then check for <em>Inventory Location Qty Available</em>. If there is location quantity available, the item is considered in stock. The script will clear the <em>MW OOS Notification Date Added</em> field.
