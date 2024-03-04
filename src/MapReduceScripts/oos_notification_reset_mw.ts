@@ -70,9 +70,9 @@ export const getInputData: EntryPoints.MapReduce.getInputData = () => {
       {
         name: 'formulanumeric',
         formula:
-          'CASE WHEN NVL({locationquantityavailable}, 0) = 0 THEN 1 ELSE 0 END',
-        operator: search.Operator.GREATERTHAN,
-        values: '0',
+          'CASE WHEN NVL({locationquantityavailable}, 0) > 0 THEN 1 ELSE 0 END',
+        operator: search.Operator.EQUALTO,
+        values: '1',
       },
     ],
   });
@@ -134,15 +134,15 @@ export const map: EntryPoints.MapReduce.map = (
     details: context.value,
   });
 
-  const assemblyResult = JSON.parse(context.value);
+  const itemResult = JSON.parse(context.value);
 
   log.debug({
-    title: 'ASSEMBLY RESULT',
-    details: assemblyResult,
+    title: 'ITEM RESULT',
+    details: itemResult,
   });
 
   const { id, sku, type, displayName, locationQuantityAvailable } =
-    assemblyResult as unknown as Item;
+    itemResult as unknown as Item;
 
   // set notification field
   // set type
@@ -174,7 +174,7 @@ export const map: EntryPoints.MapReduce.map = (
     id,
     sku,
     type,
-    name,
+    displayName,
     locationQuantityAvailable,
     dateRemovedString,
   });
@@ -217,7 +217,7 @@ export const summarize: EntryPoints.MapReduce.summarize = (
       count % 2 ? backgroundColor : ''
     }">
       <td style="padding: 0 15px;">${key}</td>
-      <td style="padding: 0 15px;">${value.name}</td>
+      <td style="padding: 0 15px;">${value.displayName}</td>
       <td style="padding: 0 15px;">${locationQuantityAvailable}</td>
       <td style="padding: 0 15px;">${value.dateRemovedString}</td>
     </tr>`;
