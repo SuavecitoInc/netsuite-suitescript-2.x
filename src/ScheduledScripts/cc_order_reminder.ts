@@ -103,7 +103,7 @@ const sendEmail = (data: CustomerData) => {
       author: 207,
       recipients: emailRecipient,
       cc: emailList,
-      replyTo: 'jriv@suavecito.com',
+      replyTo: 'noreply@suavecito.com',
       subject: `${data.customerName} Order Reminder`,
       body: html,
     });

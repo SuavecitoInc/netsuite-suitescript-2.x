@@ -173,7 +173,7 @@ const sendEmail = (
     author: 207,
     recipients: userId,
     bcc: ['207'],
-    replyTo: 'jriv@suavecito.com',
+    replyTo: 'noreply@suavecito.com',
     subject: 'Auto Created Payment Transactions (' + transactionCount + ')',
     body: html,
   });

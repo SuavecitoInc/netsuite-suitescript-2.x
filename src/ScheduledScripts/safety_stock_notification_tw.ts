@@ -189,7 +189,7 @@ const sendEmail = (items: Item[], fileId: number) => {
   email.send({
     author: 207,
     recipients: emailRecipient,
-    replyTo: 'jriv@suavecito.com',
+    replyTo: 'noreply@suavecito.com',
     bcc: emailList,
     subject: `Safety Stock Level Notification - Townsend`,
     body: html,
