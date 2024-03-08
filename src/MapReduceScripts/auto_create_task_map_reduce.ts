@@ -254,7 +254,7 @@ const sendEmail = (tasksCount: number, content: string) => {
     author: 207,
     recipients: 207,
     bcc: ['206'],
-    replyTo: 'jriv@suavecito.com',
+    replyTo: 'noreply@suavecito.com',
     subject: 'Auto Created Follow-Up Tasks (' + tasksCount + ')',
     body: html,
   });

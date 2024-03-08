@@ -243,14 +243,16 @@ const sendEmail = (content: string) => {
     runtime
       .getCurrentScript()
       .getParameter({ name: 'custscript_sp_oos_notif_r_mw_cc' })
-  ).split(',');
+  )
+    .split(',')
+    .map(e => e.trim());
 
   let html = `
     <h3>The following items are now in stock at the Main Warehouse..</h3>
     <table style="border-spacing: 0;">
       <tr style="text-align: left; padding: 0 15px; background-color: #000; color: #fff;">
         <th style="padding: 0 15px;">SKU</th>
-        <th style="padding: 0 15px;">Name</th>
+        <th style="padding: 0 15px;">Name</th>sa
         <th style="padding: 0 15px;">Qty Available</th>
         <th style="padding: 0 15px;">Date Removed</th>
       </tr>
@@ -269,7 +271,7 @@ const sendEmail = (content: string) => {
     author: 207,
     recipients: recipient,
     bcc: bcc,
-    replyTo: 'jriv@suavecito.com',
+    replyTo: 'noreply@suavecito.com',
     subject: 'Alert: Main Warehouse Back In Stock Notification',
     body: html,
   });

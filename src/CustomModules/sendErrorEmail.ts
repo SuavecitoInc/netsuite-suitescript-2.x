@@ -25,7 +25,7 @@ export const send = (subject: string, errorMsg: string, data: JSON) => {
   email.send({
     author: 207,
     recipients: 207,
-    replyTo: 'jriv@suavecito.com',
+    replyTo: 'noreply@suavecito.com',
     subject: subject,
     body: html,
   });

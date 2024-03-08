@@ -167,7 +167,7 @@ const sendEmail = (items: Item[]) => {
   email.send({
     author: 207,
     recipients: emailRecipient,
-    replyTo: 'jriv@suavecito.com',
+    replyTo: 'noreply@suavecito.com',
     bcc: emailList,
     subject: `Safety Stock Level Watch List Removal - Main Warehouse`,
     body: html,

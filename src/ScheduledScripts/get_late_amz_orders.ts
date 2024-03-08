@@ -184,7 +184,7 @@ const sendEmail = (results: Result[]) => {
     author: 207,
     recipients: emailRecipient,
     cc: emailList,
-    replyTo: 'jriv@suavecito.com',
+    replyTo: 'noreply@suavecito.com',
     subject: `The following Marketplace Orders are over 24 hrs old -  (${results.length})`,
     body: html,
   });

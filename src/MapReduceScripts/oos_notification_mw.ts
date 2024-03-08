@@ -10,6 +10,7 @@ import * as search from 'N/search';
 import * as record from 'N/record';
 import * as email from 'N/email';
 import * as log from 'N/log';
+import * as format from 'N/format';
 
 interface Item {
   id: string;
@@ -150,11 +151,20 @@ export const map: EntryPoints.MapReduce.map = (
     Assembly: record.Type.ASSEMBLY_ITEM,
     InvtPart: record.Type.INVENTORY_ITEM,
   };
+
+  // format with timezone
+  const now = new Date();
+  const today = format.format({
+    value: now,
+    type: format.Type.DATE,
+    timezone: format.Timezone.AMERICA_LOS_ANGELES,
+  });
+
   const savedId = record.submitFields({
     type: itemTypes[type],
     id: id,
     values: {
-      custitem_sp_oos_notification_date_mw: new Date(),
+      custitem_sp_oos_notification_date_mw: today,
     },
     options: {
       enableSourcing: false,
@@ -243,7 +253,9 @@ const sendEmail = (content: string) => {
     runtime
       .getCurrentScript()
       .getParameter({ name: 'custscript_sp_oos_notif_mw_cc' })
-  ).split(',');
+  )
+    .split(',')
+    .map(e => e.trim());
 
   let html = `
     <h3>The following items are OOS at the Main Warehouse..</h3>
@@ -269,7 +281,7 @@ const sendEmail = (content: string) => {
     author: 207,
     recipients: recipient,
     bcc: bcc,
-    replyTo: 'jriv@suavecito.com',
+    replyTo: 'noreply@suavecito.com',
     subject: 'Alert: Main Warehouse OOS Notification',
     body: html,
   });
