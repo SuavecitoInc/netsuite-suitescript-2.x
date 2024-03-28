@@ -49,7 +49,7 @@ export const getInputData: EntryPoints.MapReduce.getInputData = () => {
         summary: search.Summary.GROUP,
       },
       {
-        name: 'custitem_sp_mw_assm_notif_min',
+        name: 'custitem_sp_twn_assm_notif_min',
         summary: search.Summary.GROUP,
       },
       {
