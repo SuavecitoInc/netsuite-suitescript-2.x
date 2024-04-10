@@ -460,6 +460,12 @@ const inventoryAdjustment = (
     type: record.Type.INVENTORY_ADJUSTMENT,
     isDynamic: true,
   });
+
+  adjustmentRecord.setValue({
+    fieldId: 'subsidiary',
+    value: 1,
+  });
+
   adjustmentRecord.setValue({
     fieldId: 'account',
     value: 213,
