@@ -67,9 +67,9 @@ const shopifyStore = {
     text: 'WAREHOUSE',
     value: 'warehouse',
   },
-  CERVEZACITO: {
-    text: 'CERVEZA CITO',
-    value: 'cervezacito',
+  BARBER_CART: {
+    text: 'BARBER CART',
+    value: 'barbercart',
   },
 };
 
@@ -145,8 +145,8 @@ const onGet = (response: https.ServerResponse) => {
     text: shopifyStore.PROFESSIONAL.text,
   });
   storeSelect.addSelectOption({
-    value: shopifyStore.CERVEZACITO.value,
-    text: shopifyStore.CERVEZACITO.text,
+    value: shopifyStore.BARBER_CART.value,
+    text: shopifyStore.BARBER_CART.text,
   });
   storeSelect.setHelpText({
     help: 'The Shopify store to create the product in.',
@@ -395,7 +395,7 @@ const buildItemObject = (
     productDescription = 'custitem_fa_shpfy_prod_description_pro';
     shopifyTags = 'custitem_fa_shpfy_tags_pro';
     compareAtPrice = 'custitem_fa_shpfy_compare_at_price_pro';
-  } else if (store === shopifyStore.CERVEZACITO.value) {
+  } else if (store === shopifyStore.BARBER_CART.value) {
     priceLevel = 'baseprice'; // custitem_fa_shpfy_cc_price
     productDescription = 'custitem_fa_shpfy_prod_description_cc';
     shopifyTags = 'custitem_fa_shpfy_tags_cc';
@@ -655,8 +655,8 @@ const postItemToShopify = (
     storeURL = 'https://suavecito-warehouse.myshopify.com/admin/products/';
   } else if (store === shopifyStore.PROFESSIONAL.value) {
     storeURL = 'https://suavecito-professionals.myshopify.com/admin/products/';
-  } else if (store === shopifyStore.CERVEZACITO.value) {
-    storeURL = 'https://cervezacito.myshopify.com/admin/products/';
+  } else if (store === shopifyStore.BARBER_CART.value) {
+    storeURL = 'https://barbershop-cart.myshopify.com/admin/products/';
   } else {
     throw new Error('Invalid Store');
   }
