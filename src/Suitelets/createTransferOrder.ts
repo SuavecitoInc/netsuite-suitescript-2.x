@@ -34,6 +34,9 @@ export const create = (
     isDynamic: true,
   });
 
+  // set subsidiary
+  transferOrder.setValue('subsidiary', 1);
+
   transferOrder.setValue('trandate', new Date());
   transferOrder.setValue('memo', memo);
   // order status - use default (Pending Fulfillment)
