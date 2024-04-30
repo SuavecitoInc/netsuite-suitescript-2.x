@@ -156,8 +156,13 @@ export const map: EntryPoints.MapReduce.map = (
   const now = new Date();
   const today = format.format({
     value: now,
-    type: format.Type.DATE,
+    type: format.Type.DATETIMETZ,
     timezone: format.Timezone.AMERICA_LOS_ANGELES,
+  });
+
+  log.debug({
+    title: 'TODAY - DATE/Time',
+    details: today,
   });
 
   const savedId = record.submitFields({
@@ -179,6 +184,26 @@ export const map: EntryPoints.MapReduce.map = (
   const dateAdded = new Date();
   let dateAddedString = dateAdded.toISOString();
   dateAddedString = dateAddedString.split('T')[0];
+
+  // submit custom record
+
+  const customRecord = record.create({
+    type: 'customrecord_sp_notification',
+    isDynamic: true,
+  });
+  customRecord.setValue({
+    fieldId: 'name',
+    value: `${sku} - ${today}`,
+  });
+  customRecord.setValue({
+    fieldId: 'custrecord_sp_notification_item',
+    value: id,
+  });
+  customRecord.setValue({
+    fieldId: 'custrecord_sp_notification_type',
+    value: 1,
+  });
+  customRecord.save();
 
   context.write(sku, {
     id,
