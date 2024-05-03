@@ -22,6 +22,37 @@ interface Item {
   type: string;
 }
 
+// custom record - notification type
+// fields: item, type, date, reset_date
+const saveNotification = (
+  id: string,
+  sku: string,
+  today: string,
+  type: number = 1
+) => {
+  const customRecord = record.create({
+    type: 'customrecord_sp_item_notification',
+    isDynamic: true,
+  });
+  customRecord.setValue({
+    fieldId: 'name',
+    value: `${sku} - ${today}`,
+  });
+  customRecord.setValue({
+    fieldId: 'custrecord_sp_item_notification_item',
+    value: id,
+  });
+  customRecord.setValue({
+    fieldId: 'custrecord_sp_item_notification_type',
+    value: type,
+  });
+  customRecord.setValue({
+    fieldId: 'custrecord_sp_item_notification_send',
+    value: new Date(today),
+  });
+  customRecord.save();
+};
+
 // must return array as context
 export const getInputData: EntryPoints.MapReduce.getInputData = () => {
   // create search
@@ -186,24 +217,7 @@ export const map: EntryPoints.MapReduce.map = (
   dateAddedString = dateAddedString.split('T')[0];
 
   // submit custom record
-
-  const customRecord = record.create({
-    type: 'customrecord_sp_notification',
-    isDynamic: true,
-  });
-  customRecord.setValue({
-    fieldId: 'name',
-    value: `${sku} - ${today}`,
-  });
-  customRecord.setValue({
-    fieldId: 'custrecord_sp_notification_item',
-    value: id,
-  });
-  customRecord.setValue({
-    fieldId: 'custrecord_sp_notification_type',
-    value: 1,
-  });
-  customRecord.save();
+  saveNotification(id, sku, today);
 
   context.write(sku, {
     id,

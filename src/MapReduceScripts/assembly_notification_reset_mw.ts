@@ -10,6 +10,7 @@ import * as search from 'N/search';
 import * as record from 'N/record';
 import * as email from 'N/email';
 import * as log from 'N/log';
+import * as format from 'N/format';
 
 interface AssemblyResult {
   id: string;
@@ -20,6 +21,83 @@ interface AssemblyResult {
   minQuantity: number;
   buildable: number;
 }
+
+// custom record - notification type
+// fields: item, type, date, reset_date
+const updateNotification = (recordId: string) => {
+  const loadedRecord = record.load({
+    type: 'customrecord_sp_item_notification',
+    id: recordId,
+  });
+
+  if (loadedRecord) {
+    // format with timezone
+    const now = new Date();
+    const resetDate = format.format({
+      value: now,
+      type: format.Type.DATETIMETZ,
+      timezone: format.Timezone.AMERICA_LOS_ANGELES,
+    });
+
+    loadedRecord.setValue({
+      fieldId: 'custrecord_sp_item_notification_reset',
+      value: new Date(resetDate),
+    });
+    loadedRecord.save();
+  }
+};
+
+// searches for notification record and updates reset date
+const getNotification = (id: string) => {
+  const customRecordSearch = search.create({
+    type: 'customrecord_sp_item_notification',
+    columns: [
+      {
+        name: 'internalid',
+      },
+      {
+        name: 'created',
+        sort: search.Sort.DESC,
+      },
+      {
+        name: 'custrecord_sp_item_notification_item',
+      },
+      {
+        name: 'custrecord_sp_item_notification_type',
+      },
+      {
+        name: 'custrecord_sp_item_notification_send',
+      },
+      {
+        name: 'custrecord_sp_item_notification_reset',
+      },
+    ],
+    filters: [
+      {
+        name: 'custrecord_sp_item_notification_type',
+        operator: search.Operator.ANYOF,
+        values: ['2'], // low stock
+      },
+      {
+        name: 'custrecord_sp_item_notification_item',
+        operator: search.Operator.ANYOF,
+        values: [id],
+      },
+    ],
+  });
+
+  const resultSet = customRecordSearch.run();
+  const results = resultSet.getRange({ start: 0, end: 1 });
+  log.debug({
+    title: 'FOUND NOTIFICATION RESULTS',
+    details: results,
+  });
+  const recordId =
+    results.length > 0 ? results[0].getValue({ name: 'internalid' }) : null;
+  if (recordId) {
+    updateNotification(recordId as string);
+  }
+};
 
 // must return array as context
 export const getInputData: EntryPoints.MapReduce.getInputData = () => {
@@ -182,7 +260,12 @@ export const map: EntryPoints.MapReduce.map = (
   if (locationQuantityAvailable > minQuantity) {
     // load item record and update date
     // custitem_sp_mw_assm_notif_date_added
-    const dateRemoved = new Date();
+
+    const dateRemoved = format.format({
+      value: new Date(),
+      type: format.Type.DATETIMETZ,
+      timezone: format.Timezone.AMERICA_LOS_ANGELES,
+    });
     let dateRemovedString = dateRemoved.toISOString();
     dateRemovedString = dateRemovedString.split('T')[0];
 
@@ -197,6 +280,9 @@ export const map: EntryPoints.MapReduce.map = (
     });
 
     const itemRecordId = itemRecord.save();
+
+    // update notification record with reset date
+    getNotification(id);
 
     context.write(sku, {
       id,
@@ -230,7 +316,7 @@ export const summarize: EntryPoints.MapReduce.summarize = (
 
   // email
   let content: string = '';
-  let buildableAssemblies = 0;
+  let resetCount = 0;
   const backgroundColor = 'background-color: #ccc;';
   summary.output.iterator().each(function (key: string, value: any) {
     value = JSON.parse(value);
@@ -246,7 +332,7 @@ export const summarize: EntryPoints.MapReduce.summarize = (
         : 0;
 
     content += `<tr style="text-align: left;${
-      buildableAssemblies % 2 ? backgroundColor : ''
+      resetCount % 2 ? backgroundColor : ''
     }">
       <td style="padding: 0 15px;">${key}</td>
       <td style="padding: 0 15px;">${value.name}</td>
@@ -255,16 +341,21 @@ export const summarize: EntryPoints.MapReduce.summarize = (
       <td style="padding: 0 15px;">${value.buildable}</td>
       <td style="padding: 0 15px;">${value.dateRemovedString}</td>
     </tr>`;
-    buildableAssemblies++;
+    resetCount++;
     return true;
   });
 
-  if (buildableAssemblies > 0) {
-    sendEmail(buildableAssemblies, content);
+  if (resetCount > 0) {
+    sendEmail(resetCount, content);
+  } else {
+    log.debug({
+      title: 'NO ASSEMBLIES WERE RESET',
+      details: 'NOT SENDING EMAIL',
+    });
   }
 };
 
-const sendEmail = (buildableAssemblies: number, content: string) => {
+const sendEmail = (resetCount: number, content: string) => {
   const recipient = runtime
     .getCurrentScript()
     .getParameter({ name: 'custscript_sp_mw_assm_notif_r_rec' }) as string;
@@ -302,7 +393,7 @@ const sendEmail = (buildableAssemblies: number, content: string) => {
     replyTo: 'noreply@suavecito.com',
     subject:
       'Alert: Main Warehouse Assemblies Are Now Above Availability Limit (' +
-      buildableAssemblies +
+      resetCount +
       ')',
     body: html,
   });
