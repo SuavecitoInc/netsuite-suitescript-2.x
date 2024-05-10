@@ -17,9 +17,8 @@ interface AssemblyResult {
   sku: string;
   type: string;
   name: string;
-  locationQuantityAvailable: number;
+  available: number;
   minQuantity: number;
-  buildable: number;
   buildableAll: number;
 }
 
@@ -53,9 +52,128 @@ const saveNotification = (
   });
   customRecord.setValue({
     fieldId: 'custrecord_sp_item_notification_location',
-    value: '2',
+    value: '1',
   });
   customRecord.save();
+};
+
+const getBuildableAll = (id: string) => {
+  // create search to calculate buildable
+  const itemSearch = search.create({
+    type: search.Type.ITEM,
+    columns: [
+      {
+        name: 'formulatext',
+        formula:
+          'ROUND(NVL({memberitem.quantityavailable},0)/NVL({memberquantity},0),0)',
+        summary: search.Summary.MIN,
+      },
+    ],
+    filters: [
+      // member items to calc buildable
+      {
+        name: 'internalid',
+        operator: search.Operator.ANYOF,
+        values: [id],
+      },
+      {
+        name: 'type',
+        join: 'memberitem',
+        operator: search.Operator.ANYOF,
+        values: ['Assembly', 'InvtPart'],
+      },
+    ],
+  });
+
+  const itemResultSet = itemSearch.run();
+  const itemResultRange = itemResultSet.getRange({
+    start: 0,
+    end: 1,
+  });
+
+  log.debug('ITEM RESULT', itemResultRange[0]);
+  let buildable: string | number = itemResultRange[0].getValue({
+    name: 'formulatext',
+    summary: search.Summary.MIN,
+  }) as string;
+  if (buildable === null) {
+    buildable = '0';
+  }
+
+  buildable = parseInt(buildable);
+  return buildable;
+};
+
+const getItemByLocation = (id: string, locationId: string) => {
+  // create search to calculate buildable
+  const itemSearch = search.create({
+    type: search.Type.ITEM,
+    columns: [
+      {
+        name: 'formulatext',
+        formula:
+          'ROUND(NVL({memberitem.quantityavailable},0)/NVL({memberquantity},0),0)',
+        summary: search.Summary.MIN,
+      },
+      {
+        name: 'locationquantityavailable',
+        summary: search.Summary.GROUP,
+      },
+      {
+        name: 'custitem_sp_mw_assm_notif_min',
+        summary: search.Summary.GROUP,
+      },
+    ],
+    filters: [
+      // member items to calc buildable
+      {
+        name: 'internalid',
+        operator: search.Operator.ANYOF,
+        values: [id],
+      },
+      {
+        name: 'type',
+        join: 'memberitem',
+        operator: search.Operator.ANYOF,
+        values: ['Assembly', 'InvtPart'],
+      },
+      {
+        name: 'inventorylocation',
+        operator: search.Operator.IS,
+        values: [locationId], // main = 1, townsend = 2
+      },
+    ],
+  });
+
+  const itemResultSet = itemSearch.run();
+  const itemResultRange = itemResultSet.getRange({
+    start: 0,
+    end: 1,
+  });
+
+  log.debug('ITEM RESULT', itemResultRange[0]);
+
+  let locationQuantityAvailable: string | number = itemResultRange[0].getValue({
+    name: 'locationquantityavailable',
+    summary: search.Summary.GROUP,
+  }) as string;
+  locationQuantityAvailable = locationQuantityAvailable
+    ? parseInt(locationQuantityAvailable)
+    : 0;
+
+  let buildable: string | number = itemResultRange[0].getValue({
+    name: 'formulatext',
+    summary: search.Summary.MIN,
+  }) as string;
+  buildable = buildable ? parseInt(buildable) : 0;
+
+  let minQuantity: string | number = itemResultRange[0].getValue({
+    name: 'custitem_sp_mw_assm_notif_min',
+    summary: search.Summary.GROUP,
+  }) as string;
+  minQuantity = minQuantity ? parseInt(minQuantity) : 0;
+
+  return { buildable, locationQuantityAvailable, minQuantity };
 };
 
 // must return array as context
@@ -66,33 +184,21 @@ export const getInputData: EntryPoints.MapReduce.getInputData = () => {
     columns: [
       {
         name: 'internalid',
-        summary: search.Summary.GROUP,
       },
       {
         name: 'custitem_sp_item_sku',
-        summary: search.Summary.GROUP,
       },
       {
         name: 'type',
-        summary: search.Summary.GROUP,
       },
       {
         name: 'displayname',
-        summary: search.Summary.GROUP,
       },
       {
-        name: 'locationquantityavailable',
-        summary: search.Summary.GROUP,
+        name: 'quantityavailable',
       },
       {
-        name: 'custitem_sp_twn_assm_notif_min',
-        summary: search.Summary.GROUP,
-      },
-      {
-        name: 'formulanumeric',
-        formula:
-          'ROUND(NVL({memberitem.locationquantityavailable},0)/NVL({memberquantity},0),0)',
-        summary: search.Summary.MIN,
+        name: 'custitem_sp_mw_assm_notif_min',
       },
     ],
     filters: [
@@ -102,32 +208,14 @@ export const getInputData: EntryPoints.MapReduce.getInputData = () => {
         values: ['Assembly'],
       },
       {
-        name: 'inventorylocation',
-        operator: search.Operator.IS,
-        values: [2], // townsend
-      },
-      {
-        name: 'custitem_sp_twn_assm_notif_min',
+        name: 'custitem_sp_mw_assm_notif_min',
         operator: search.Operator.ISNOTEMPTY,
         values: [],
       },
       {
-        name: 'custitem_sp_twn_assm_notif_date_added',
+        name: 'custitem_sp_mw_assm_notif_date_added',
         operator: search.Operator.ISEMPTY,
         values: [],
-      },
-      // member items to calc buildable
-      {
-        name: 'type',
-        join: 'memberitem',
-        operator: search.Operator.ANYOF,
-        values: ['Assembly', 'InvtPart'],
-      },
-      {
-        name: 'inventorylocation',
-        join: 'memberitem',
-        operator: search.Operator.ANYOF,
-        values: [2], // townsend
       },
     ],
   });
@@ -147,92 +235,36 @@ export const getInputData: EntryPoints.MapReduce.getInputData = () => {
       // get values
       const id = result.getValue({
         name: 'internalid',
-        summary: search.Summary.GROUP,
       }) as string;
       const sku = result.getValue({
         name: 'custitem_sp_item_sku',
-        summary: search.Summary.GROUP,
       }) as string;
       const type = result.getValue({
         name: 'type',
-        summary: search.Summary.GROUP,
       }) as string;
       const name = result.getValue({
         name: 'displayname',
-        summary: search.Summary.GROUP,
       }) as string;
-      const locationQuantityAvailable = parseInt(
+      const available = parseInt(
         result.getValue({
-          name: 'locationquantityavailable',
-          summary: search.Summary.GROUP,
+          name: 'quantityavailable',
         }) as string
       );
       const minQuantity = parseInt(
         result.getValue({
-          name: 'custitem_sp_twn_assm_notif_min',
-          summary: search.Summary.GROUP,
-        }) as string
-      );
-      const buildable = parseInt(
-        result.getValue({
-          name: 'formulanumeric',
-          summary: search.Summary.MIN,
+          name: 'custitem_sp_mw_assm_notif_min',
         }) as string
       );
 
-      // create search to calculate buildable
-      const itemSearch = search.create({
-        type: search.Type.ITEM,
-        columns: [
-          {
-            name: 'formulatext',
-            formula:
-              'ROUND(NVL({memberitem.quantityavailable},0)/NVL({memberquantity},0),0)',
-            summary: search.Summary.MIN,
-          },
-        ],
-        filters: [
-          // member items to calc buildable
-          {
-            name: 'internalid',
-            operator: search.Operator.ANYOF,
-            values: [id],
-          },
-          {
-            name: 'type',
-            join: 'memberitem',
-            operator: search.Operator.ANYOF,
-            values: ['Assembly', 'InvtPart'],
-          },
-        ],
-      });
-
-      const itemResultSet = itemSearch.run();
-      const itemResultRange = itemResultSet.getRange({
-        start: 0,
-        end: 1,
-      });
-
-      log.debug('ITEM RESULT', itemResultRange[0]);
-      let value = itemResultRange[0].getValue({
-        name: 'formulatext',
-        summary: search.Summary.MIN,
-      }) as string;
-      if (value === null) {
-        value = '0';
-      }
-
-      log.debug('VALUE', value);
-      const buildableAll = parseInt(value);
+      const buildableAll = getBuildableAll(id);
 
       assemblyResults.push({
         id,
         sku,
         type,
         name,
-        locationQuantityAvailable,
+        available,
         minQuantity,
-        buildable,
         buildableAll,
       });
     });
@@ -257,25 +289,46 @@ export const map: EntryPoints.MapReduce.map = (
     details: assemblyResult,
   });
 
-  const {
-    id,
-    sku,
-    type,
-    name,
-    locationQuantityAvailable,
-    minQuantity,
-    buildable,
-    buildableAll,
-  } = assemblyResult as unknown as AssemblyResult;
+  const { id, sku, type, name, available, minQuantity, buildableAll } =
+    assemblyResult as unknown as AssemblyResult;
 
-  if (locationQuantityAvailable < minQuantity) {
+  // main warehouse
+  const {
+    buildable: buildableMW,
+    locationQuantityAvailable: availableMW,
+    minQuantity: minQuantityMW,
+  } = getItemByLocation(id, '1');
+
+  // townsend
+  const {
+    buildable: buildableTWN,
+    locationQuantityAvailable: availableTWN,
+    minQuantity: minQuantityTWN,
+  } = getItemByLocation(id, '2');
+
+  // if main warehouse is below min and townsend is above main warehouse min
+  // then transfer to main warehouse else build at townsend
+  if (availableMW < minQuantityMW) {
+    const diffMW =
+      minQuantityMW - availableMW > 0 ? minQuantityMW - availableMW : 0;
+    const diffTWN =
+      availableTWN - minQuantityMW > 0 ? availableTWN - minQuantityMW : 0;
+    const diffTotal = diffTWN + diffMW;
+
+    let isTransfer = false;
+    let message = `Build at least ${diffTotal} units to satisfy MW min`;
+    if (availableTWN >= minQuantityMW) {
+      isTransfer = true;
+      message = 'Transfer to Main Warehouse';
+    }
     // load item record and update date
-    // custitem_sp_twn_assm_notif_date_added
+    // custitem_sp_mw_assm_notif_date_added
     const now = format.format({
       value: new Date(),
       type: format.Type.DATETIMETZ,
       timezone: format.Timezone.AMERICA_LOS_ANGELES,
     });
+
     const dateAdded = new Date(now);
     const itemRecord = record.load({
       type: record.Type.ASSEMBLY_ITEM,
@@ -283,11 +336,11 @@ export const map: EntryPoints.MapReduce.map = (
     });
 
     itemRecord.setValue({
-      fieldId: 'custitem_sp_twn_assm_notif_date_added',
+      fieldId: 'custitem_sp_mw_assm_notif_date_added',
       value: dateAdded,
     });
 
-    const itemRecordId = itemRecord.save();
+    itemRecord.save();
 
     let dateAddedString = dateAdded.toISOString();
     dateAddedString = dateAddedString.split('T')[0];
@@ -300,11 +353,16 @@ export const map: EntryPoints.MapReduce.map = (
       sku,
       type,
       name,
-      locationQuantityAvailable,
+      available,
+      availableMW,
+      availableTWN,
       minQuantity,
       dateAddedString,
-      buildable,
       buildableAll,
+      isTransfer,
+      buildableMW,
+      buildableTWN,
+      message,
     });
   }
 };
@@ -338,20 +396,20 @@ export const summarize: EntryPoints.MapReduce.summarize = (
       details: value,
     });
 
-    const locationQuantityAvailable =
-      value.locationQuantityAvailable !== null
-        ? value.locationQuantityAvailable
-        : 0;
+    const available = value.available !== null ? value.available : 0;
     content += `<tr style="text-align: left;${
       buildableAssemblies % 2 ? backgroundColor : ''
     }">
       <td style="padding: 0 15px;">${key}</td>
       <td style="padding: 0 15px;">${value.name}</td>
-      <td style="padding: 0 15px;">${locationQuantityAvailable}</td>
+      <td style="padding: 0 15px;">${value.availableMW}</td>
+      <td style="padding: 0 15px;">${value.availableTWN}</td>
+      <td style="padding: 0 15px;">${available}</td>
       <td style="padding: 0 15px;">${value.minQuantity}</td>
-      <td style="padding: 0 15px;">${value.buildable}</td>
+      <td style="padding: 0 15px;">${value.buildableTWN}</td>
       <td style="padding: 0 15px;">${value.buildableAll}</td>
       <td style="padding: 0 15px;">${value.dateAddedString}</td>
+      <td style="padding: 0 15px;">${value.message}</td>
     </tr>`;
     buildableAssemblies++;
     return true;
@@ -370,11 +428,11 @@ export const summarize: EntryPoints.MapReduce.summarize = (
 const sendEmail = (buildableAssemblies: number, content: string) => {
   const recipient = runtime
     .getCurrentScript()
-    .getParameter({ name: 'custscript_sp_twn_assm_notif_rec' }) as string;
+    .getParameter({ name: 'custscript_sp_mw_assm_notif_rec' }) as string;
   const bcc = String(
     runtime
       .getCurrentScript()
-      .getParameter({ name: 'custscript_sp_twn_assm_notif_cc' })
+      .getParameter({ name: 'custscript_sp_mw_assm_notif_cc' })
   ).split(',');
 
   let html = `
@@ -383,11 +441,14 @@ const sendEmail = (buildableAssemblies: number, content: string) => {
       <tr style="text-align: left; padding: 0 15px; background-color: #000; color: #fff;">
         <th style="padding: 0 15px;">SKU</th>
         <th style="padding: 0 15px;">Name</th>
-        <th style="padding: 0 15px;">Qty Available</th>
-        <th style="padding: 0 15px;">Min Qty</th>
+        <th style="padding: 0 15px;">1ty Available (MW)</th>
+        <th style="padding: 0 15px;">1ty Available (TWN)</th>
+        <th style="padding: 0 15px;">Qty Available (ALL)</th>
+        <th style="padding: 0 15px;">Min Qty (MW)</th>
         <th style="padding: 0 15px;">Buildable TWN</th>
         <th style="padding: 0 15px;">Buildable ALL</th>
         <th style="padding: 0 15px;">Date Added</th>
+        <th style="padding: 0 15px;">Action</th>
       </tr>
       ${content}
     </table>
@@ -403,10 +464,10 @@ const sendEmail = (buildableAssemblies: number, content: string) => {
   email.send({
     author: 207,
     recipients: recipient,
-    bcc: bcc,
+    cc: bcc,
     replyTo: 'noreply@suavecito.com',
     subject:
-      'Alert: Townsend Assemblies Below Availability Limit (' +
+      'Alert: Main Warehouse Assemblies Below Availability Limit (' +
       buildableAssemblies +
       ')',
     body: html,

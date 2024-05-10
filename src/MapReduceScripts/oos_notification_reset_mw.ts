@@ -10,6 +10,7 @@ import * as search from 'N/search';
 import * as record from 'N/record';
 import * as email from 'N/email';
 import * as log from 'N/log';
+import * as format from 'N/format';
 
 interface Item {
   id: string;
@@ -20,6 +21,88 @@ interface Item {
   locationQuantityAvailable: string;
   type: string;
 }
+
+// custom record - notification type
+// fields: item, type, date, reset_date
+const updateNotification = (recordId: string) => {
+  const loadedRecord = record.load({
+    type: 'customrecord_sp_item_notification',
+    id: recordId,
+  });
+
+  if (loadedRecord) {
+    // format with timezone
+    const now = new Date();
+    const resetDate = format.format({
+      value: now,
+      type: format.Type.DATETIMETZ,
+      timezone: format.Timezone.AMERICA_LOS_ANGELES,
+    });
+
+    loadedRecord.setValue({
+      fieldId: 'custrecord_sp_item_notification_reset',
+      value: new Date(resetDate),
+    });
+    loadedRecord.save();
+  }
+};
+
+// searches for notification record and updates reset date
+const getNotification = (id: string) => {
+  const customRecordSearch = search.create({
+    type: 'customrecord_sp_item_notification',
+    columns: [
+      {
+        name: 'internalid',
+      },
+      {
+        name: 'created',
+        sort: search.Sort.DESC,
+      },
+      {
+        name: 'custrecord_sp_item_notification_item',
+      },
+      {
+        name: 'custrecord_sp_item_notification_type',
+      },
+      {
+        name: 'custrecord_sp_item_notification_send',
+      },
+      {
+        name: 'custrecord_sp_item_notification_reset',
+      },
+    ],
+    filters: [
+      {
+        name: 'custrecord_sp_item_notification_type',
+        operator: search.Operator.ANYOF,
+        values: ['1'],
+      },
+      {
+        name: 'custrecord_sp_item_notification_location',
+        operator: search.Operator.ANYOF,
+        values: ['1'],
+      },
+      {
+        name: 'custrecord_sp_item_notification_item',
+        operator: search.Operator.ANYOF,
+        values: [id],
+      },
+    ],
+  });
+
+  const resultSet = customRecordSearch.run();
+  const results = resultSet.getRange({ start: 0, end: 1 });
+  log.debug({
+    title: 'FOUND NOTIFICATION RESULTS',
+    details: results,
+  });
+  const recordId =
+    results.length > 0 ? results[0].getValue({ name: 'internalid' }) : null;
+  if (recordId) {
+    updateNotification(recordId as string);
+  }
+};
 
 // must return array as context
 export const getInputData: EntryPoints.MapReduce.getInputData = () => {
@@ -166,9 +249,16 @@ export const map: EntryPoints.MapReduce.map = (
     details: savedId,
   });
 
-  const dateRemoved = new Date();
+  const dateRemoved = format.format({
+    value: new Date(),
+    type: format.Type.DATETIMETZ,
+    timezone: format.Timezone.AMERICA_LOS_ANGELES,
+  });
   let dateRemovedString = dateRemoved.toISOString();
   dateRemovedString = dateRemovedString.split('T')[0];
+
+  // update notification record with reset date
+  getNotification(id);
 
   context.write(sku, {
     id,
@@ -252,7 +342,7 @@ const sendEmail = (content: string) => {
     <table style="border-spacing: 0;">
       <tr style="text-align: left; padding: 0 15px; background-color: #000; color: #fff;">
         <th style="padding: 0 15px;">SKU</th>
-        <th style="padding: 0 15px;">Name</th>sa
+        <th style="padding: 0 15px;">Name</th>
         <th style="padding: 0 15px;">Qty Available</th>
         <th style="padding: 0 15px;">Date Removed</th>
       </tr>
@@ -270,7 +360,7 @@ const sendEmail = (content: string) => {
   email.send({
     author: 207,
     recipients: recipient,
-    bcc: bcc,
+    cc: bcc,
     replyTo: 'noreply@suavecito.com',
     subject: 'Alert: Main Warehouse Back In Stock Notification',
     body: html,

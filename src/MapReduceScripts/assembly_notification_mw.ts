@@ -149,7 +149,7 @@ export const getInputData: EntryPoints.MapReduce.getInputData = () => {
         }) as string
       );
 
-      // create search
+      // create search to calculate buildable
       const itemSearch = search.create({
         type: search.Type.ITEM,
         columns: [
