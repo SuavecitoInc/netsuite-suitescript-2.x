@@ -354,6 +354,8 @@ export const map: EntryPoints.MapReduce.map = (
       type,
       name,
       available,
+      availableMW,
+      availableTWN,
       minQuantity,
       dateAddedString,
       buildableAll,
@@ -400,6 +402,8 @@ export const summarize: EntryPoints.MapReduce.summarize = (
     }">
       <td style="padding: 0 15px;">${key}</td>
       <td style="padding: 0 15px;">${value.name}</td>
+      <td style="padding: 0 15px;">${value.availableMW}</td>
+      <td style="padding: 0 15px;">${value.availableTWN}</td>
       <td style="padding: 0 15px;">${available}</td>
       <td style="padding: 0 15px;">${value.minQuantity}</td>
       <td style="padding: 0 15px;">${value.buildableTWN}</td>
@@ -432,11 +436,13 @@ const sendEmail = (buildableAssemblies: number, content: string) => {
   ).split(',');
 
   let html = `
-    <h3>The following SKU(s) are below the availability limit. Please assemble some.</h3>
+    <h3>The following SKU(s) are below the availability limit.</h3>
     <table style="border-spacing: 0;">
       <tr style="text-align: left; padding: 0 15px; background-color: #000; color: #fff;">
         <th style="padding: 0 15px;">SKU</th>
         <th style="padding: 0 15px;">Name</th>
+        <th style="padding: 0 15px;">1ty Available (MW)</th>
+        <th style="padding: 0 15px;">1ty Available (TWN)</th>
         <th style="padding: 0 15px;">Qty Available (ALL)</th>
         <th style="padding: 0 15px;">Min Qty (MW)</th>
         <th style="padding: 0 15px;">Buildable TWN</th>
@@ -458,10 +464,10 @@ const sendEmail = (buildableAssemblies: number, content: string) => {
   email.send({
     author: 207,
     recipients: recipient,
-    bcc: bcc,
+    cc: bcc,
     replyTo: 'noreply@suavecito.com',
     subject:
-      'Alert: Townsend Assemblies Below Availability Limit (' +
+      'Alert: Main Warehouse Assemblies Below Availability Limit (' +
       buildableAssemblies +
       ')',
     body: html,

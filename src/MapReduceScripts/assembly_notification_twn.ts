@@ -53,7 +53,7 @@ const saveNotification = (
   });
   customRecord.setValue({
     fieldId: 'custrecord_sp_item_notification_location',
-    value: '1',
+    value: '2',
   });
   customRecord.save();
 };

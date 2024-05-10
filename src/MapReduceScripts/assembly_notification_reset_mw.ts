@@ -79,6 +79,11 @@ const getNotification = (id: string) => {
         values: ['2'], // low stock
       },
       {
+        name: 'custrecord_sp_item_notification_location',
+        operator: search.Operator.ANYOF,
+        values: ['1'], // main warehouse
+      },
+      {
         name: 'custrecord_sp_item_notification_item',
         operator: search.Operator.ANYOF,
         values: [id],

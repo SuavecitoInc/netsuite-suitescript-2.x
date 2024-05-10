@@ -50,6 +50,10 @@ const saveNotification = (
     fieldId: 'custrecord_sp_item_notification_send',
     value: new Date(today),
   });
+  customRecord.setValue({
+    fieldId: 'custrecord_sp_item_notification_location',
+    value: 1,
+  });
   customRecord.save();
 };
 

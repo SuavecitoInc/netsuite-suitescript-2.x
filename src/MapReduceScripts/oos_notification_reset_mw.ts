@@ -79,6 +79,11 @@ const getNotification = (id: string) => {
         values: ['1'],
       },
       {
+        name: 'custrecord_sp_item_notification_location',
+        operator: search.Operator.ANYOF,
+        values: ['1'],
+      },
+      {
         name: 'custrecord_sp_item_notification_item',
         operator: search.Operator.ANYOF,
         values: [id],
