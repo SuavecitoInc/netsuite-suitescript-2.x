@@ -102,6 +102,16 @@ export const getInputData: EntryPoints.MapReduce.getInputData = () => {
         values: ['Assembly'],
       },
       {
+        name: 'isinactive',
+        operator: search.Operator.IS,
+        values: ['F'],
+      },
+      {
+        name: 'matrix',
+        operator: search.Operator.IS,
+        values: ['F'],
+      },
+      {
         name: 'inventorylocation',
         operator: search.Operator.IS,
         values: [2], // townsend

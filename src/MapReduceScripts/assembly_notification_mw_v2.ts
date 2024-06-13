@@ -208,6 +208,16 @@ export const getInputData: EntryPoints.MapReduce.getInputData = () => {
         values: ['Assembly'],
       },
       {
+        name: 'isinactive',
+        operator: search.Operator.IS,
+        values: ['F'],
+      },
+      {
+        name: 'matrix',
+        operator: search.Operator.IS,
+        values: ['F'],
+      },
+      {
         name: 'custitem_sp_mw_assm_notif_min',
         operator: search.Operator.ISNOTEMPTY,
         values: [],
