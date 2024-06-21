@@ -7,7 +7,6 @@
 import { EntryPoints } from 'N/types';
 import * as search from 'N/search';
 import * as serverWidget from 'N/ui/serverWidget';
-import * as runtime from 'N/runtime';
 import * as message from 'N/ui/message';
 import * as log from 'N/log';
 import { ServerRequest, ServerResponse } from 'N/https';
@@ -20,8 +19,6 @@ export let onRequest: EntryPoints.Suitelet.onRequest = (
 
   if (request.method === 'GET') {
     onGet(request, response);
-  } else {
-    onPost(request, response);
   }
 };
 
@@ -30,58 +27,46 @@ export let onRequest: EntryPoints.Suitelet.onRequest = (
  */
 const onGet = (request: ServerRequest, response: ServerResponse) => {
   // get all values of parameters with group in the name
-  let groupValues = [];
-  Object.keys(request.parameters).forEach(key => {
-    log.debug(key, request.parameters[key]);
-    if (key.includes('group')) {
-      groupValues.push(request.parameters[key]);
-    }
-  });
-  log.debug('groups', groupValues);
+  const groupValue = request.parameters.group;
+  const groupName = request.parameters.name;
+  log.debug('group', groupValue);
+  log.debug('name', groupName);
 
-  if (groupValues.length === 0) {
+  if (groupValue === undefined || groupName === undefined) {
     response.writePage(createErrorPage());
     return;
   }
 
-  const results = getItemReports(groupValues);
-  const page = createPage(results);
+  const results = getItemsWithReports(groupValue);
+  const page = createPage(groupName, results);
   response.writePage(page);
 };
 
-/**
- * Handles the Post Request
- */
-const onPost = (request: ServerRequest, response: ServerResponse) => {
-  const results = getItemReports([]);
-  const page = createPage(results);
-
-  response.writePage(page);
-};
-
-const getItemReports = (groups: string[]) => {
+const getItemsWithReports = (group: string) => {
   const itemReportSearch = search.create({
-    // type: search.Type.CUSTOM_RECORD + '1982',
-    type: 'customrecord_sp_item_report',
+    type: search.Type.ITEM,
     columns: [
       search.createColumn({
         name: 'internalid',
       }),
       search.createColumn({
-        name: 'custrecord_sp_item_report_rep_group',
+        name: 'custitem_sp_item_sku',
       }),
       search.createColumn({
-        name: 'custrecord_sp_item_report_rep_link',
+        name: 'type',
       }),
       search.createColumn({
-        name: 'custrecord_sp_item_report_items',
+        name: 'displayname',
+      }),
+      search.createColumn({
+        name: 'custitem_sp_item_reporting_group',
       }),
     ],
     filters: [
       search.createFilter({
-        name: 'custrecord_sp_item_report_rep_group',
+        name: 'custitem_sp_item_reporting_group',
         operator: search.Operator.ANYOF,
-        values: groups,
+        values: [group],
       }),
     ],
   });
@@ -96,12 +81,12 @@ const getItemReports = (groups: string[]) => {
     page.data.forEach(function (result) {
       itemReportResults.push({
         id: result.getValue({ name: 'internalid' }),
-        name: result.getText({ name: 'custrecord_sp_item_report_rep_group' }),
-        reporting_group: result.getValue({
-          name: 'custrecord_sp_item_report_rep_group',
+        sku: result.getValue({ name: 'custitem_sp_item_sku' }),
+        type: result.getValue({ name: 'type' }),
+        name: result.getValue({ name: 'displayname' }),
+        reporting_groups: result.getText({
+          name: 'custitem_sp_item_reporting_group',
         }),
-        url: result.getValue({ name: 'custrecord_sp_item_report_rep_link' }),
-        items: result.getValue({ name: 'custrecord_sp_item_report_items' }),
       });
     });
   });
@@ -110,7 +95,7 @@ const getItemReports = (groups: string[]) => {
 };
 
 const createErrorPage = () => {
-  const form = serverWidget.createForm({ title: 'Item Reports' });
+  const form = serverWidget.createForm({ title: 'Items in Reporting Group' });
   form.addPageInitMessage({
     type: message.Type.ERROR,
     title: 'ERROR:',
@@ -127,18 +112,18 @@ const createErrorPage = () => {
 };
 
 const createPage = (
+  name: string,
   results: {
     id: string;
+    sku: string;
+    type: string;
     name: string;
-    reporting_group: string;
-    url: string;
-    items: string;
+    reporting_groups: string;
   }[]
 ) => {
-  const itemReportsListLink = runtime.getCurrentScript().getParameter({
-    name: 'custscript_sp_item_reports_link',
+  const form = serverWidget.createForm({
+    title: `Items in Reporting Group: ${name}`,
   });
-  const form = serverWidget.createForm({ title: 'Item Reports' });
 
   if (results.length > 0) {
     form
@@ -153,55 +138,75 @@ const createPage = (
       .updateBreakType({
         breakType: serverWidget.FieldBreakType.STARTROW,
       }).defaultValue =
-      `To create an Item Report Record please click <a href="${itemReportsListLink}" target="_blank">here</a>`;
+      `To add a report to an item, go to the item record and select the Reporting Group under the Custom Reporting tab.`;
 
     const sublist = form.addSublist({
       id: 'custpage_item_reports_sublist',
       type: serverWidget.SublistType.LIST,
-      label: 'Reports',
+      label: 'Items',
     });
 
     sublist.addField({
-      id: 'custpage_result_id',
+      id: 'custpage_result_item_view',
+      type: 'text',
+      label: 'Edit | View',
+    });
+    sublist.addField({
+      id: 'custpage_result_item_id',
       type: 'text',
       label: 'Internal ID',
     });
     sublist.addField({
-      id: 'custpage_result_reporting_group_name',
+      id: 'custpage_result_item_sku',
       type: 'text',
-      label: 'Reporting Group Name',
+      label: 'SKU',
     });
     sublist.addField({
-      id: 'custpage_result_url',
+      id: 'custpage_result_item_type',
       type: 'text',
-      label: 'URL',
+      label: 'Type',
     });
     sublist.addField({
-      id: 'custpage_result_items',
+      id: 'custpage_result_item_name',
       type: 'text',
-      label: 'Items',
+      label: 'Name',
+    });
+    sublist.addField({
+      id: 'custpage_result_item_reporting_groups',
+      type: 'text',
+      label: 'Reporting Groups',
     });
 
     results.forEach(function (result, index) {
       sublist.setSublistValue({
-        id: 'custpage_result_id',
+        id: 'custpage_result_item_view',
+        line: index,
+        value: `<a href="/app/common/item/item.nl?id=${result.id}&e=T" target="_blank">Edit</a> | <a href="/app/common/item/item.nl?id=${result.id}" target="_blank">View</a>`,
+      });
+      sublist.setSublistValue({
+        id: 'custpage_result_item_id',
         line: index,
         value: result.id,
       });
       sublist.setSublistValue({
-        id: 'custpage_result_reporting_group_name',
+        id: 'custpage_result_item_sku',
+        line: index,
+        value: result.sku,
+      });
+      sublist.setSublistValue({
+        id: 'custpage_result_item_type',
+        line: index,
+        value: result.type,
+      });
+      sublist.setSublistValue({
+        id: 'custpage_result_item_name',
         line: index,
         value: result.name,
       });
       sublist.setSublistValue({
-        id: 'custpage_result_url',
+        id: 'custpage_result_item_reporting_groups',
         line: index,
-        value: '<a href="' + result.url + '" target="_blank">View Report</a>',
-      });
-      sublist.setSublistValue({
-        id: 'custpage_result_items',
-        line: index,
-        value: '<a href="' + result.items + '" target="_blank">View Items</a>',
+        value: result.reporting_groups,
       });
     });
   } else {
@@ -216,9 +221,7 @@ const createPage = (
       type: serverWidget.FieldType.INLINEHTML,
       label: ' ',
     }).defaultValue =
-      'There are currently no Item Reports available. Please make sure you have created an Item Report Record. For the list of Item Reports, please click <a href="' +
-      itemReportsListLink +
-      '" target="_blank">here</a>';
+      'There are currently no Items with the selected Reporting Group. Please make sure you have you have added the Reporting Group to the Item Record.';
   }
 
   return form;
