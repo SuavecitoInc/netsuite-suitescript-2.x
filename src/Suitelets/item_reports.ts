@@ -196,12 +196,12 @@ const createPage = (
       sublist.setSublistValue({
         id: 'custpage_result_url',
         line: index,
-        value: '<a href="' + result.url + '" target="_blank">View Report</a>',
+        value: `<a href="${result.url}" target="_blank">View Report</a>`,
       });
       sublist.setSublistValue({
         id: 'custpage_result_items',
         line: index,
-        value: '<a href="' + result.items + '" target="_blank">View Items</a>',
+        value: `<a href="${result.items}" target="_blank">View Items</a>`,
       });
     });
   } else {
