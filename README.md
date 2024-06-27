@@ -6,17 +6,28 @@
 
 ### Contents:
 
-#### SuiteScripts
+SuiteScripts
 
-- [Client Scripts](/src/ClientScripts)
-- [User Event Scripts](/src/UserEventScripts)
-- [RESTlets](/src/RESTlets)
-- [Action Scripts](/src/ActionScripts)
-- [Suitelets](/src/Suitelets)
-- [Custom Modules](/src/CustomModules)
-- [Sample Responses](/src/SampleResponses)
+- Client Scripts:
+  - [Scripts](/src/ClientScripts)
+  - [Docs](/docs/CLIENT_SCRIPTS.md)
+- User Event Scripts:
+  - [Scripts](/src/UserEventScripts)
+  - [Docs](/docs/USER_EVENT_SCRIPTS.md)
+- RESTLet:
+  - [Scripts](/src/RESTlets)
+  - [Docs](/docs/RESTLETS.md)
+- Workflow Action Scripts:
+  - [Scripts](/src/ActionScripts)
+  - [Docs](/docs/ACTION_SCRIPTS.md)
+- SuiteLets:
+  - [Scripts](/src/Suitelets)
+  - [Docs](/docs/SUITELETS.md)
+- Custom Modules:
+  - [Custom Modules](/src/CustomModules)
+  - [Docs](/docs/CUSTOM_MODULES.md)
 
-### Documentation:
+### NetSuite Documentation:
 
 - [SuiteScript](https://system.netsuite.com/app/help/helpcenter.nl?fid=set_1502135122.html)
 - [SuiteScript 2.0](https://system.netsuite.com/app/help/helpcenter.nl?topic=DOC_SS2_API)
