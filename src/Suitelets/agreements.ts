@@ -209,8 +209,7 @@ const createPage = (
         breakType: serverWidget.FieldBreakType.STARTROW,
       })
       .setHelpText({
-        help:
-          'You can grab the customers internal id by going to the customer record and getting the id from the url. (ex: id=1102)',
+        help: 'You can grab the customers internal id by going to the customer record and getting the id from the url. (ex: id=1102)',
       });
 
     form
