@@ -5,29 +5,28 @@
 > SuiteScript 2.x
 
 ### Contents:
-Custom Fields:
-- [Item Fields](/docs/CUSTOM_ITEM_FIELDS.md)
-
-SuiteScripts:
-
-- Client Scripts:
-  - [Scripts](/src/ClientScripts)
-  - [Docs](/docs/CLIENT_SCRIPTS.md)
-- User Event Scripts:
-  - [Scripts](/src/UserEventScripts)
-  - [Docs](/docs/USER_EVENT_SCRIPTS.md)
-- RESTLet:
-  - [Scripts](/src/RESTlets)
-  - [Docs](/docs/RESTLETS.md)
-- Workflow Action Scripts:
-  - [Scripts](/src/ActionScripts)
-  - [Docs](/docs/ACTION_SCRIPTS.md)
-- SuiteLets:
-  - [Scripts](/src/Suitelets)
-  - [Docs](/docs/SUITELETS.md)
-- Custom Modules:
-  - [Custom Modules](/src/CustomModules)
-  - [Docs](/docs/CUSTOM_MODULES.md)
+- Custom Fields:
+  - [Item Fields](/docs/CUSTOM_ITEM_FIELDS.md)
+- [Custom Lists](/docs/CUSTOM_LISTS.md)
+- SuiteScripts:
+  - Client Scripts:
+    - [Scripts](/src/ClientScripts)
+    - [Docs](/docs/CLIENT_SCRIPTS.md)
+  - User Event Scripts:
+    - [Scripts](/src/UserEventScripts)
+    - [Docs](/docs/USER_EVENT_SCRIPTS.md)
+  - RESTLet:
+    - [Scripts](/src/RESTlets)
+    - [Docs](/docs/RESTLETS.md)
+  - Workflow Action Scripts:
+    - [Scripts](/src/ActionScripts)
+    - [Docs](/docs/ACTION_SCRIPTS.md)
+  - SuiteLets:
+    - [Scripts](/src/Suitelets)
+    - [Docs](/docs/SUITELETS.md)
+  - Custom Modules:
+    - [Custom Modules](/src/CustomModules)
+    - [Docs](/docs/CUSTOM_MODULES.md)
 
 ### NetSuite Documentation:
 
