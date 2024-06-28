@@ -11,13 +11,15 @@ import * as runtime from 'N/runtime';
 export let onAction: EntryPoints.WorkflowAction.onAction = (
   context: EntryPoints.WorkflowAction.onActionContext
 ) => {
-  const tracingQty = runtime
-    .getCurrentScript()
-    .getParameter({ name: 'custscript_sp_prod_tracing_qty' })
-    ? runtime
-        .getCurrentScript()
-        .getParameter({ name: 'custscript_sp_prod_tracing_qty' })
-    : 72;
+  const tracingQty = (
+    runtime
+      .getCurrentScript()
+      .getParameter({ name: 'custscript_sp_prod_tracing_qty' })
+      ? runtime
+          .getCurrentScript()
+          .getParameter({ name: 'custscript_sp_prod_tracing_qty' })
+      : 72
+  ) as number;
   const salesRecord = context.newRecord;
   const lines = salesRecord.getLineCount({ sublistId: 'item' });
   let oQty = 0;

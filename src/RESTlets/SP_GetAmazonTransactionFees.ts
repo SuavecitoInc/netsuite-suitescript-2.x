@@ -7,7 +7,10 @@ import { EntryPoints } from 'N/types';
 import * as log from 'N/log';
 import * as error from 'N/error';
 import * as search from 'N/search';
-import { transaction } from '@hitc/netsuite-types/N/render';
+
+type PostContext = {
+  orderNumber: string;
+};
 
 function doValidation(args: any, argNames: any, methodName: any) {
   for (let i = 0; i < args.length; i++)
@@ -84,11 +87,12 @@ function getAmazonFees(orderNumber: string) {
   };
 }
 
-export const post: EntryPoints.RESTlet.post = context => {
+export const post: EntryPoints.RESTlet.post = (context: PostContext) => {
   log.debug({
     title: 'CONTEXT',
     details: context,
   });
+
   doValidation([context.orderNumber], ['orderNumber'], 'POST');
   if (!context.orderNumber) {
     return {

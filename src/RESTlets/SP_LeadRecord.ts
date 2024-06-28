@@ -252,6 +252,7 @@ export const post: EntryPoints.RESTlet.post = (context: Context) => {
     title: 'CREATING LEAD',
     details: JSON.stringify(context),
   });
+
   doValidation([context.recordtype], ['recordtype'], 'POST');
 
   try {

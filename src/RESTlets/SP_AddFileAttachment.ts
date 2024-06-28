@@ -8,6 +8,16 @@ import * as record from 'N/record';
 import * as file from 'N/file';
 import * as error from 'N/error';
 
+interface PostContext {
+  recordType: string;
+  fileType: string;
+  fileName: string;
+  fileContents: string;
+  folder: string;
+  parentRecordType: string;
+  parentId: string;
+}
+
 function doValidation(args: any, argNames: any, methodName: any) {
   for (let i = 0; i < args.length; i++)
     if (!args[i] && args[i] !== 0)
@@ -19,16 +29,6 @@ function doValidation(args: any, argNames: any, methodName: any) {
           '] for method: ' +
           methodName,
       });
-}
-
-interface PostContext {
-  recordType: string;
-  fileType: string;
-  fileName: string;
-  fileContents: string;
-  folder: string;
-  parentRecordType: string;
-  parentId: string;
 }
 
 export let post: EntryPoints.RESTlet.post = (context: PostContext) => {
@@ -68,5 +68,5 @@ export let post: EntryPoints.RESTlet.post = (context: PostContext) => {
     });
   }
 
-  return fileID;
+  return String(fileID);
 };

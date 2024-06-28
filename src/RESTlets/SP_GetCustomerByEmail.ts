@@ -8,6 +8,10 @@ import * as log from 'N/log';
 import * as error from 'N/error';
 import * as search from 'N/search';
 
+type PostContext = {
+  email: string;
+};
+
 function doValidation(args: any, argNames: any, methodName: any) {
   for (let i = 0; i < args.length; i++)
     if (!args[i] && args[i] !== 0)
@@ -79,11 +83,12 @@ function searchCustomerByEmail(email: string) {
   return results;
 }
 
-export const post: EntryPoints.RESTlet.post = context => {
+export const post: EntryPoints.RESTlet.post = (context: PostContext) => {
   log.debug({
     title: 'CONTEXT',
     details: context,
   });
+
   doValidation([context.email], ['email'], 'POST');
   if (!context.email) {
     return {
