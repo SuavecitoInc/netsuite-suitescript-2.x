@@ -5,8 +5,10 @@
 > SuiteScript 2.x
 
 ### Contents:
+Custom Fields:
+- [Item Fields](/docs/CUSTOM_ITEM_FIELDS.md)
 
-SuiteScripts
+SuiteScripts:
 
 - Client Scripts:
   - [Scripts](/src/ClientScripts)
