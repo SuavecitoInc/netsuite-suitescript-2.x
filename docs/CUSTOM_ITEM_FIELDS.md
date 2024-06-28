@@ -1,0 +1,581 @@
+# CUSTOM ITEM FIELDS
+
+> Custom item fields are fields that you can add to your item records to gather information specific to your business needs.
+
+These records include the following Accounting and website item records:
+
+- inventory item
+- noninventory items
+- service items
+- expense items
+- other charges
+- item groups
+- kit/packages
+- assembly/bill of materials
+
+<table>
+<tr>
+  <th>Name</th>
+  <th>ID</th>
+  <th>Type</th>
+  <th>List</th>
+  <th>Used For</th>
+  <th>Help Description</th>
+  <th>Inventory Item</th>
+  <th>Kit/Package Item</th>
+  <th>Assembly/BOM Item</th>
+  <th>Notes</th>
+</tr>
+<tr>
+  <td>Brand</td>
+  <td>custitem_sp_brand</td>
+  <td>List/Record</td>
+  <td>Brand</td>
+  <td>The product's Brand/Vendor, this field is used for Shopify and other Marketplaces.</td>
+  <td>The prdouct's Brand/Vendor</td>
+  <td>F</td>
+  <td>F</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Apparel Re-Order</td>
+  <td>custitem_sp_apparel_size_re_order</td>
+  <td>Integer</td>
+  <td>N/A</td>
+  <td>N/A</td>
+  <td>N/A</td>
+  <td>T</td>
+  <td>F</td>
+  <td>F</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Assembled In House</td>
+  <td>custitem_sp_assembled_in_house</td>
+  <td>Checkbox</td>
+  <td>N/A</td>
+  <td>This field is used to track assemblies that are assembled in our warehouse.</td>
+  <td>Check this box if this item requires a Work Order.</td>
+  <td>F</td>
+  <td>F</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Filled in House</td>
+  <td>custitem_sp_filled_in_house</td>
+  <td>Checkbox</td>
+  <td>N/A</td>
+  <td>This field is used to track assemblies that are filled in our warehouse.</td>
+  <td>Check this box if this item requires a Work Order.</td>
+  <td>F</td>
+  <td>F</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Labeled in House</td>
+  <td>custitem_sp_labeled_in_house</td>
+  <td>Checkbox</td>
+  <td>N/A</td>
+  <td>This field is used to track assemblies that are labeled in our warehouse.</td>
+  <td>Check this box if this item requires a Work Order.</td>
+  <td>F</td>
+  <td>F</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Discontinue</td>
+  <td>custitem_sp_discontinue</td>
+  <td>Checkbox</td>
+  <td>N/A</td>
+  <td>This field is used to track items that will soon be discontinued.</td>
+  <td>Check this box if this item will be discontinued.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Do Not Re-Order</td>
+  <td>custitem_sp_do_not_reorder</td>
+  <td>Checkbox</td>
+  <td>N/A</td>
+  <td>This field is used to track items that will not be re-ordered.</td>
+  <td>Check this box if this item will not be re-ordered.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Not For Retail</td>
+  <td>custitem_sp_not_for_retail</td>
+  <td>Checkbox</td>
+  <td>N/A</td>
+  <td>This field is used to track items that re not for retail sale.</td>
+  <td>Check this box if this item is not for retail sale.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Not Sold In Store</td>
+  <td>custitem_sp_not_sold_in_retail_store</td>
+  <td>Checkbox</td>
+  <td>N/A</td>
+  <td>This field is used to track items that are not for sale at our retail store.</td>
+  <td>Check this box if this item is not for sale at our retail store.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Exclude From Discounts</td>
+  <td>custitem_sp_exclude_discounts</td>
+  <td>Checkbox</td>
+  <td>N/A</td>
+  <td>This field is used to exclude items from native NetSuite promotions.</td>
+  <td>Check this box if this item should be excluded from NetSuite promotions. This does not exclude it from sales/promotions in other marketplaces.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Track Buildable</td>
+  <td>custitem_sp_track_buildable</td>
+  <td>Checkbox</td>
+  <td>N/A</td>
+  <td>This field is used to target buildable items.</td>
+  <td>Check this box if this item is buildable.</td>
+  <td>F</td>
+  <td>F</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Shopify Retail</td>
+  <td>custitem_sp_shopify_retail</td>
+  <td>checkbox</td>
+  <td>N/A</td>
+  <td>This field is used to track if the product is on Shopify POS.</td>
+  <td>Check this box if this item is available on Shopify Retail POS.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>This field should be deprecated, and set to inactive.</td>
+</tr>
+<tr>
+  <td>Shopify Wholesale</td>
+  <td>custitem_sp_shopify_wholesale</td>
+  <td>checkbox</td>
+  <td>N/A</td>
+  <td>This field is used to track if the product is on Shopify POS.</td>
+  <td>Check this box if this item is available on Shopify Wholesale POS.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>This field should be deprecated, and set to inactive.</td>
+</tr>
+<tr>
+  <td>Assembly Item Quantity Buildable - All</td>
+  <td>custitem_sp_assm_item_bld_all</td>
+  <td>Checkbox</td>
+  <td>N/A</td>
+  <td>This field is used to display the currently buildable quantity across all locations.</td>
+  <td>Autogenerated value. The amount that is currently buildable across all locations.</td>
+  <td>F</td>
+  <td>F</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Assembly Item Quantity Buildable</td>
+  <td>custitem_sp_assm_itm_bld</td>
+  <td>Checkbox</td>
+  <td>N/A</td>
+  <td>This field is used to display the currently buildable quantity at the Main Warehouse location.</td>
+  <td>Autogenerated value. The amount that is currently buildable at the Main Warehouse location.</td>
+  <td>F</td>
+  <td>F</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Assembly Item Quantity Buildable - Townsend</td>
+  <td>custitem_sp_assm_itm_bld_tw</td>
+  <td>Checkbox</td>
+  <td>N/A</td>
+  <td>This field is used to display the currently buildable quantity at the Townsend location.</td>
+  <td>Autogenerated value. The amount that is currently buildable at the Townsend location.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Brush</td>
+  <td>custitem_sp_brush</td>
+  <td>Multiple Select</td>
+  <td>Brush</td>
+  <td>This field is used for creating matrix items.</td>
+  <td>Used for creating matrix items.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Color</td>
+  <td>custitem_sp_color</td>
+  <td>Multiple Select</td>
+  <td>Color</td>
+  <td>This field is used for creating matrix items.</td>
+  <td>Used for creating matrix items.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Eyelash</td>
+  <td>custitem_sp_eyelash</td>
+  <td>Multiple Select</td>
+  <td>Eyelash</td>
+  <td>This field is used for creating matrix items.</td>
+  <td>Used for creating matrix items.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Fragrance</td>
+  <td>custitem_sp_fragrance</td>
+  <td>Multiple Select</td>
+  <td>Fragrance</td>
+  <td>This field is used for creating matrix items.</td>
+  <td>Used for creating matrix items.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Gift Cards</td>
+  <td>custitem_sp_gift_cards</td>
+  <td>Multiple Select</td>
+  <td>Gift Cards</td>
+  <td>This field is used for creating matrix items.</td>
+  <td>Used for creating matrix items.</td>
+  <td>T</td>
+  <td>F</td>
+  <td>F</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Size</td>
+  <td>custitem_sp_size</td>
+  <td>Multiple Select</td>
+  <td>Size</td>
+  <td>This field is used for creating matrix items.</td>
+  <td>Used for creating matrix items.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Item Height</td>
+  <td>custitem_sp_item_height</td>
+  <td>Decimal Number</td>
+  <td>N/A</td>
+  <td>This field is used to track the item's height.</td>
+  <td>The item's height.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Item Length</td>
+  <td>custitem_sp_item_length</td>
+  <td>Decimal Number</td>
+  <td>N/A</td>
+  <td>This field is used to track the item's length.</td>
+  <td>The item's length.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Item Width</td>
+  <td>custitem_sp_item_width</td>
+  <td>Decimal Number</td>
+  <td>N/A</td>
+  <td>This field is used to track the item's width.</td>
+  <td>The item's Width.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Item Quantity Available</td>
+  <td>custitem_sp_item_qty_available</td>
+  <td>Decimal Number</td>
+  <td>N/A</td>
+  <td>This field is used to display available quantities on the item record without having to view inventory detail.</td>
+  <td>Quantity available at the Main Warehouse location.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Item Quantity Available - Retail Store</td>
+  <td>custitem_sp_item_qty_available_store</td>
+  <td>Decimal Number</td>
+  <td>N/A</td>
+  <td>This field is used to display available quantities on the item record without having to view inventory detail.</td>
+  <td>Quantity available at the Retail Store location.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Item Quantity Available - TW</td>
+  <td>custitem_sp_item_qty_available_tw</td>
+  <td>Decimal Number</td>
+  <td>N/A</td>
+  <td>This field is used to display available quantities on the item record without having to view inventory detail.</td>
+  <td>Quantity available at the Townsend location.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Item Quantity On Back Order</td>
+  <td>custitem_sp_item_qty_back_order</td>
+  <td>Decimal Number</td>
+  <td>N/A</td>
+  <td>This field is used to display back ordered quantities on the item record without having to view inventory detail.</td>
+  <td>Quantity On Back Order at the Main Warehouse location.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Item Quantity Committed</td>
+  <td>custitem_sp_item_qty_committed</td>
+  <td>Decimal Number</td>
+  <td>N/A</td>
+  <td>This field is used to display committed quantities on the item record without having to view inventory detail.</td>
+  <td>Quantity committed at the Main Warehouse location.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Item Quantity On Hand</td>
+  <td>custitem_sp_item_qty_on_hand</td>
+  <td>Decimal Number</td>
+  <td>N/A</td>
+  <td>This field is used to display on hand quantities on the item record without having to view inventory detail.</td>
+  <td>Quantity On Hand at the Main Warehouse location.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Item Quantity On Hand - Retail Store</td>
+  <td>custitem_sp_item_qty_on_hand_store</td>
+  <td>Decimal Number</td>
+  <td>N/A</td>
+  <td>This field is used to display on hand quantities on the item record without having to view inventory detail.</td>
+  <td>Quantity On Hand at the Retail Store location.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Item Quantity On Hand - TW</td>
+  <td>custitem_sp_item_qty_on_hand_tw</td>
+  <td>Decimal Number</td>
+  <td>N/A</td>
+  <td>This field is used to display on hand quantities on the item record without having to view inventory detail.</td>
+  <td>Quantity On Back Order at the Townsend location.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Kit Item Quantity Available</td>
+  <td>custitem_sp_kit_item_qty_avail_mw	</td>
+  <td>Decimal Number</td>
+  <td>N/A</td>
+  <td>What is this used for?</td>
+  <td>Kit Item Quantity available at the Main Warehouse location.</td>
+  <td>F</td>
+  <td>T</td>
+  <td>F</td>
+  <td>Don't know if we are even using this???</td>
+</tr>
+<tr>
+  <td>MW Assembly Notification Date Added</td>
+  <td>custitem_sp_mw_assm_notif_date_added</td>
+  <td>Date/Time</td>
+  <td>N/A</td>
+  <td>This field is used to trigger a notification. If value is present it will be skipped.</td>
+  <td>This field's value is autogenerated. It is used to track when a notification was triggered.</td>
+  <td>F</td>
+  <td>F</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>MW Assembly Notification Minimum</td>
+  <td>custitem_sp_mw_assm_notif_min</td>
+  <td>Integer</td>
+  <td>N/A</td>
+  <td>This field is used to trigger a notification. The value is used to determine if a notification should be sent. If value is empty this item will be skipped.</td>
+  <td>This field is used to trigger a notification when current available inventory is below this value.</td>
+  <td>F</td>
+  <td>F</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Townsend Assembly Notification Date Added</td>
+  <td>custitem_sp_twn_assm_notif_date_added</td>
+  <td>Date/Time</td>
+  <td>N/A</td>
+  <td>This field is used to trigger a notification. If value is present it will be skipped.</td>
+  <td>This field's value is autogenerated. It is used to track when a notification was triggered.</td>
+  <td>F</td>
+  <td>F</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Townsend Assembly Notification Minimum</td>
+  <td>custitem_sp_twn_assm_notif_min</td>
+  <td>Integer</td>
+  <td>N/A</td>
+  <td>This field is used to trigger a notification. The value is used to determine if a notification should be sent. If value is empty this item will be skipped.</td>
+  <td>This field is used to trigger a notification when current available inventory is below this value.</td>
+  <td>F</td>
+  <td>F</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>OOS Notification Date - MW</td>
+  <td>custitem_sp_oos_notification_date_mw</td>
+  <td>Date/Time</td>
+  <td>N/A</td>
+  <td>This field is used to trigger a notification. If value is present it will be skipped.</td>
+  <td>This field's value is autogenerated. It is used to track when a notification was triggered.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Safety Stock Level Notification - Main Warehouse</td>
+  <td>custitem_sp_safety_stock_level_mw_date</td>
+  <td>Date</td>
+  <td>N/A</td>
+  <td>This field is used to trigger a notification. If value is present it will be skipped.</td>
+  <td>This field's value is autogenerated. It is used to track when a notification was triggered.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Safety Stock Level Notification - Townsend</td>
+  <td>custitem_sp_safety_stock_level_tw_date</td>
+  <td>Date</td>
+  <td>N/A</td>
+  <td>N/A</td>
+  <td>This field's value is autogenerated. It is used to track when a notification was triggered.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>HS Code</td>
+  <td>custitem_sp_hs_code</td>
+  <td>Free-Form_text</td>
+  <td>N/A</td>
+  <td>This field is used to display the item's HS Code.</td>
+  <td>HS Code</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>This field can be deprecated in favor of the native NetSuite field.</td>
+</tr>
+<tr>
+  <td>Reporting Group</td>
+  <td>custitem_sp_item_reporting_group</td>
+  <td>Multiple Select</td>
+  <td>Item Reporting Group</td>
+  <td>This field is used to attach an item to a Reporting Group.</td>
+  <td>To associate the current item with a Reporting Group.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Item SKU</td>
+  <td>custitem_sp_item_sku</td>
+  <td>Free-Form-Text</td>
+  <td>N/A</td>
+  <td>This field is used to display the items SKU. This is needed since NetSuite generates the SKU as parent_sku:child_sku for matrix items.</td>
+  <td>Autogenerated value. The item's SKU.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>NBC/Universal Assets</td>
+  <td>custitem_sp_nbc_universal_assets</td>
+  <td>List/Record</td>
+  <td>NBC/Universal Assets</td>
+  <td>This field is used to target NBC/Universal Assets.</td>
+  <td>If the item is an NBC/Universal asset select the asset.</td>
+  <td>T</td>
+  <td>T</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+<tr>
+  <td>Production Line</td>
+  <td>custitem_sp_production_line</td>
+  <td>List/Record</td>
+  <td>Production Line Names</td>
+  <td>This field is used on Assembly/BOM items to track production lines.</td>
+  <td>This field is used on Assembly/BOM items to track production lines.</td>
+  <td>F</td>
+  <td>F</td>
+  <td>T</td>
+  <td>N/A</td>
+</tr>
+</table>
