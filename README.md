@@ -9,6 +9,8 @@
   - [Entity Fields](/docs/CUSTOM_ENTITY_FIELDS.md)
   - [CRM Fields](/docs/CUSTOM_CRM_FIELDS.md)
   - [Item Fields](/docs/CUSTOM_ITEM_FIELDS.md)
+  - [Transaction Body Fields](/docs/CUSTOM_TRANSACTION_BODY_FIELDS.md)
+  - [Transaction Line Fields](/docs/CUSTOM_TRANSACTION_LINE_FIELDS.md)
 - [Custom Lists](/docs/CUSTOM_LISTS.md)
 - SuiteScripts:
   - Client Scripts:

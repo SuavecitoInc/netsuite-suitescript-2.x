@@ -15,7 +15,7 @@
     <th>Employee</th>
     <th>Event</th>
     <th>Case</th>
-    <th>Campaign</th>
+    <th>Notes</th>
   </tr>
   <tr>
     <td>Phone Call</td>
