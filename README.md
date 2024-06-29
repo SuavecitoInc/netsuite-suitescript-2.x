@@ -7,6 +7,7 @@
 ### Contents:
 - Custom Fields:
   - [Entity Fields](/docs/CUSTOM_ENTITY_FIELDS.md)
+  - [CRM Fields](/docs/CUSTOM_CRM_FIELDS.md)
   - [Item Fields](/docs/CUSTOM_ITEM_FIELDS.md)
 - [Custom Lists](/docs/CUSTOM_LISTS.md)
 - SuiteScripts:
