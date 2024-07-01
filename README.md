@@ -37,7 +37,8 @@
   - [Out Of Stock Item Notification](/docs/OOS_ITEM_NOTIFICATION.md)
   - [Safety Stock Level Item Notification](/docs/SAFETY_STOCK_ITEM_NOTIFICATION.md)
 - Custom Reports:
-  - [Wholesale Sales Reporting](/src/Suitelets/Reporting/README.md)
+  - [Wholesale Sales Reporting (Suitelet)](/src/Suitelets/Reporting/README.md)
+  - [Reporting (reporting.suavecito.com)](https://github.com/SuavecitoInc/sales-reporting-ns)
 
 ### NetSuite Documentation:
 
