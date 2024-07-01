@@ -21,8 +21,8 @@ Example Email Notification:
     <th>SKU</th>
     <th>Name</th>
     <th>Qty Available (MW)</th>
-    <th>ty Available (TWN)</th>
-    <th>ty Available (ALL)</th>
+    <th>Qty Available (TWN)</th>
+    <th>Qty Available (ALL)</th>
     <th>Min Qty (MW)</th>
     <th>Buildable TWN</th>
     <th>Buildable All</th>
@@ -58,3 +58,24 @@ Example Email Notification:
 Reset:
 
 The Assembly Notification Reset Script(s) are set to run every 30 min, everyday. The reset script will look for all assembly build items with a valid value set in the `MW Assembly Notification Date Added` / `Townsend Assembly Notification Date Added` field. It will then check if the inventory available quantity is above the min quantity. If it is, it will clear the date added field, if it is not it will skip the item.
+
+Example Reset Email Notification:
+
+<table>
+  <tr>
+    <th>SKU</th>
+    <th>Name</th>
+    <th>Qty Available</th>
+    <th>Min Qty</th>
+    <th>Buildable</th>
+    <th>Date Removed</th>
+  </tr>
+  <tr>
+    <td>K-P004</td>
+    <td>Grooming Spray (Non-Aerosol Hairspray) - 6 Pack</td>
+    <td>480</td>
+    <td>365</td>
+    <td>133</td>
+    <td>2024-06-28</td>
+  </tr>
+</table>
