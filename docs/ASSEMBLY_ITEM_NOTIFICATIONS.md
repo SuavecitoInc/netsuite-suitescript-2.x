@@ -2,6 +2,8 @@
 
 > Assembly Item Low Stock Notifications are triggered when an assembly build item's inventory falls below the min value set.
 
+The Assembly Notification script(s) (map/reduce) are set to run every 30 min, everyday.
+
 Requirements:
 
 - `MW Assembly Notification Min Qty` and `Townsend Assembly Notification Min Qty` must contain a numeric value. This value will be used as the minimum quantity. When the item's inventory available quantity drops below the min quantity the item will be added to a list and sent out as a notification.
@@ -52,3 +54,7 @@ Example Email Notification:
     <td>Build at least 10 units to satisfy MW min</td>
   </tr>
 </table>
+
+Reset:
+
+The Assembly Notification Reset Script(s) are set to run every 30 min, everyday. The reset script will look for all assembly build items with a valid value set in the `MW Assembly Notification Date Added` / `Townsend Assembly Notification Date Added` field. It will then check if the inventory available quantity is above the min quantity. If it is, it will clear the date added field, if it is not it will skip the item.
