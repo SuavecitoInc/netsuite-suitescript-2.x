@@ -36,6 +36,8 @@
   - [Assembly Item Notification - Low Stock](/docs/ASSEMBLY_ITEM_NOTIFICATIONS.md)
   - [Out Of Stock Item Notification](/docs/OOS_ITEM_NOTIFICATION.md)
   - [Safety Stock Level Item Notification](/docs/SAFETY_STOCK_ITEM_NOTIFICATION.md)
+- Custom Reports:
+  - [Wholesale Sales Reporting](/src/Suitelets/Reporting/README.md)
 
 ### NetSuite Documentation:
 
