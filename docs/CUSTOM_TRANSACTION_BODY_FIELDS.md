@@ -14,16 +14,6 @@
     <th>Notes</th>
   </tr>
   <tr>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
     <td>Production Line</td>
     <td>custbody_sp_wo_prod_line</td>
     <td>List/Record</td>
