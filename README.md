@@ -5,6 +5,7 @@
 > SuiteScript 2.x
 
 ### Contents:
+
 - Custom Fields:
   - [Entity Fields](/docs/CUSTOM_ENTITY_FIELDS.md)
   - [CRM Fields](/docs/CUSTOM_CRM_FIELDS.md)
@@ -31,6 +32,8 @@
   - Custom Modules:
     - [Custom Modules](/src/CustomModules)
     - [Docs](/docs/CUSTOM_MODULES.md)
+- Custom Notifications:
+  - [Assembly Notifications - Low Stock](/docs/ASSEMBLY_ITEM_NOTIFICATIONS.md)
 
 ### NetSuite Documentation:
 

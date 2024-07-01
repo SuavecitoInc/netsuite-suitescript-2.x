@@ -451,12 +451,12 @@ const sendEmail = (buildableAssemblies: number, content: string) => {
       <tr style="text-align: left; padding: 0 15px; background-color: #000; color: #fff;">
         <th style="padding: 0 15px;">SKU</th>
         <th style="padding: 0 15px;">Name</th>
-        <th style="padding: 0 15px;">1ty Available (MW)</th>
-        <th style="padding: 0 15px;">1ty Available (TWN)</th>
+        <th style="padding: 0 15px;">Qty Available (MW)</th>
+        <th style="padding: 0 15px;">Qty Available (TWN)</th>
         <th style="padding: 0 15px;">Qty Available (ALL)</th>
         <th style="padding: 0 15px;">Min Qty (MW)</th>
-        <th style="padding: 0 15px;">Buildable TWN</th>
-        <th style="padding: 0 15px;">Buildable ALL</th>
+        <th style="padding: 0 15px;">Buildable (TWN)</th>
+        <th style="padding: 0 15px;">Buildable (ALL)</th>
         <th style="padding: 0 15px;">Date Added</th>
         <th style="padding: 0 15px;">Action</th>
       </tr>
