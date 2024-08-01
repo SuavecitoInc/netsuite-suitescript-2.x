@@ -172,7 +172,7 @@ const sendEmail = (
   email.send({
     author: 207,
     recipients: userId,
-    bcc: ['207'],
+    cc: ['207'],
     replyTo: 'noreply@suavecito.com',
     subject: 'Auto Created Payment Transactions (' + transactionCount + ')',
     body: html,

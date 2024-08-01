@@ -190,7 +190,7 @@ const sendEmail = (items: Item[], fileId: number) => {
     author: 207,
     recipients: emailRecipient,
     replyTo: 'noreply@suavecito.com',
-    bcc: emailList,
+    cc: emailList,
     subject: `Safety Stock Level Notification - Townsend`,
     body: html,
     attachments: [fileObj],
