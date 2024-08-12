@@ -393,7 +393,7 @@ const sendEmail = (resetCount: number, content: string) => {
   email.send({
     author: 207,
     recipients: recipient,
-    bcc: bcc,
+    cc: bcc,
     replyTo: 'noreply@suavecito.com',
     subject:
       'Alert: Townsend Assemblies Are Now Above Availability Limit (' +

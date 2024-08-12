@@ -175,7 +175,7 @@ function sendEmail(location1: string, location2: string, items: Item[]) {
     author: 207,
     recipients: 258,
     replyTo: 'noreply@suavecito.com',
-    bcc: [207, -5],
+    cc: [207, -5],
     subject: `The following items can be transfered from ${location2}`,
     body: html,
   });

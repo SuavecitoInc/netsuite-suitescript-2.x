@@ -369,7 +369,7 @@ const sendEmail = (buildableAssemblies: number, content: string) => {
   email.send({
     author: 207,
     recipients: recipient,
-    bcc: bcc,
+    cc: bcc,
     replyTo: 'noreply@suavecito.com',
     subject:
       'Alert: Main Warehouse Assemblies Below Availability Limit (' +

@@ -82,7 +82,7 @@ export let onAction: EntryPoints.WorkflowAction.onAction = (
           author: 264,
           recipients: recipient,
           replyTo: replyToEmail,
-          bcc: bccList,
+          cc: bccList,
           subject: emailSubject,
           body: emailBody,
           // @ts-ignore

@@ -168,7 +168,7 @@ const sendEmail = (items: Item[]) => {
     author: 207,
     recipients: emailRecipient,
     replyTo: 'noreply@suavecito.com',
-    bcc: emailList,
+    cc: emailList,
     subject: `Safety Stock Level Watch List Removal - Main Warehouse`,
     body: html,
   });
