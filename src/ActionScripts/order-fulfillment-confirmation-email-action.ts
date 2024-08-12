@@ -166,15 +166,18 @@ export let onAction: EntryPoints.WorkflowAction.onAction = (
 ) => {
   try {
     const sender = runtime.getCurrentScript().getParameter({
-      name: 'custscript_sp_if_email_author',
+      name: 'custscript_sp_ofc_email_author',
     }) as number;
     const replyTo = runtime.getCurrentScript().getParameter({
-      name: 'custscript_sp_if_email_reply_to',
+      name: 'custscript_sp_ofc_email_reply_to',
     }) as string;
 
     // get old record
     const oldRecord = context.oldRecord;
-    const previousShipStatus = oldRecord.getValue('shipstatus') as string;
+    const previousShipStatus = oldRecord.getValue('shipstatus') as
+      | 'A'
+      | 'B'
+      | 'C';
     // get new record
     const itemFulfill = context.newRecord;
     const customer = itemFulfill.getValue('entity') as number;
@@ -183,17 +186,22 @@ export let onAction: EntryPoints.WorkflowAction.onAction = (
       'custbody_sp_order_number'
     ) as string;
     const connectorStorefront = itemFulfill.getValue(
-      'custbody_sp_if_nsc_storefront'
+      'custbody_sp_nsc_storefront_app'
     ) as string;
     // const connectorOrderNumber = itemFulfill.getValue(
     //   'custbody_sp_if_nsc_storefront_order_no'
     // ) as string;
 
-    // return if previous ship status is not picked or ship status is not shipped
-    if (previousShipStatus !== 'B' || shipStatus !== 'C') {
+    // return if previous ship status was shipped and ship status is not shipped
+    if (
+      (previousShipStatus !== 'A' && shipStatus !== 'C') ||
+      (previousShipStatus !== 'B' && shipStatus !== 'C')
+    ) {
       log.debug('Previous Ship Status:', previousShipStatus);
       log.debug('Ship Status:', shipStatus);
+      log.debug('Transaction', orderNumber);
       log.debug('Sent Email:', false);
+      log.debug('ERROR:', 'Not shipped, skipped...');
       return false;
     }
 
@@ -282,18 +290,22 @@ export let onAction: EntryPoints.WorkflowAction.onAction = (
       // send email
       email.send({
         author: sender,
-        recipients: customer,
+        // recipients: customer,
+        recipients: 207,
         replyTo: replyTo,
         subject: `Your order (${orderNumber}) is on the way`,
         body: html,
       });
 
+      log.debug('Transaction', orderNumber);
       log.debug('Sent Email:', true);
 
       return true;
     }
 
+    log.debug('Transaction', orderNumber);
     log.debug('Sent Email:', false);
+    log.debug('ERROR:', 'Marketplace Order, skipped...');
     return false;
   } catch (e: any) {
     log.error({

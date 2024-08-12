@@ -320,7 +320,7 @@ const sendEmail = (content: string) => {
 
   log.debug('CC', bcc);
 
-  email.send({
+  email.sendBulk({
     author: 207,
     recipients: recipient,
     cc: bcc,
