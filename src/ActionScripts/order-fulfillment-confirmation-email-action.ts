@@ -21,7 +21,7 @@ type Item = {
 const template = (
   orderNumber: string,
   items: Item[],
-  trackingNumbers: string // tracking numbers are separated by space and will be split and joined by comma
+  trackingNumbers: string[]
 ) => {
   const html = `
     <!DOCTYPE html>
@@ -100,9 +100,9 @@ const template = (
                 <h2 style="font-weight: normal; font-size: 24px; margin: 0 0 10px;">Your order is on the way</h2>
                 <p style="color: #777; line-height: 150%; font-size: 16px; margin: 0;">Your order (${orderNumber}) is on the way. Track your shipment to see the delivery status.</p>
                 <img src="https://cdn.shopify.com/s/files/1/0274/1389/files/suavecito-metro-shipping.jpg?v=1576090015" alt="Suavecito Metro" width="100%" align="center">
-                <p style="color: #999; line-height: 150%; font-size: 14px; margin: 0;">Tracking Number: ${trackingNumbers
-                  .split(' ')
-                  .join(', ')}</p>
+                <p style="color: #999; line-height: 150%; font-size: 14px; margin: 0;">Tracking Number: ${trackingNumbers.join(
+                  ', '
+                )}</p>
               </td>
             </tr>
             <tr>
@@ -259,16 +259,26 @@ export let onAction: EntryPoints.WorkflowAction.onAction = (
       });
 
       // get tracking
-      const createdFrom = itemFulfill.getValue('createdfrom') as number;
-      const salesOrder = record.load({
-        type: record.Type.SALES_ORDER,
-        id: createdFrom,
-        isDynamic: true,
+
+      const packageCount = itemFulfill.getLineCount({
+        sublistId: 'package',
       });
 
-      const trackingNumbers = salesOrder.getValue(
-        'linkedtrackingnumbers'
-      ) as string;
+      log.debug('PACKAGE COUNT', packageCount);
+
+      const trackingNumbers: string[] = [];
+      for (let i = 0; i < packageCount; i++) {
+        const packageTrackingNumber = itemFulfill.getSublistValue({
+          sublistId: 'package',
+          fieldId: 'packagetrackingnumber',
+          line: i,
+        }) as string;
+        log.debug('PACKAGE TRACKING NUMBER', packageTrackingNumber);
+        if (!packageTrackingNumber) {
+          continue;
+        }
+        trackingNumbers.push(packageTrackingNumber);
+      }
 
       log.debug({
         title: 'Tracking Numbers',
@@ -290,8 +300,8 @@ export let onAction: EntryPoints.WorkflowAction.onAction = (
       // send email
       email.send({
         author: sender,
-        // recipients: customer,
-        recipients: 207,
+        recipients: customer,
+        bcc: [207],
         replyTo: replyTo,
         subject: `Your order (${orderNumber}) is on the way`,
         body: html,
