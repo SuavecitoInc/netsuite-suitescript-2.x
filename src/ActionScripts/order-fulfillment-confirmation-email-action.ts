@@ -161,7 +161,7 @@ const template = (
   return html;
 };
 
-export let onAction: EntryPoints.WorkflowAction.onAction = (
+export const onAction: EntryPoints.WorkflowAction.onAction = (
   context: EntryPoints.WorkflowAction.onActionContext
 ) => {
   try {
@@ -206,11 +206,11 @@ export let onAction: EntryPoints.WorkflowAction.onAction = (
     }
 
     const channel = itemFulfill.getValue('custbody_sp_channel') as string;
-    // if simple connector exit early
-    if (channel === 'Simple Connector') {
+    if (channel !== 'Wholesale') {
       log.debug('Transaction', orderNumber);
+      log.debug('Channel:', channel);
       log.debug('Sent Email:', false);
-      log.debug('ERROR:', 'Simple Connector, skipped...');
+      log.debug('ERROR:', 'Non Wholesale Channel, skipped...');
       return false;
     }
 
