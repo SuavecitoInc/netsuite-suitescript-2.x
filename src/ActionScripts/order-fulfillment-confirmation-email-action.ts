@@ -205,6 +205,15 @@ export let onAction: EntryPoints.WorkflowAction.onAction = (
       return false;
     }
 
+    const channel = itemFulfill.getValue('custbody_sp_channel') as string;
+    // if simple connector exit early
+    if (channel === 'Simple Connector') {
+      log.debug('Transaction', orderNumber);
+      log.debug('Sent Email:', false);
+      log.debug('ERROR:', 'Simple Connector, skipped...');
+      return false;
+    }
+
     // send email to all non marketplace orders
     // if connector storefront and order number are empty we can assume it is a non marketplace order
     // if connector storefront is empty and ship status is shipped
