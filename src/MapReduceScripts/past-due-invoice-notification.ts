@@ -209,7 +209,8 @@ export const map: EntryPoints.MapReduce.map = (
       <p><a href="${recordUrl}">View Invoice</a></p>
     `;
     // TODO: replace with sales rep id, for testing use 207
-    const to = invoiceResult.salesrepid;
+    // const to = invoiceResult.salesrepid;
+    const to = '207';
     const cc = '207';
     sendEmail(subject, content, to, cc);
     // results are passed to the summarize function
@@ -219,6 +220,23 @@ export const map: EntryPoints.MapReduce.map = (
       ...invoiceResult,
     });
   }
+};
+
+export const reduce: EntryPoints.MapReduce.reduce = (
+  context: EntryPoints.MapReduce.reduceContext
+) => {
+  log.debug({
+    title: 'REDUCE KEY',
+    details: context.key,
+  });
+  log.debug({
+    title: 'REDUCE CONTEXT',
+    details: context.values,
+  });
+  // results are passed to the summarize function
+  // must return key and value
+  // they will be used to send a summary email
+  context.write(context.key, context.values);
 };
 
 export const summarize: EntryPoints.MapReduce.summarize = (
