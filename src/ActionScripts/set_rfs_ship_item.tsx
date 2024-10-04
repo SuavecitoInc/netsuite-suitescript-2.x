@@ -75,6 +75,11 @@ function handleRFShipping(context: EntryPoints.WorkflowAction.onActionContext) {
   };
 
   const currentRecord = context.newRecord;
+  // if Simple Connector, return
+  if (currentRecord.getValue({ fieldId: 'custbody_sc_channel' }) !== '') {
+    return { shipMethodUpdate: false };
+  }
+
   const shippingCost =
     currentRecord.getValue({
       fieldId: 'shippingcost',
