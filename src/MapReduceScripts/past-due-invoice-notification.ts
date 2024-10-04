@@ -236,7 +236,8 @@ export const reduce: EntryPoints.MapReduce.reduce = (
   // results are passed to the summarize function
   // must return key and value
   // they will be used to send a summary email
-  context.write(context.key, context.values);
+  const values = JSON.parse(context.values[0]);
+  context.write(context.key, { ...values });
 };
 
 export const summarize: EntryPoints.MapReduce.summarize = (
