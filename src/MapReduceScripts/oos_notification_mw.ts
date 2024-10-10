@@ -12,6 +12,10 @@ import * as email from 'N/email';
 import * as log from 'N/log';
 import * as format from 'N/format';
 
+/**
+ * A map/reduce script to notify when items are OOS at the Main Warehouse.
+ */
+
 interface Item {
   id: string;
   inventoryLocation: string;

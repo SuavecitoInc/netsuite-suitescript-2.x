@@ -10,6 +10,10 @@ import * as runtime from 'N/runtime';
 import * as email from 'N/email';
 import * as log from 'N/log';
 
+/**
+ * A map/reduce script to create payment transactions for vendor bills.
+ */
+
 export const getInputData: EntryPoints.MapReduce.getInputData = (
   context: EntryPoints.MapReduce.getInputDataContext
 ) => {

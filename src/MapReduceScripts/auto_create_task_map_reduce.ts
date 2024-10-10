@@ -11,6 +11,10 @@ import * as search from 'N/search';
 import * as email from 'N/email';
 import * as log from 'N/log';
 
+/**
+ * A map/reduce script to auto create follow-up tasks for customers who have not ordered in 90+ days.
+ */
+
 export const getInputData: EntryPoints.MapReduce.getInputData = () => {
   return search.load({
     id: runtime

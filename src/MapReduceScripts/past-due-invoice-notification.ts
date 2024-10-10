@@ -10,6 +10,10 @@ import * as search from 'N/search';
 import * as email from 'N/email';
 import * as log from 'N/log';
 
+/**
+ * A map/reduce script to send an email notification to sales reps for past due invoices.
+ */
+
 interface SearchResult {
   internalid: string;
   trandate: string;

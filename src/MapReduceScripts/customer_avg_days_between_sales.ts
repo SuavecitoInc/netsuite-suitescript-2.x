@@ -9,6 +9,10 @@ import * as search from 'N/search';
 import * as record from 'N/record';
 import * as log from 'N/log';
 
+/**
+ * A map/reduce script to calculate the average days between sales for customers.
+ */
+
 type CustomerResult = {
   id: string;
 };

@@ -12,6 +12,10 @@ import * as email from 'N/email';
 import * as log from 'N/log';
 import * as format from 'N/format';
 
+/**
+ * A map/reduce script to check if assemblies are below the availability limit.
+ */
+
 interface AssemblyResult {
   id: string;
   sku: string;

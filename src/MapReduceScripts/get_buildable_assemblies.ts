@@ -10,6 +10,10 @@ import * as search from 'N/search';
 import * as email from 'N/email';
 import * as log from 'N/log';
 
+/**
+ * A map/reduce script to get buildable assemblies below a certain availability limit.
+ */
+
 export const getInputData: EntryPoints.MapReduce.getInputData = () => {
   const assemblies = runtime
     .getCurrentScript()
