@@ -6,7 +6,11 @@
 import { EntryPoints } from 'N/types';
 import * as search from 'N/search';
 
-export let post: EntryPoints.RESTlet.post = (context: any) => {
+/**
+ * A RESTlet to search for a customer.
+ */
+
+export const post: EntryPoints.RESTlet.post = (context: any) => {
   const customerSearchResult = search
     .create({
       type: search.Type.CUSTOMER,

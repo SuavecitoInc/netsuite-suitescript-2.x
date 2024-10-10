@@ -8,6 +8,10 @@ import * as log from 'N/log';
 import * as error from 'N/error';
 import * as search from 'N/search';
 
+/**
+ * A RESTlet to get Amazon transaction fees.
+ */
+
 type PostContext = {
   orderNumber: string;
 };

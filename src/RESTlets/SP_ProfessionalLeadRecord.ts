@@ -12,6 +12,10 @@ import * as file from './attachFileToRecord.js';
 // @ts-ignore custom-module
 import * as email from './sendErrorEmail.js';
 
+/**
+ * A RESTlet to create a lead record.
+ */
+
 const doValidation = (args, argNames, methodName) => {
   for (let i = 0; i < args.length; i++) {
     if (!args[i] && args[i] !== 0) {

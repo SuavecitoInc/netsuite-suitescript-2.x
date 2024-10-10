@@ -6,7 +6,7 @@
 import { EntryPoints } from 'N/types';
 import * as serverWidget from 'N/ui/serverWidget';
 
-export let render: EntryPoints.Portlet.render = (
+export const render: EntryPoints.Portlet.render = (
   context: EntryPoints.Portlet.renderContext
 ) => {
   const portlet = context.portlet;

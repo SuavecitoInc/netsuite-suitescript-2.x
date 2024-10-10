@@ -7,7 +7,11 @@ import { EntryPoints } from 'N/types';
 import * as search from 'N/search';
 import * as log from 'N/log';
 
-export let get: EntryPoints.RESTlet.get = (context: any) => {
+/**
+ * A RESTlet to get open work orders.
+ */
+
+export const get: EntryPoints.RESTlet.get = (context: any) => {
   const openWorkOrders = createSearch();
 
   return {

@@ -6,7 +6,11 @@
 import { EntryPoints } from 'N/types';
 import * as search from 'N/search';
 
-export let post: EntryPoints.RESTlet.post = (context: any) => {
+/**
+ * A RESTlet to get picking ticket ids.
+ */
+
+export const post: EntryPoints.RESTlet.post = (context: any) => {
   // Set saved search
   let savedSearch = 'customsearch_sp_sales_order_np_picking';
   // if getPrinted - gets all picking tickets from all open sales orders
