@@ -7,7 +7,11 @@ import { EntryPoints } from 'N/types';
 import * as currentRecord from 'N/currentRecord';
 import * as dialog from 'N/ui/dialog';
 
-export let pageInit: EntryPoints.Client.pageInit = () => {
+/**
+ * A client script to print a custom commercial invoice.
+ */
+
+export const pageInit: EntryPoints.Client.pageInit = () => {
   console.log('International Invoice Client Script Loaded');
 };
 

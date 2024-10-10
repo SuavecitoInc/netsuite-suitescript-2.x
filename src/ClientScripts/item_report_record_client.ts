@@ -6,7 +6,11 @@
 import { EntryPoints } from 'N/types';
 import * as runtime from 'N/runtime';
 
-export let pageInit: EntryPoints.Client.pageInit = () => {
+/**
+ * A client script to generate a link to the item report suitelet.
+ */
+
+export const pageInit: EntryPoints.Client.pageInit = () => {
   console.log('Item Report CR Client Script Loaded');
 };
 

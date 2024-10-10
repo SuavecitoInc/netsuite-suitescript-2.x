@@ -9,11 +9,15 @@ import * as record from 'N/record';
 import * as dialog from 'N/ui/dialog';
 import * as log from 'N/log';
 
-export let pageInit: EntryPoints.Client.pageInit = () => {
+/**
+ * A client script to calculate shipping and handling costs.
+ */
+
+export const pageInit: EntryPoints.Client.pageInit = () => {
   console.log('Client Script Loaded');
 };
 
-export let fieldChanged: EntryPoints.Client.fieldChanged = (
+export const fieldChanged: EntryPoints.Client.fieldChanged = (
   context: EntryPoints.Client.fieldChangedContext
 ) => {
   const salesRecord = currentRecord.get();
@@ -33,12 +37,10 @@ export let fieldChanged: EntryPoints.Client.fieldChanged = (
         // calculate handling
         // calculateHandling();
         // get cost for total
-        const shippingCost: record.FieldValue = salesRecord.getValue(
-          'shippingcost'
-        );
-        const handlingCost: record.FieldValue = salesRecord.getValue(
-          'handlingcost'
-        );
+        const shippingCost: record.FieldValue =
+          salesRecord.getValue('shippingcost');
+        const handlingCost: record.FieldValue =
+          salesRecord.getValue('handlingcost');
         // add total
         let total =
           parseFloat(String(shippingCost)) + parseFloat(String(handlingCost));
@@ -47,12 +49,10 @@ export let fieldChanged: EntryPoints.Client.fieldChanged = (
       }
       // on handling cost change
       if (context.fieldId == 'handlingcost') {
-        const shippingCost: record.FieldValue = salesRecord.getValue(
-          'shippingcost'
-        );
-        const handlingCost: record.FieldValue = salesRecord.getValue(
-          'handlingcost'
-        );
+        const shippingCost: record.FieldValue =
+          salesRecord.getValue('shippingcost');
+        const handlingCost: record.FieldValue =
+          salesRecord.getValue('handlingcost');
         // add total
         let total =
           parseFloat(String(shippingCost)) + parseFloat(String(handlingCost));
@@ -132,9 +132,8 @@ const calculateHandling = () => {
         ];
         const UsRegion5 = ['AK', 'HI', 'PR', 'AS'];
 
-        const shippingCost: record.FieldValue = salesRecord.getValue(
-          'shippingcost'
-        );
+        const shippingCost: record.FieldValue =
+          salesRecord.getValue('shippingcost');
         let handlingCost = 0;
         if (UsRegion1.includes(String(shipState))) {
           handlingCost = Number(shippingCost) * 0.7;

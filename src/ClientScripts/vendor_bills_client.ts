@@ -5,14 +5,16 @@
 
 import { EntryPoints } from 'N/types';
 import * as currentRecord from 'N/currentRecord';
-import * as record from 'N/record';
-// import * as log from 'N/log';
 
-export let pageInit: EntryPoints.Client.pageInit = () => {
+/**
+ * A client script to handle user events for the vendor bills suitelet.
+ */
+
+export const pageInit: EntryPoints.Client.pageInit = () => {
   console.log('Vendor Bills Client Loaded...');
 };
 
-export let sublistChanged: EntryPoints.Client.sublistChanged = (
+export const sublistChanged: EntryPoints.Client.sublistChanged = (
   context: EntryPoints.Client.sublistChangedContext
 ) => {
   // var currentRecord = context.currentRecord;
@@ -20,9 +22,10 @@ export let sublistChanged: EntryPoints.Client.sublistChanged = (
   console.log('changed sublist: ' + sublistName);
 };
 
-export let saveRecord: EntryPoints.Client.saveRecord = () => {
+export const saveRecord: EntryPoints.Client.saveRecord = () => {
   const cr = currentRecord.get();
   const lines = cr.getLineCount({ sublistId: 'custpage_transactions_sublist' });
+
   let transactions = [];
   for (let i = 0; i < lines; i++) {
     const cb = cr.getSublistValue({
@@ -59,7 +62,9 @@ export let saveRecord: EntryPoints.Client.saveRecord = () => {
       });
     }
   }
+
   console.log('Setting custpage_transactions: ' + JSON.stringify(transactions));
   cr.setValue('custpage_transactions', JSON.stringify(transactions));
+
   return true;
 };

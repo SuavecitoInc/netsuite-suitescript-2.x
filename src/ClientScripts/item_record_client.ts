@@ -5,7 +5,11 @@
 
 import { EntryPoints } from 'N/types';
 
-export let pageInit: EntryPoints.Client.pageInit = (
+/**
+ * A client script to hide and display the NBC Universal Assets field based on the licensee.
+ */
+
+export const pageInit: EntryPoints.Client.pageInit = (
   context: EntryPoints.Client.pageInitContext
 ) => {
   const currentRecord = context.currentRecord;
@@ -18,7 +22,7 @@ export let pageInit: EntryPoints.Client.pageInit = (
   }
 };
 
-export let fieldChanged: EntryPoints.Client.fieldChanged = (
+export const fieldChanged: EntryPoints.Client.fieldChanged = (
   context: EntryPoints.Client.fieldChangedContext
 ) => {
   const currentRecord = context.currentRecord;

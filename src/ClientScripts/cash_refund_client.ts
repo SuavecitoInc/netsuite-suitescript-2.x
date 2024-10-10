@@ -9,7 +9,17 @@ import * as dialog from 'N/ui/dialog';
 import * as log from 'N/log';
 import * as runtime from 'N/runtime';
 
-export let pageInit: EntryPoints.Client.pageInit = () => {
+/**
+ * A client script to update the Cash Refund record with the correct tax rate
+ * and total. This is necessary because FarApp calculates tax rates differently
+ * than NetSuite. Sometimes the tax rates don't match. FarApp overwrites the
+ * transaction tax rate and uses whatever Shopify sent. During a Cash Refund
+ * sometimes the orders don't match because NetSuite will re-calculate this tax
+ * rate. Other times it's because Shopify calculated shipping tax while NetSuite
+ * did not. This is a problem.
+ */
+
+export const pageInit: EntryPoints.Client.pageInit = () => {
   console.log('Client Script Loaded');
 
   const cashRefund = currentRecord.get();

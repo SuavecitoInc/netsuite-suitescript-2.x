@@ -6,13 +6,17 @@
 import { EntryPoints } from 'N/types';
 import * as record from 'N/record';
 
-export let pageInit: EntryPoints.Client.pageInit = (
+/**
+ * A client script to lookup customer record.
+ */
+
+export const pageInit: EntryPoints.Client.pageInit = (
   context: EntryPoints.Client.pageInitContext
 ) => {
   console.log('Item Order Client Script Loaded...');
 };
 
-export let fieldChanged: EntryPoints.Client.fieldChanged = (
+export const fieldChanged: EntryPoints.Client.fieldChanged = (
   context: EntryPoints.Client.fieldChangedContext
 ) => {
   const currentRecord = context.currentRecord;
