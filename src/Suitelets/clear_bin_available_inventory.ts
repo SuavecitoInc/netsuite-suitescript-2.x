@@ -11,7 +11,11 @@ import * as search from 'N/search';
 import * as log from 'N/log';
 import * as record from 'N/record';
 
-export let onRequest: EntryPoints.Suitelet.onRequest = (
+/**
+ * A Suitelet to clear the available inventory in a bin.
+ */
+
+export const onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
 ) => {
   const request = context.request;

@@ -11,7 +11,11 @@ import * as message from 'N/ui/message';
 import * as log from 'N/log';
 import { ServerRequest, ServerResponse } from 'N/https';
 
-export let onRequest: EntryPoints.Suitelet.onRequest = (
+/**
+ * A Suitelet to lookup item orders by customer internal id and sku.
+ */
+
+export const onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
 ) => {
   const request = context.request;
@@ -61,8 +65,7 @@ const onGet = (response: ServerResponse) => {
       breakType: serverWidget.FieldBreakType.STARTROW,
     })
     .setHelpText({
-      help:
-        'You can grab the customers internal id by going to the customer record and getting the id from the url. (ex: id=1102)',
+      help: 'You can grab the customers internal id by going to the customer record and getting the id from the url. (ex: id=1102)',
     }).isMandatory = true;
 
   form

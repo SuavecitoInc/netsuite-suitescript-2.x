@@ -14,9 +14,10 @@ import * as log from 'N/log';
 import { ServerRequest, ServerResponse } from 'N/https';
 
 /**
- * Handles Suitelet request
+ * A Suitelet to update the FarApp Shopify Sync Flags
  */
-export let onRequest: EntryPoints.Suitelet.onRequest = (
+
+export const onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
 ) => {
   const request = context.request;

@@ -14,6 +14,10 @@ import * as message from 'N/ui/message';
 import * as spTransferOrder from './createTransferOrder';
 import { ServerRequest, ServerResponse } from 'N/https';
 
+/**
+ * A Suitelet to get retail replenishment items and create a transfer order.
+ */
+
 interface Item {
   id: string;
   sku: string;
@@ -26,7 +30,7 @@ interface Item {
   quantityNeeded: string;
 }
 
-export let onRequest: EntryPoints.Suitelet.onRequest = (
+export const onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
 ) => {
   const request = context.request;

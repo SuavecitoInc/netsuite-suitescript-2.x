@@ -12,13 +12,17 @@ import * as redirect from 'N/redirect';
 import * as log from 'N/log';
 import { ServerRequest, ServerResponse } from 'N/https';
 
+/**
+ * A Suitelet to clear a bin's available inventory.
+ */
+
 const status = {
   '1': 'Expired',
   '2': 'Quarantine',
   '3': 'Good',
 };
 
-export let onRequest: EntryPoints.Suitelet.onRequest = (
+export const onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
 ) => {
   const request = context.request;
@@ -194,11 +198,6 @@ const getBinItems = (binNumber: string, binStatus: string) => {
     const page = pagedData.fetch({ index: pageRange.index });
 
     page.data.forEach(result => {
-      // log.debug({
-      //   title: 'RESULT',
-      //   details: result,
-      // });
-
       const activeStatus = result.getValue({
         name: 'isinactive',
         join: 'item',
@@ -221,11 +220,6 @@ const getBinItems = (binNumber: string, binStatus: string) => {
       });
     });
   });
-
-  // log.debug({
-  //   title: 'ITEM RESULTS',
-  //   details: itemResults,
-  // });
 
   return itemResults;
 };

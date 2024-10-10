@@ -13,7 +13,11 @@ import * as task from 'N/task';
 import { ServerRequest, ServerResponse } from 'N/https';
 import * as log from 'N/log';
 
-export let onRequest: EntryPoints.Suitelet.onRequest = (
+/**
+ * A Suitelet to create Vendor Bill Payments
+ */
+
+export const onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
 ) => {
   const request = context.request;

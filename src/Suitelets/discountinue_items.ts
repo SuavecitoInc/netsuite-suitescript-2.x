@@ -13,9 +13,13 @@ import * as log from 'N/log';
 import { ServerRequest, ServerResponse } from 'N/https';
 
 /**
+ * A Suitelet to discontinue items.
+ */
+
+/**
  * Handles Suitelet request
  */
-export let onRequest: EntryPoints.Suitelet.onRequest = (
+export const onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
 ) => {
   const request = context.request;

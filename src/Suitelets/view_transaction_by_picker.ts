@@ -13,7 +13,11 @@ import * as email from 'N/email';
 import * as runtime from 'N/runtime';
 import * as log from 'N/log';
 
-export let onRequest: EntryPoints.Suitelet.onRequest = (
+/**
+ * A Suitelet to view RF-Smart Picker Unique Items Per Hour
+ */
+
+export const onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
 ) => {
   const request = context.request;
