@@ -8,7 +8,11 @@ import { EntryPoints } from 'N/types';
 import * as runtime from 'N/runtime';
 import * as log from 'N/log';
 
-export let beforeLoad: EntryPoints.UserEvent.beforeLoad = (
+/**
+ * A User Event script to add a button to the Item record to view item reports.
+ */
+
+export const beforeLoad: EntryPoints.UserEvent.beforeLoad = (
   context: EntryPoints.UserEvent.beforeLoadContext
 ) => {
   try {
