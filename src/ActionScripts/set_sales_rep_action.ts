@@ -8,7 +8,11 @@
 import { EntryPoints } from 'N/types';
 import * as log from 'N/log';
 
-export let onAction: EntryPoints.WorkflowAction.onAction = (
+/**
+ * A workflow action script to set the sales rep based on the marketplace.
+ */
+
+export const onAction: EntryPoints.WorkflowAction.onAction = (
   context: EntryPoints.WorkflowAction.onActionContext
 ) => {
   enum Marketplace {

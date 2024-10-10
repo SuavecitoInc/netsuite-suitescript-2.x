@@ -8,7 +8,11 @@ import { EntryPoints } from 'N/types';
 import * as runtime from 'N/runtime';
 import * as log from 'N/log';
 
-export let beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
+/**
+ * A User Event script to set the shipper on an Item Fulfillment record.
+ */
+
+export const beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
   context: EntryPoints.UserEvent.beforeSubmitContext
 ) => {
   try {

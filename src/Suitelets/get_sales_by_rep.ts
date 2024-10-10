@@ -10,6 +10,10 @@ import * as serverWidget from 'N/ui/serverWidget';
 import * as log from 'N/log';
 import { ServerRequest, ServerResponse } from 'N/https';
 
+/*
+ * A Suitelet to calculate sales by sales rep.
+ */
+
 interface Data {
   lastDateRange: string;
   currentDateRange: string;
@@ -31,7 +35,7 @@ interface Result {
   currentAvgOrderAmount: string;
 }
 
-export let onRequest: EntryPoints.Suitelet.onRequest = (
+export const onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
 ) => {
   const request = context.request;

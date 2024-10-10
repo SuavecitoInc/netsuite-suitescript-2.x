@@ -11,13 +11,17 @@ import * as email from 'N/email';
 import * as https from 'N/https';
 import * as log from 'N/log';
 
+/**
+ * A scheduled script to send an email and text message to customers who have not placed an order in the last 7 days.
+ */
+
 interface CustomerData {
   customerId: FieldValue;
   customerName: FieldValue;
   lastOrderDate: FieldValue;
 }
 
-export let execute: EntryPoints.Scheduled.execute = () => {
+export const execute: EntryPoints.Scheduled.execute = () => {
   const customerSearch = search.create({
     type: search.Type.CUSTOMER,
     columns: [

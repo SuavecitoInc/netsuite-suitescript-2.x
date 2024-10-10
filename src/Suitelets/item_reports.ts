@@ -12,7 +12,11 @@ import * as message from 'N/ui/message';
 import * as log from 'N/log';
 import { ServerRequest, ServerResponse } from 'N/https';
 
-export let onRequest: EntryPoints.Suitelet.onRequest = (
+/**
+ * A Suitelet to lookup item reporting groups.
+ */
+
+export const onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
 ) => {
   const request = context.request;
@@ -152,8 +156,7 @@ const createPage = (
       })
       .updateBreakType({
         breakType: serverWidget.FieldBreakType.STARTROW,
-      }).defaultValue =
-      `To create an Item Report Record please click <a href="${itemReportsListLink}" target="_blank">here</a>`;
+      }).defaultValue = `To create an Item Report Record please click <a href="${itemReportsListLink}" target="_blank">here</a>`;
 
     const sublist = form.addSublist({
       id: 'custpage_item_reports_sublist',

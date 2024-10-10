@@ -15,6 +15,10 @@ import * as log from 'N/log';
 // @ts-ignore
 import * as forge from './libs/forge.min.js';
 
+/**
+ * A Suitelet to post an item to Shopify.
+ */
+
 interface Item {
   vendor: record.FieldValue;
   title: record.FieldValue;
@@ -73,7 +77,7 @@ const shopifyStore = {
   },
 };
 
-export let onRequest: EntryPoints.Suitelet.onRequest = (
+export const onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
 ) => {
   const request = context.request;

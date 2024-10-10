@@ -12,6 +12,10 @@ import * as email from 'N/email';
 import * as log from 'N/log';
 import * as format from 'N/format';
 
+/**
+ * A map/reduce script to reset OOS notifications for items at the Main Warehouse.
+ */
+
 interface Item {
   id: string;
   inventoryLocation: string;

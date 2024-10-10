@@ -10,7 +10,11 @@ import * as email from 'N/email';
 import * as file from 'N/file';
 import * as log from 'N/log';
 
-export let execute: EntryPoints.Scheduled.execute = () => {
+/**
+ * A scheduled script to send an email to the warehouse manager with a list of items that have dropped below the re-order point.
+ */
+
+export const execute: EntryPoints.Scheduled.execute = () => {
   // create searches
   const itemSearchResults = loadSearch();
   // create item obj

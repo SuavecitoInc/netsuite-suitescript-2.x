@@ -7,7 +7,11 @@
 import { EntryPoints } from 'N/types';
 import * as log from 'N/log';
 
-export let beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
+/**
+ * A User Event script to set the sales rep and marketplace on a Cash Sale record.
+ */
+
+export const beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
   context: EntryPoints.UserEvent.beforeSubmitContext
 ) => {
   try {

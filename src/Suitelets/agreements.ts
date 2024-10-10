@@ -12,7 +12,11 @@ import * as serverWidget from 'N/ui/serverWidget';
 import * as message from 'N/ui/message';
 import { ServerRequest, ServerResponse } from 'N/https';
 
-export let onRequest: EntryPoints.Suitelet.onRequest = (
+/**
+ * A Suitelet to attach MAP Agreements to customer records.
+ */
+
+export const onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
 ) => {
   const request = context.request;

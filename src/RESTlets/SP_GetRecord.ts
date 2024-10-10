@@ -7,6 +7,10 @@ import { EntryPoints } from 'N/types';
 import * as record from 'N/record';
 import * as error from 'N/error';
 
+/**
+ * A RESTlet to get a record by ID.
+ */
+
 type PostContext = {
   recordType: string;
   id: string;

@@ -9,6 +9,10 @@ import { EntryPoints } from 'N/types';
 import * as record from 'N/record';
 import * as log from 'N/log';
 
+/**
+ * A workflow action script to update the customer record with the last follow up date.
+ */
+
 const updateCustomer = (id: record.FieldValue) => {
   const customerRecord = record.load({
     type: 'customer',
@@ -39,7 +43,7 @@ const updateCustomer = (id: record.FieldValue) => {
   return customerId;
 };
 
-export let onAction: EntryPoints.WorkflowAction.onAction = (
+export const onAction: EntryPoints.WorkflowAction.onAction = (
   context: EntryPoints.WorkflowAction.onActionContext
 ) => {
   const currentRecord = context.newRecord;

@@ -12,6 +12,10 @@ import * as email from 'N/email';
 import * as log from 'N/log';
 import * as format from 'N/format';
 
+/**
+ * A Map/Reduce script to reset assembly notifications for main warehouse.
+ */
+
 interface AssemblyResult {
   id: string;
   sku: string;

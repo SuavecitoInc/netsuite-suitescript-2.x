@@ -12,6 +12,10 @@ import * as email from './sendErrorEmail.js';
 import * as error from 'N/error';
 import * as log from 'N/log';
 
+/**
+ *
+ */
+
 type Context = {
   recordtype: string;
   companyname: string;

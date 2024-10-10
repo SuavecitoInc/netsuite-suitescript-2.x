@@ -8,6 +8,10 @@ import * as currentRecord from 'N/currentRecord';
 import * as dialog from 'N/ui/dialog';
 import * as log from 'N/log';
 
+/**
+ * A client script to automate the process of selecting shipping methods
+ */
+
 // Shipping Methods - Production
 const fedEx2Day = '30611';
 const uspsPriority = '22001';
@@ -533,7 +537,7 @@ export const setUspsPriorityMediumBox = () => {
  * Gets triggered on field changed, mostly to get field names that don't
  * exist in the docs.
  */
-export let fieldChanged: EntryPoints.Client.fieldChanged = (
+export const fieldChanged: EntryPoints.Client.fieldChanged = (
   context: EntryPoints.Client.fieldChangedContext
 ) => {
   console.log('field changed');

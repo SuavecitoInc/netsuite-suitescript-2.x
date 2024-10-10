@@ -8,9 +8,12 @@ import { EntryPoints } from 'N/types';
 import * as search from 'N/search';
 import * as serverWidget from 'N/ui/serverWidget';
 import { ServerRequest, ServerResponse } from 'N/https';
-import * as log from 'N/log';
 
-export let onRequest: EntryPoints.Suitelet.onRequest = (
+/**
+ * A Suitelet to view RF-Smart Picker Unique Items Per Hour
+ */
+
+export const onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
 ) => {
   const request = context.request;

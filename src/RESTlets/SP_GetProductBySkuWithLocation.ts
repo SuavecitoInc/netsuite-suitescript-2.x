@@ -8,6 +8,10 @@ import * as log from 'N/log';
 import * as error from 'N/error';
 import * as search from 'N/search';
 
+/**
+ * A RESTlet to search for a product by SKU at a location.
+ */
+
 type PostContext = {
   location: string;
   sku: string;

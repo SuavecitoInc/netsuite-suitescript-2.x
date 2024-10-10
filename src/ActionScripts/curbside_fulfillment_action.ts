@@ -11,7 +11,13 @@ import * as record from 'N/record';
 import * as render from 'N/render';
 import * as log from 'N/log';
 
-export let onAction: EntryPoints.WorkflowAction.onAction = (
+/**
+ * A workflow action script to email customers.
+ * If the order is for curbside pickup, in-store pickup,
+ * or will call, send an email to the customer.
+ */
+
+export const onAction: EntryPoints.WorkflowAction.onAction = (
   context: EntryPoints.WorkflowAction.onActionContext
 ) => {
   // shipping methods

@@ -8,6 +8,10 @@ import * as record from 'N/record';
 import * as file from 'N/file';
 import * as error from 'N/error';
 
+/**
+ * A RESTlet to add a file attachment to a record.
+ */
+
 interface PostContext {
   recordType: string;
   fileType: string;
@@ -31,7 +35,7 @@ function doValidation(args: any, argNames: any, methodName: any) {
       });
 }
 
-export let post: EntryPoints.RESTlet.post = (context: PostContext) => {
+export const post: EntryPoints.RESTlet.post = (context: PostContext) => {
   doValidation([context.recordType], ['recordtype'], 'POST');
 
   let fileType: file.Type;

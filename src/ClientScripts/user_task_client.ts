@@ -8,7 +8,11 @@ import * as currentRecord from 'N/currentRecord';
 import * as record from 'N/record';
 import * as dialog from 'N/ui/dialog';
 
-export let pageInit: EntryPoints.Client.pageInit = () => {
+/**
+ * A client script to update customer record on task completion.
+ */
+
+export const pageInit: EntryPoints.Client.pageInit = () => {
   console.log('Task Client Script Loaded');
 };
 

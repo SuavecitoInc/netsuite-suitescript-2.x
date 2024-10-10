@@ -10,7 +10,11 @@ import * as file from 'N/file';
 import * as email from 'N/email';
 import * as log from 'N/log';
 
-export let execute: EntryPoints.Scheduled.execute = () => {
+/**
+ * A scheduled script to send an email with a list of unique items picked by each picker by hour.
+ */
+
+export const execute: EntryPoints.Scheduled.execute = () => {
   // search
   const yesterday = getYesterday();
   const results = getRFSmartPickStateLines(yesterday);

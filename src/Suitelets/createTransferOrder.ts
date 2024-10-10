@@ -7,6 +7,10 @@
 import * as record from 'N/record';
 import * as log from 'N/log';
 
+/**
+ * A function to create a transfer order with items.
+ */
+
 interface Item {
   id: string;
   sku: string;

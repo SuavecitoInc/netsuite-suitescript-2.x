@@ -11,7 +11,11 @@ import * as message from 'N/ui/message';
 import * as log from 'N/log';
 import { ServerRequest, ServerResponse } from 'N/https';
 
-export let onRequest: EntryPoints.Suitelet.onRequest = (
+/**
+ * A Suitelet to lookup item orders by item reporting group.
+ */
+
+export const onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
 ) => {
   const request = context.request;
@@ -137,8 +141,7 @@ const createPage = (
       })
       .updateBreakType({
         breakType: serverWidget.FieldBreakType.STARTROW,
-      }).defaultValue =
-      `To add a report to an item, go to the item record and select the Reporting Group under the Custom Reporting tab.`;
+      }).defaultValue = `To add a report to an item, go to the item record and select the Reporting Group under the Custom Reporting tab.`;
 
     const sublist = form.addSublist({
       id: 'custpage_item_reports_sublist',

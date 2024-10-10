@@ -8,6 +8,10 @@ import * as record from 'N/record';
 import * as file from 'N/file';
 import * as log from 'N/log';
 
+/**
+ * A custom module to attach a file to a record.
+ */
+
 export const attach = (
   folderID: number,
   recordType: string,

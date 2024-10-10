@@ -15,10 +15,10 @@ import * as message from 'N/ui/message';
 import { ServerRequest, ServerResponse } from 'N/https';
 
 /**
- * Handles Suitelet request
- * @param {Object} context
+ * A Suitelet to create a Purchase Order for Retail Replenishment
  */
-export let onRequest: EntryPoints.Suitelet.onRequest = (
+
+export const onRequest: EntryPoints.Suitelet.onRequest = (
   context: EntryPoints.Suitelet.onRequestContext
 ) => {
   const vt = runtime.getCurrentScript().getParameter({

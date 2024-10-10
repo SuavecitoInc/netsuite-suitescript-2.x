@@ -7,11 +7,15 @@ import { EntryPoints } from 'N/types';
 import * as currentRecord from 'N/currentRecord';
 import * as record from 'N/record';
 
-export let pageInit: EntryPoints.Client.pageInit = () => {
+/**
+ * A client script to attach files to a customer record.
+ */
+
+export const pageInit: EntryPoints.Client.pageInit = () => {
   console.log('Agreements Client Script Loaded...');
 };
 
-export let fieldChanged: EntryPoints.Client.fieldChanged = (
+export const fieldChanged: EntryPoints.Client.fieldChanged = (
   context: EntryPoints.Client.fieldChangedContext
 ) => {
   const currentRecord = context.currentRecord;
@@ -42,7 +46,7 @@ export let fieldChanged: EntryPoints.Client.fieldChanged = (
   }
 };
 
-export let sublistChanged: EntryPoints.Client.sublistChanged = (
+export const sublistChanged: EntryPoints.Client.sublistChanged = (
   context: EntryPoints.Client.sublistChangedContext
 ) => {
   // var currentRecord = context.currentRecord;
@@ -50,7 +54,7 @@ export let sublistChanged: EntryPoints.Client.sublistChanged = (
   console.log(`changed sublist: ${sublistName}`);
 };
 
-export let saveRecord: EntryPoints.Client.saveRecord = () => {
+export const saveRecord: EntryPoints.Client.saveRecord = () => {
   const cr = currentRecord.get();
   const lines = cr.getLineCount({ sublistId: 'custpage_agreements_sublist' });
   let files = [];

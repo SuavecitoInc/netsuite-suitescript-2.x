@@ -10,6 +10,10 @@ import * as search from 'N/search';
 import * as email from 'N/email';
 import * as log from 'N/log';
 
+/**
+ * A map/reduce script to reset OOS notifications for items at the Main Warehouse.
+ */
+
 // must return array as context
 export const getInputData: EntryPoints.MapReduce.getInputData = () => {
   // run saved search to get all assemblies that have date in notification field

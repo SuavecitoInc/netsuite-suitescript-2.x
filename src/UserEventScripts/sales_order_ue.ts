@@ -7,6 +7,10 @@
 import { EntryPoints } from 'N/types';
 import * as log from 'N/log';
 
+/**
+ * A User Event script to set the sales rep and marketplace on a Sales Order record.
+ */
+
 const RFS_SHIPPING_METHODS = [
   35904, // FedEx 2 Day -RFS
   35913, // FedEx 2 Day One Rate - RFS

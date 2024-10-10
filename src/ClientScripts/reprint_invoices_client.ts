@@ -7,19 +7,22 @@ import { EntryPoints } from 'N/types';
 import * as currentRecord from 'N/currentRecord';
 import * as dialog from 'N/ui/dialog';
 
-export let pageInit: EntryPoints.Client.pageInit = () => {
+/**
+ * A client script to reprint invoices.
+ */
+
+export const pageInit: EntryPoints.Client.pageInit = () => {
   console.log('Re-Print Invoice(s) Client Loaded...');
 };
 
-export let sublistChanged: EntryPoints.Client.sublistChanged = (
+export const sublistChanged: EntryPoints.Client.sublistChanged = (
   context: EntryPoints.Client.sublistChangedContext
 ) => {
-  // var currentRecord = context.currentRecord;
   const sublistName = context.sublistId;
   console.log('changed sublist: ' + sublistName);
 };
 
-export let saveRecord: EntryPoints.Client.saveRecord = () => {
+export const saveRecord: EntryPoints.Client.saveRecord = () => {
   const cr = currentRecord.get();
   const lines = cr.getLineCount({ sublistId: 'custpage_transactions_sublist' });
   let transactions = [];

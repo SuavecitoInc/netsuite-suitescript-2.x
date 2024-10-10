@@ -9,7 +9,11 @@ import * as search from 'N/search';
 import * as email from 'N/email';
 import * as log from 'N/log';
 
-export let execute: EntryPoints.Scheduled.execute = () => {
+/**
+ * A scheduled script to send an email with a list of Marketplace orders that are over 24 hours old.
+ */
+
+export const execute: EntryPoints.Scheduled.execute = () => {
   const results = createSearch();
   if (results.length > 0) {
     // email

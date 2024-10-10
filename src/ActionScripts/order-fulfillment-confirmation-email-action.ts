@@ -8,8 +8,11 @@
 import { EntryPoints } from 'N/types';
 import * as runtime from 'N/runtime';
 import * as email from 'N/email';
-import * as record from 'N/record';
 import * as log from 'N/log';
+
+/**
+ * A workflow action script to send a shipping confirmation email to customers on item fulfillment shipped.
+ */
 
 type Item = {
   item: string;
@@ -175,9 +178,9 @@ export const onAction: EntryPoints.WorkflowAction.onAction = (
     // get old record
     const oldRecord = context.oldRecord;
     const previousShipStatus = oldRecord.getValue('shipstatus') as
-      | 'A'
-      | 'B'
-      | 'C';
+      | 'A' // Picked
+      | 'B' // Packed
+      | 'C'; // Shipped
     // get new record
     const itemFulfill = context.newRecord;
     const customer = itemFulfill.getValue('entity') as number;
@@ -188,9 +191,6 @@ export const onAction: EntryPoints.WorkflowAction.onAction = (
     const connectorStorefront = itemFulfill.getValue(
       'custbody_sp_nsc_storefront_app'
     ) as string;
-    // const connectorOrderNumber = itemFulfill.getValue(
-    //   'custbody_sp_if_nsc_storefront_order_no'
-    // ) as string;
 
     // return if previous ship status was shipped and ship status is not shipped
     if (
@@ -268,7 +268,6 @@ export const onAction: EntryPoints.WorkflowAction.onAction = (
       });
 
       // get tracking
-
       const packageCount = itemFulfill.getLineCount({
         sublistId: 'package',
       });
@@ -282,7 +281,9 @@ export const onAction: EntryPoints.WorkflowAction.onAction = (
           fieldId: 'packagetrackingnumber',
           line: i,
         }) as string;
+
         log.debug('PACKAGE TRACKING NUMBER', packageTrackingNumber);
+
         if (!packageTrackingNumber) {
           continue;
         }

@@ -10,6 +10,10 @@ import * as search from 'N/search';
 import * as email from 'N/email';
 import * as log from 'N/log';
 
+/**
+ * A scheduled script to remove items from the Safety Stock Level watch list.
+ */
+
 interface Item {
   id: string;
   inventoryLocation: string;
@@ -22,7 +26,7 @@ interface Item {
   // notification: string;
 }
 
-export let execute: EntryPoints.Scheduled.execute = () => {
+export const execute: EntryPoints.Scheduled.execute = () => {
   // Get Params from Runtime
   const safetyStockLevelSearch = runtime.getCurrentScript().getParameter({
     name: 'custscript_sp_safety_stock_tw_r_ss',

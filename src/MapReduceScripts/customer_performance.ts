@@ -14,6 +14,10 @@ import * as log from 'N/log';
 // @ts-ignore
 import * as moment from './libs/moment.min.js';
 
+/**
+ * A map/reduce script to generate a customer performance report.
+ */
+
 const DIRECTORY = 317111;
 
 type CustomerResult = {

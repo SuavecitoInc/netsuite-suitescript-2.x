@@ -6,7 +6,11 @@
 import { EntryPoints } from 'N/types';
 import * as render from 'N/render';
 
-export let post: EntryPoints.RESTlet.post = (context: any) => {
+/**
+ * A RESTlet to print a picking ticket.
+ */
+
+export const post: EntryPoints.RESTlet.post = (context: any) => {
   const transactionFile = render.pickingTicket({
     entityId: Number(context.id),
     printMode: render.PrintMode.PDF,
