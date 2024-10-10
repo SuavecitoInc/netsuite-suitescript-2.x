@@ -19,6 +19,8 @@
 
 > Map/Reduce provides parallel processing, dynamic governance handling and yielding and ability to break out business process into separate logical segments.
 
+https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_4387799161.html#subsect_1522689517
+
 ## ASSEMBLY NOTIFICATION
 
 > The script will create a search of all assembly type products with no date set in <em>MW Assembly Notification Date Added</em> field. It will then compare <em>Inventory Location Qty</em> against <em>MW Assembly Notification Min Qty</em>. If the location qty is below the min qty, it will then set the <em>MW Assembly Notification Date Added</em> field with the current date / time and add the item to the email notification being sent.
