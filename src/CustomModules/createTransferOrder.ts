@@ -6,6 +6,10 @@
 import * as record from 'N/record';
 import * as log from 'N/log';
 
+/**
+ * A custom module to create a transfer order.
+ */
+
 export const create = (
   toLocation: string,
   fromLocation: string,
