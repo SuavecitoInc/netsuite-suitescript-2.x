@@ -10,7 +10,11 @@ import * as email from 'N/email';
 import * as file from 'N/file';
 import * as log from 'N/log';
 
-export let execute: EntryPoints.Scheduled.execute = () => {
+/**
+ * A scheduled script to send an email with a list of items that are out of stock at the main warehouse.
+ */
+
+export const execute: EntryPoints.Scheduled.execute = () => {
   // create searches
   const itemSearchResults = createSearch();
   // create item obj

@@ -9,6 +9,10 @@ import * as search from 'N/search';
 import * as email from 'N/email';
 import * as log from 'N/log';
 
+/**
+ * A scheduled script to send an email with a list of items that are available at one location but not another.
+ */
+
 interface Item {
   sku: string;
   displayName: string;
@@ -43,7 +47,7 @@ const emailList = String(
     .getParameter({ name: 'custscript_loc_avail_trans_email_list' })
 ).split(',');
 
-export let execute: EntryPoints.Scheduled.execute = () => {
+export const execute: EntryPoints.Scheduled.execute = () => {
   // create searches
   const location1Items = loadSearch(location1Search);
   const location2Items = loadSearch(location2Search);

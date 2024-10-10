@@ -4,10 +4,13 @@
  */
 
 import { EntryPoints } from 'N/types';
-import * as runtime from 'N/runtime';
 import * as search from 'N/search';
 import * as record from 'N/record';
 import * as log from 'N/log';
+
+/**
+ * A scheduled script to clear returns / refunds inventory.
+ */
 
 type Item = {
   internal_id: string;
@@ -177,7 +180,7 @@ function adjustInventory(items: Item[]) {
   return { id: recordId };
 }
 
-export let execute: EntryPoints.Scheduled.execute = () => {
+export const execute: EntryPoints.Scheduled.execute = () => {
   // create searches
   const itemSearchResults = createSearch();
   // create inventory adjustment

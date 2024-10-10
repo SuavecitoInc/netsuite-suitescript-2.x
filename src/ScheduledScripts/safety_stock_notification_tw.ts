@@ -11,6 +11,10 @@ import * as email from 'N/email';
 import * as log from 'N/log';
 import * as file from 'N/file';
 
+/**
+ * A scheduled script to send an email with a list of items that have been removed from the Safety Stock Level watch list.
+ */
+
 interface Item {
   id: string;
   inventoryLocation: string;
@@ -22,7 +26,7 @@ interface Item {
   type: string;
 }
 
-export let execute: EntryPoints.Scheduled.execute = () => {
+export const execute: EntryPoints.Scheduled.execute = () => {
   // Get Params from Runtime
   const safetyStockLevelSearch = runtime
     .getCurrentScript()
