@@ -8,7 +8,13 @@
 import { EntryPoints } from 'N/types';
 import * as log from 'N/log';
 
-function handleRFShipping(context: EntryPoints.WorkflowAction.onActionContext) {
+/**
+ * A workflow action script to set the shipping cost and set the shipping method to an RFS method.
+ */
+
+const handleRFShipping = (
+  context: EntryPoints.WorkflowAction.onActionContext
+) => {
   const RFS_SHIPPING_METHODS = [
     35904, // FedEx 2 Day -RFS
     35913, // FedEx 2 Day One Rate - RFS
@@ -86,19 +92,26 @@ function handleRFShipping(context: EntryPoints.WorkflowAction.onActionContext) {
     }) === ''
       ? 0
       : currentRecord.getValue({ fieldId: 'shippingcost' });
+
   log.debug({ title: 'shippingCost', details: shippingCost });
+
   const handlingCost =
     currentRecord.getValue({ fieldId: 'handlingcost' }) === ''
       ? 0
       : currentRecord.getValue({ fieldId: 'handlingcost' });
+
   log.debug({ title: 'handlingCost', details: handlingCost });
+
   const shippingMethod = currentRecord.getValue({
     fieldId: 'shipmethod',
   });
+
   log.debug({ title: 'shippingMethod', details: shippingMethod });
+
   const shippingMethodText = currentRecord.getText({
     fieldId: 'shipmethod',
   });
+
   if (!RFS_SHIPPING_METHODS.includes(Number(shippingMethod) as number)) {
     log.debug({ title: 'Is shipping method an RFS method?', details: 'false' });
     const updates: { [key: string]: any } = {};
@@ -160,9 +173,9 @@ function handleRFShipping(context: EntryPoints.WorkflowAction.onActionContext) {
     log.debug({ title: 'Is shipping method an RFS method?', details: 'true' });
     return { shipMethodUpdate: false };
   }
-}
+};
 
-export let onAction: EntryPoints.WorkflowAction.onAction = (
+export const onAction: EntryPoints.WorkflowAction.onAction = (
   context: EntryPoints.WorkflowAction.onActionContext
 ) => {
   const response = handleRFShipping(context);

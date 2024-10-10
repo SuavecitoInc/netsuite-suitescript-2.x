@@ -9,7 +9,11 @@ import { EntryPoints } from 'N/types';
 import * as runtime from 'N/runtime';
 import * as record from 'N/record';
 import * as log from 'N/log';
-// wholesale deals config
+
+/**
+ * A workflow action script to add free tester items to sales orders.
+ */
+
 /**
  * key: Kit Sku
  * internalId: free item internal id
@@ -86,7 +90,7 @@ const getSkuFromName = (name: string) => {
   return sku.trim();
 };
 
-export let onAction: EntryPoints.WorkflowAction.onAction = (
+export const onAction: EntryPoints.WorkflowAction.onAction = (
   context: EntryPoints.WorkflowAction.onActionContext
 ) => {
   const salesRecord = context.newRecord;
@@ -186,11 +190,11 @@ export let onAction: EntryPoints.WorkflowAction.onAction = (
   return false;
 };
 
-function addEligibleItems(
+const addEligibleItems = (
   sku: string,
   salesRecord: record.Record,
   qty: record.FieldValue
-) {
+) => {
   const freeItem = config[sku];
   const freeItemId = freeItem.internalId;
   const minimumQty = freeItem.minimum;
@@ -241,13 +245,13 @@ function addEligibleItems(
     fireSlavingSync: true,
   });
   salesRecord.commitLine({ sublistId: 'item' });
-}
+};
 
-function addEligibleMemberItems(
+const addEligibleMemberItems = (
   salesRecord: record.Record,
   id: record.FieldValue,
   qty: record.FieldValue
-) {
+) => {
   log.debug({
     title: 'Item is of type Kit/Package and Eligible',
     details: 'Loading components to get SKU to add to Order',
@@ -319,4 +323,4 @@ function addEligibleMemberItems(
     });
     salesRecord.commitLine({ sublistId: 'item' });
   }
-}
+};

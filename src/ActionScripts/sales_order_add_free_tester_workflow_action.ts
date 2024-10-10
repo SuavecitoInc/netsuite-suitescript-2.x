@@ -10,6 +10,10 @@ import * as runtime from 'N/runtime';
 import * as record from 'N/record';
 import * as log from 'N/log';
 
+/**
+ * A workflow action script to add free tester items to sales orders.
+ */
+
 const getSkuFromName = (name: string) => {
   const arr = name.split(' ');
   let isMatrix = false;
@@ -23,7 +27,7 @@ const getSkuFromName = (name: string) => {
   return sku.trim();
 };
 
-export let onAction: EntryPoints.WorkflowAction.onAction = (
+export const onAction: EntryPoints.WorkflowAction.onAction = (
   context: EntryPoints.WorkflowAction.onActionContext
 ) => {
   const salesRecord = context.newRecord;

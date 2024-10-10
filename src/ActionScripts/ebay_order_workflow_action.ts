@@ -7,7 +7,11 @@
 
 import { EntryPoints } from 'N/types';
 
-export let onAction: EntryPoints.WorkflowAction.onAction = (
+/**
+ * A workflow action script to add a black comb to eBay orders.
+ */
+
+export const onAction: EntryPoints.WorkflowAction.onAction = (
   context: EntryPoints.WorkflowAction.onActionContext
 ) => {
   const salesRecord = context.newRecord;

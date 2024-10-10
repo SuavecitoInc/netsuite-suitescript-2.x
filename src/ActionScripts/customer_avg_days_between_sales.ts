@@ -10,11 +10,14 @@ import * as search from 'N/search';
 import * as record from 'N/record';
 import * as log from 'N/log';
 
-function onlyUnique(value: string, index: number, array: string[]) {
-  return array.indexOf(value) === index;
-}
+/**
+ * A workflow action script to calculate the average days between sales for a customer.
+ */
 
-function getAverage(dates: string[]) {
+const onlyUnique = (value: string, index: number, array: string[]) =>
+  array.indexOf(value) === index;
+
+const getAverage = (dates: string[]) => {
   // get the average number of days between each date
   const averageDays =
     dates.reduce((acc, date, i, arr) => {
@@ -31,7 +34,7 @@ function getAverage(dates: string[]) {
 
   const diffInDays = averageDays / (1000 * 60 * 60 * 24);
   return diffInDays;
-}
+};
 
 export const onAction: EntryPoints.WorkflowAction.onAction = (
   context: EntryPoints.WorkflowAction.onActionContext
