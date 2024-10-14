@@ -111,6 +111,77 @@ III. Testing with Postman
 4. Deploy<br/>
    `Customization > Scripting > Script Deployments`
 
+### RESTLet Client Oauth
+
+```typescript
+import fetch from 'node-fetch';
+import OAuth from 'oauth-1.0a';
+import crypto from 'crypto';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const config = {
+  accountId: process.env.NETSUITE_ACCOUNT_ID,
+  consumer: {
+    key: process.env.NETSUITE_CONSUMER_KEY,
+    secret: process.env.NETSUITE_CONSUMER_SECRET
+  },
+  token: {
+    key: process.env.NETSUITE_TOKEN_KEY,
+    secret: process.env.NETSUITE_TOKEN_SECRET
+  }
+};
+
+async function authenticatedFetch<ResponseType, PayloadType>(
+  method: 'GET' | 'POST',
+  endpoint: string;
+  data: PayloadType
+) {
+  try {
+    const { accountId, consumer, token } = config;
+
+    const oauth = new OAuth({
+      consumer,
+      signature_method: 'HMAC-SHA256',
+      hash_function(baseString, key) {
+        return crypto
+          .createHmac('sha256', key)
+          .update(basestring)
+          .digest('base64');
+      },
+      realm: accountId,
+    });
+
+    const authorization = oauth.authorize({
+      endpoint,
+      method
+    },
+    token);
+
+    const header = oauth.toHeader(authorization);
+    header.Authorization += `, realm="${accountId}"`;
+
+    const response = await fetch(endpoint, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: header.Authorization,
+        'user-agent': 'Some User Agent/v.0.0.1 (Language=JavaScript/Node)'
+      }
+      body: JSON.stringify(data),
+    });
+
+    const responseJson = (await response.json() as ResponseType);
+
+    // do something with response
+    return responseJson
+  } catch(err: any) {
+    console.error('error', err.message);
+  }
+}
+```
+
 ### Resources:
 
 - [NetSuite Token-based Authenication](https://medium.com/@morrisdev/netsuite-token-based-authentication-tba-342c7df56386)
