@@ -98,8 +98,6 @@ III. Testing with Postman
 6.  Enter the NetSutie Account ID under `Advanced > Realm`.
 7.  Test
 
-[SuiteScript 2.1](https://system.netsuite.com/app/help/helpcenter.nl?fid=chapter_156042690639.html) will become the default in NetSuite 2020.1 Release
-
 ### General Setup
 
 1. Create File
