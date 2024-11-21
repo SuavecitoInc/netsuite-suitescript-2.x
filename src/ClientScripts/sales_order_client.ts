@@ -35,7 +35,7 @@ export const fieldChanged: EntryPoints.Client.fieldChanged = (
       // on shipping cost change
       if (context.fieldId == 'shippingcost') {
         // calculate handling
-        // calculateHandling();
+        calculateHandling();
         // get cost for total
         const shippingCost: record.FieldValue =
           salesRecord.getValue('shippingcost');
