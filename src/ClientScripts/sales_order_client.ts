@@ -67,7 +67,7 @@ const round = (value: number, decimals: number) => {
   return Number(Math.round(Number(value + 'e' + decimals)) + 'e-' + decimals);
 };
 
-const calculateHandling = () => {
+export const calculateHandling = () => {
   const salesRecord = currentRecord.get();
   const channel = salesRecord.getValue('custbody_fa_channel');
   const shipCountry = salesRecord.getValue('shipcountry');
@@ -136,15 +136,15 @@ const calculateHandling = () => {
           salesRecord.getValue('shippingcost');
         let handlingCost = 0;
         if (UsRegion1.includes(String(shipState))) {
-          handlingCost = Number(shippingCost) * 0.7;
+          handlingCost = Number(shippingCost) * 0.8;
         } else if (UsRegion2.includes(String(shipState))) {
-          handlingCost = Number(shippingCost) * 0.6;
+          handlingCost = Number(shippingCost) * 0.7;
         } else if (UsRegion3.includes(String(shipState))) {
-          handlingCost = Number(shippingCost) * 0.5;
+          handlingCost = Number(shippingCost) * 0.6;
         } else if (UsRegion4.includes(String(shipState))) {
-          handlingCost = Number(shippingCost) * 0.25;
+          handlingCost = Number(shippingCost) * 0.3;
         } else if (UsRegion5.includes(String(shipState))) {
-          handlingCost = Number(shippingCost) * 0.25;
+          handlingCost = Number(shippingCost) * 0.3;
         } else {
           handlingCost = 0.0;
         }
@@ -193,7 +193,7 @@ const calculateHandling = () => {
   }
 };
 
-const calculateTotalWeight = () => {
+export const calculateTotalWeight = () => {
   try {
     console.log('starting calculation / conversion...');
     // get record
