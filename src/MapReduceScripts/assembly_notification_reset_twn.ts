@@ -274,8 +274,7 @@ export const map: EntryPoints.MapReduce.map = (
       type: format.Type.DATETIMETZ,
       timezone: format.Timezone.AMERICA_LOS_ANGELES,
     });
-    let dateRemovedString = dateRemoved.toISOString();
-    dateRemovedString = dateRemovedString.split('T')[0];
+    let dateRemovedString = dateRemoved;
 
     const itemRecord = record.load({
       type: record.Type.ASSEMBLY_ITEM,
