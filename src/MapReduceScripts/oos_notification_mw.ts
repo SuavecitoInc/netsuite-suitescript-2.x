@@ -99,6 +99,11 @@ export const getInputData: EntryPoints.MapReduce.getInputData = () => {
         values: ['F'],
       },
       {
+        name: 'custitem_sp_brand',
+        operator: search.Operator.NONEOF,
+        values: ['12'],
+      },
+      {
         name: 'custitem_sp_oos_notification_date_mw',
         operator: search.Operator.ISEMPTY,
       },
