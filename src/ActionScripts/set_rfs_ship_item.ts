@@ -81,10 +81,6 @@ const handleRFShipping = (
   };
 
   const currentRecord = context.newRecord;
-  // if Simple Connector, return
-  if (currentRecord.getValue({ fieldId: 'custbody_sc_channel' }) !== '') {
-    return { shipMethodUpdate: false };
-  }
 
   const shippingCost =
     currentRecord.getValue({
@@ -171,13 +167,44 @@ const handleRFShipping = (
     return { shipMethodUpdate: true, updates };
   } else {
     log.debug({ title: 'Is shipping method an RFS method?', details: 'true' });
-    return { shipMethodUpdate: false };
+    return { shipMethodUpdate: false, message: 'Shipping method is valid RFS' };
   }
 };
 
 export const onAction: EntryPoints.WorkflowAction.onAction = (
   context: EntryPoints.WorkflowAction.onActionContext
 ) => {
+  const excludedLocations = [
+    42, // Simple Connector
+    43, // RJS - W-SPS
+  ];
+
+  const excludedCustomers = [
+    7253589, // W-SPS
+  ];
+
+  const currentRecord = context.newRecord;
+  const location = currentRecord.getValue({ fieldId: 'location' });
+  // excluded by location
+  if (excludedLocations.includes(Number(location) as number)) {
+    return JSON.stringify({
+      shipMethodUpdate: false,
+      message: 'Location excluded',
+    });
+  }
+  // excluded by customer
+  if (
+    excludedCustomers.includes(
+      Number(currentRecord.getValue({ fieldId: 'entity' })) as number
+    )
+  ) {
+    return JSON.stringify({
+      shipMethodUpdate: false,
+      message: 'Customer excluded',
+    });
+  }
+
+  // handle RF Shipping
   const response = handleRFShipping(context);
 
   return JSON.stringify(response);
