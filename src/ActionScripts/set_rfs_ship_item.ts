@@ -81,10 +81,6 @@ const handleRFShipping = (
   };
 
   const currentRecord = context.newRecord;
-  // if Simple Connector, return
-  if (currentRecord.getValue({ fieldId: 'custbody_sc_channel' }) !== '') {
-    return { shipMethodUpdate: false, message: 'Exclude - Simple Connector' };
-  }
 
   const shippingCost =
     currentRecord.getValue({
