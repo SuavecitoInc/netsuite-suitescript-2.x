@@ -234,7 +234,7 @@ function handleRFShipping(context: EntryPoints.UserEvent.beforeSubmitContext) {
   }
 }
 
-export let beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
+export const beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (
   context: EntryPoints.UserEvent.beforeSubmitContext
 ) => {
   try {
